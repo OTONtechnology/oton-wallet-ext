@@ -1,0 +1,12 @@
+{
+  "name": "oton-wallet",
+  "description": "OTON wallet Chrome extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "dist/index.html"
+  }
+}
