@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import StartView from '../views/StartView.vue';
-import CreateWalletView from '../views/CreateWalletView.vue';
 import Home from '../views/Home.vue';
 import getAddress from '@/utils/getAddress';
 
@@ -17,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
       return next();
     },
   },
-  { path: '/create', component: CreateWalletView },
+  // { path: '/create', component: CreateWalletView },
   { path: '/home', name: 'Home', component: Home },
 ];
 

@@ -1,6 +1,7 @@
 <template>
   <div class="main-container">
-    <router-view />
+    {{ walletAddress }}
+    <router-view v-if="walletAddress" />
   </div>
   <div>
     <ImportWalletModal :name="'ImportWalletModal'" />
@@ -8,14 +9,30 @@
   </div>
 </template>
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
+import getAddress from '@/utils/getAddress';
 
 export default defineComponent({
   components: {
     ImportWalletModal,
     TransferModal,
+  },
+
+  setup() {
+    const store = useStore();
+    const walletAddress = computed(() => store.state.walletAddress);
+
+    onMounted(async () => {
+      const res = await getAddress();
+      store.commit('SET_WALLET_ADDRESS', res);
+    });
+
+    return {
+      walletAddress,
+    };
   },
 });
 

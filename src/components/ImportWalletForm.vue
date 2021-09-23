@@ -59,11 +59,6 @@ export default defineComponent({
         this.$router.push({ name: 'Home' });
       });
     },
-    check() {
-      extension.storage.local.get('addr', (result) => {
-        console.log(result);
-      });
-    },
   },
 });
 </script>

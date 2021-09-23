@@ -1,10 +1,10 @@
 <template>
   <div class="transaction__item">
     <div class="transaction__type">
-      {{ transaction.actionType === "send" ? "To" : "From" }}
+      {{ actionType === "out" ? "To" : "From" }}
     </div>
     <div class="transaction__address">
-      {{ transaction.address }}
+      {{ transactionId }}
     </div>
     <div
       class="transaction__amount"
@@ -18,7 +18,7 @@
       }}
     </div>
     <div class="transaction__date">
-      {{ transaction.date }}
+      {{ date }}
     </div>
     <div class="transaction__currency">
       {{ transaction.currencySymbol }}
@@ -33,7 +33,10 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
+import { useStore } from 'vuex';
+import * as dayjs from 'dayjs';
+import { getActionType } from '@/utils/transactions';
 
 export default defineComponent({
   props: {
@@ -41,6 +44,21 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+  },
+
+  setup(props) {
+    const store = useStore();
+    const walletAddress = computed(() => store.state.walletAddress);
+    const actionType = getActionType(props.transaction, walletAddress);
+    const transactionId = `${props.transaction.id.substring(0, 35)}...`;
+    const date = dayjs(props.transaction.block.timestamp).format();
+    // const transactionId = '123';
+
+    return {
+      actionType,
+      transactionId,
+      date,
+    };
   },
 });
 </script>

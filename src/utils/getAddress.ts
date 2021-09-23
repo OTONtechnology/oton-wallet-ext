@@ -5,7 +5,7 @@ const getAddress = async (): Promise<string> => new Promise((resolve, reject) =>
     if (res && res.addr) {
       resolve(res.addr);
     }
-    reject();
+    resolve('');
   });
 });
 

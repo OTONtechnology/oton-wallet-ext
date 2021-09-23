@@ -6,7 +6,7 @@
       </svg>
     </router-link>
     <div class="header__text">Your address</div>
-    <div class="header__address">{{ userAddress }}</div>
+    <div class="header__address">{{ walletAddress }}</div>
     <div class="header__menu">
       <HeaderMenu />
     </div>
@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, computed } from 'vue';
+import { useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
-import getAddress from '@/utils/getAddress';
 import HeaderMenu from '@/components/HeaderMenu.vue';
 
 export default defineComponent({
@@ -24,14 +24,10 @@ export default defineComponent({
     HeaderMenu,
   },
   setup() {
-    const userAddress = ref('');
+    const store = useStore();
+    const walletAddress = computed(() => store.state.walletAddress);
 
-    onMounted(async () => {
-      const res = await getAddress();
-      userAddress.value = res;
-    });
-
-    return { userAddress };
+    return { walletAddress };
   },
 });
 </script>

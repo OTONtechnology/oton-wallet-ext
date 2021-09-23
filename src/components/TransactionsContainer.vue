@@ -23,8 +23,10 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { $vfm } from 'vue-final-modal';
+
 import TransactionItem from '@/components/TransactionItem.vue';
 
 export default defineComponent({
@@ -32,66 +34,77 @@ export default defineComponent({
     TransactionItem,
   },
   setup() {
-    // $vfm.show('TransferModal');
+    const store = useStore();
+    const transactions = computed(() => store.state.transactions);
+    const walletAddress = computed(() => store.state.walletAddress);
+
+    onMounted(() => {
+      store.dispatch('fetchTransactions', walletAddress.value);
+    });
+
+    return {
+      transactions,
+      fetch,
+    };
   },
   data() {
     return {
-      transactions: [
-        {
-          actionType: 'send',
-          address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-          description: 'Transfer',
-          bonus_type: '',
-          amount: '12',
-          currencySymbol: 'OTON',
-          date: '12 sep 15:52',
-        },
-        {
-          actionType: 'receive',
-          address: '0x135664530ff838e5659d48b58b6c17651045345',
-          description: 'Transfer',
-          bonus_type: '-',
-          amount: '234',
-          currencySymbol: 'USDT',
-          date: '12 sep 15:52',
-        },
-        {
-          actionType: 'send',
-          address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-          description: 'OTON Market',
-          bonus_type: 'Awesome bonus',
-          amount: '12',
-          currencySymbol: 'OTON',
-          date: '12 sep 15:52',
-        },
-        {
-          actionType: 'send',
-          address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-          description: 'OTON Market',
-          bonus_type: 'Awesome bonus',
-          amount: '12',
-          currencySymbol: 'OTON',
-          date: '12 sep 15:52',
-        },
-        {
-          actionType: 'send',
-          address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-          description: 'OTON Market',
-          bonus_type: 'Awesome bonus',
-          amount: '12',
-          currencySymbol: 'OTON',
-          date: '12 sep 15:52',
-        },
-        {
-          actionType: 'send',
-          address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-          description: 'Transfer',
-          bonus_type: '',
-          amount: '12',
-          currencySymbol: 'OTON',
-          date: '12 sep 15:52',
-        },
-      ],
+      // transactions: [
+      //   {
+      //     actionType: 'send',
+      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
+      //     description: 'Transfer',
+      //     bonus_type: '',
+      //     amount: '12',
+      //     currencySymbol: 'OTON',
+      //     date: '12 sep 15:52',
+      //   },
+      //   {
+      //     actionType: 'receive',
+      //     address: '0x135664530ff838e5659d48b58b6c17651045345',
+      //     description: 'Transfer',
+      //     bonus_type: '-',
+      //     amount: '234',
+      //     currencySymbol: 'USDT',
+      //     date: '12 sep 15:52',
+      //   },
+      //   {
+      //     actionType: 'send',
+      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
+      //     description: 'OTON Market',
+      //     bonus_type: 'Awesome bonus',
+      //     amount: '12',
+      //     currencySymbol: 'OTON',
+      //     date: '12 sep 15:52',
+      //   },
+      //   {
+      //     actionType: 'send',
+      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
+      //     description: 'OTON Market',
+      //     bonus_type: 'Awesome bonus',
+      //     amount: '12',
+      //     currencySymbol: 'OTON',
+      //     date: '12 sep 15:52',
+      //   },
+      //   {
+      //     actionType: 'send',
+      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
+      //     description: 'OTON Market',
+      //     bonus_type: 'Awesome bonus',
+      //     amount: '12',
+      //     currencySymbol: 'OTON',
+      //     date: '12 sep 15:52',
+      //   },
+      //   {
+      //     actionType: 'send',
+      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
+      //     description: 'Transfer',
+      //     bonus_type: '',
+      //     amount: '12',
+      //     currencySymbol: 'OTON',
+      //     date: '12 sep 15:52',
+      //   },
+      // ],
     };
   },
 

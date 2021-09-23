@@ -2,51 +2,39 @@
   <div class="balances wrapper">
     <div
       class="balances__balance balance"
-      v-for="balance in balances"
-      :key="balance.name"
+      v-for="(balance, currency) in balances"
+      :key="currency"
     >
       <div class="balance__head">
-        <span class="balance__balance">{{ balance.balance_oton }}</span>
-        <span class="balance__currency">{{ balance.name }}</span>
+        <span class="balance__balance">{{ balance.balance }}</span>
+        <span class="balance__currency">{{ currency }}</span>
       </div>
-      <div class="balance__footer">
+      <!-- <div class="balance__footer">
         <span class="balance__eur">{{ balance.balance_eur }} €</span>
         <span class="balance__course">{{ balance.course }}</span>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, onMounted, computed } from 'vue';
+import { mapGetters, useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
+import getAddress from '@/utils/getAddress';
 
 export default defineComponent({
   setup() {
-    onMounted(() => {
-      const store = useStore();
-      store.dispatch('fetchTransactions', '903b3493a3fc2f9e9af1b6e735a990d6fa471054');
-    });
-  },
-  data() {
-    return {
-      balances: [
-        {
-          name: 'OTON',
-          balance_oton: '54 641',
-          balance_eur: '1311.38',
-          course: '1 OTON = 0.05215 €',
-        },
+    const store = useStore();
+    const balances = computed(() => store.state.balances);
 
-        {
-          name: 'USDT',
-          balance_oton: '155',
-          balance_eur: '151.13',
-          course: '1 USDT = 0.975 €',
-        },
-      ],
-    };
+    onMounted(async () => {
+      const address = await getAddress();
+
+      store.dispatch('fetchBalances', address);
+    });
+
+    return { balances };
   },
 });
 </script>

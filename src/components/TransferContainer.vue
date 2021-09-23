@@ -56,9 +56,5 @@ export default defineComponent({
       this.submitForm = true;
     },
   },
-  unmounted() {
-    console.log(123123);
-  },
-
 });
 </script>
