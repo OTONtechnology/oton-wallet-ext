@@ -2,6 +2,9 @@
 const path = require('path');
 
 module.exports = {
+  configureWebpack: {
+    devtool: 'cheap-module-source-map',
+  },
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'stylus',

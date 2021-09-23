@@ -32,8 +32,9 @@ export default defineComponent({
       opened.value = !opened.value;
     };
     const logout = () => {
-      extension.storage.local.clear();
-      router.push('/');
+      extension.storage.local.clear(() => {
+        router.push('/');
+      });
     };
 
     return {

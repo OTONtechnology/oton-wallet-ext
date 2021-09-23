@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --no-clean --watch",
     "postbuild": "npm-run-all copy:* copy:*:*",
+    "prebuild": "npm-run-all copy:* copy:*:*",
     "copy:manifest:chrome": "cp -r manifest/manifest.chrome.json dist/manifest.json",
     "copy:icons": "cp -r manifest/icons dist/icons",
     "lint": "vue-cli-service lint"
