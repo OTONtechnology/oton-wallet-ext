@@ -1,14 +1,24 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import StartView from '../views/StartView.vue';
-import ImportWalletView from '../views/ImportWalletView.vue';
 import CreateWalletView from '../views/CreateWalletView.vue';
 import Home from '../views/Home.vue';
+import getAddress from '@/utils/getAddress';
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '/', name: 'StartView', component: StartView },
-  { path: '/import', name: 'ImportView', component: ImportWalletView },
+  {
+    path: '/',
+    name: 'StartView',
+    component: StartView,
+    beforeEnter: async (to, from, next) => {
+      const address = await getAddress();
+      if (address) {
+        return next('Home');
+      }
+      return next();
+    },
+  },
   { path: '/create', component: CreateWalletView },
-  { path: '/home', component: Home },
+  { path: '/home', name: 'Home', component: Home },
 ];
 
 const router = createRouter({

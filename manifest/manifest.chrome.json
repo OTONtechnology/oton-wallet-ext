@@ -7,7 +7,8 @@
     "storage",
     "clipboardWrite",
     "webRequest",
-    "notifications"
+    "notifications",
+    "tabs"
   ],
   "action": {
     "default_popup": "index.html",

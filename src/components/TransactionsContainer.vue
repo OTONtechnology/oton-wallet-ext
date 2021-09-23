@@ -32,7 +32,7 @@ export default defineComponent({
     TransactionItem,
   },
   setup() {
-    $vfm.show('TransferModal');
+    // $vfm.show('TransferModal');
   },
   data() {
     return {
@@ -99,6 +99,7 @@ export default defineComponent({
     openTransferModal() {
       $vfm.show('TransferModal');
     },
+
   },
 });
 </script>

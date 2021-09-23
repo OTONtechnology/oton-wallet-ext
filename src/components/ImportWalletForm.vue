@@ -3,11 +3,15 @@
     <p class="import__text">Import a wallet with a secret recovery phrase.</p>
 
     <div class="field">
+      <label for="" class="field__label">Address</label>
+      <input type="text" class="field__input" v-model="address" />
+    </div>
+    <!-- <div class="field">
       <label for="" class="field__label">Secret Recovery Phrase</label>
       <input type="text" class="field__input" v-model="phrase" />
-    </div>
+    </div> -->
 
-    <div class="field">
+    <!-- <div class="field">
       <label for="" class="field__label">New Password</label>
       <input type="password" class="field__input" v-model="password1" />
     </div>
@@ -15,7 +19,7 @@
     <div class="field">
       <label for="" class="field__label">Repeat Password</label>
       <input type="password" class="field__input" v-model="password2" />
-    </div>
+    </div> -->
 
     <div class="field">
       <BaseCheckbox :name="'terms'" :value="terms" @change-value="changeTerms">
@@ -25,16 +29,20 @@
       </BaseCheckbox>
     </div>
 
-    <button class="import__button button primary">Import</button>
+    <button class="import__button button primary" @click="login">Import</button>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
+import extension from 'extensionizer';
+import { $vfm } from 'vue-final-modal';
 
 export default defineComponent({
   data() {
     return {
+      address: '',
+
       phrase: '',
       password1: '',
       password2: '',
@@ -44,6 +52,17 @@ export default defineComponent({
   methods: {
     changeTerms(val) {
       this.terms = val;
+    },
+    login() {
+      extension.storage.local.set({ addr: this.address }, () => {
+        $vfm.hide('ImportWalletModal');
+        this.$router.push({ name: 'Home' });
+      });
+    },
+    check() {
+      extension.storage.local.get('addr', (result) => {
+        console.log(result);
+      });
     },
   },
 });

@@ -16,6 +16,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { $vfm } from 'vue-final-modal';
+import extension from 'extensionizer';
 import StartLayout from '@/layouts/StartLayout.vue';
 
 export default defineComponent({
@@ -25,6 +26,10 @@ export default defineComponent({
   methods: {
     openImportModal() {
       $vfm.show('ImportWalletModal');
+    },
+    openTab() {
+      extension.tabs.create({ url: 'mailto:help@metamask.io?subject=Feedback' });
+      const manifest = extension.runtime.getManifest();
     },
   },
 });
