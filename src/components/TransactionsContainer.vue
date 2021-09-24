@@ -40,7 +40,6 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch('fetchTransactions', walletAddress.value);
-      $vfm.show('TransferModal');
     });
 
     return {
