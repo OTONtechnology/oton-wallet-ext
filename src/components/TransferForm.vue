@@ -5,17 +5,19 @@
       <div class="transfer__currencies-list">
         <div
           class="transfer__radio radio"
-          v-for="cur in currencies"
-          :key="cur.id"
+          v-for="(cur, key) in balances"
+          :key="key"
         >
           <input
             type="radio"
             class="radio__input"
-            :value="cur.id"
-            :id="cur.id"
+            :value="key"
+            :id="key"
             v-model="currencyModel"
           />
-          <label class="radio__label" :for="cur.id">{{ cur.id }}</label>
+          <label class="radio__label" :for="key">
+            {{ key }} <span class="max">(max: {{ cur.balance }})</span>
+          </label>
         </div>
       </div>
     </div>
@@ -51,6 +53,10 @@ export default defineComponent({
     },
     sum: {
       type: String,
+      required: true,
+    },
+    balances: {
+      type: Object,
       required: true,
     },
   },
@@ -107,6 +113,15 @@ export default defineComponent({
 
   &__radio {
     margin-top: 4px;
+
+    .radio__label {
+      text-transform: uppercase;
+    }
+
+    .max {
+      font-weight: 400;
+      text-transform: lowercase;
+    }
   }
 
   &__address, &__sum {

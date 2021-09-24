@@ -39,9 +39,9 @@ export default createStore({
         commit('SET_STATE', REJECTED);
       }
 
-      if (state.fetchState === PENDING) {
-        return;
-      }
+      // if (state.fetchState === PENDING) {
+      //   return;
+      // }
 
       commit('SET_STATE', PENDING);
 
@@ -60,9 +60,9 @@ export default createStore({
         commit('SET_STATE', REJECTED);
       }
 
-      if (state.fetchState === PENDING) {
-        return;
-      }
+      // if (state.fetchState === PENDING) {
+      //   return;
+      // }
 
       commit('SET_STATE', PENDING);
 

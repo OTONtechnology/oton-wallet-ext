@@ -9,31 +9,27 @@
     <div
       class="transaction__amount"
       :class="{
-        send: transaction.actionType === 'send',
-        receive: transaction.actionType === 'receive',
+        send: actionType === 'out',
+        receive: actionType === 'in',
       }"
     >
-      {{
-        `${transaction.actionType === "send" ? "-" : "+"}${transaction.amount}`
-      }}
+      {{ `${transaction.actionType === "out" ? "-" : "+"}${sum}` }}
     </div>
     <div class="transaction__date">
       {{ date }}
     </div>
     <div class="transaction__currency">
-      {{ transaction.currencySymbol }}
+      {{ transaction.outputs[0].ticker }}
     </div>
     <div class="transaction__bonus">
-      {{ transaction.bonus_type }}
+      <!-- {{ transaction.type }} -->
     </div>
-    <div class="transaction__description">
-      {{ transaction.description }}
-    </div>
+    <div class="transaction__description">Transfer</div>
   </div>
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
 import { getActionType } from '@/utils/transactions';
@@ -51,13 +47,28 @@ export default defineComponent({
     const walletAddress = computed(() => store.state.walletAddress);
     const actionType = getActionType(props.transaction, walletAddress);
     const transactionId = `${props.transaction.id.substring(0, 35)}...`;
-    const date = dayjs(props.transaction.block.timestamp).format();
+    const date = dayjs.unix(props.transaction.block.timestamp).format('D MMM HH:mm ');
+    let sum = '';
+    let currency = '';
+    if (actionType === 'in') {
+      const tran = props.transaction.outputs.find((item) => item.address === walletAddress.value);
+
+      sum = ref(tran.amount);
+      currency = ref(tran.ticker);
+    } else {
+      const tran = props.transaction.inputs.find((item) => item.address === walletAddress.value);
+
+      sum = ref(tran.amount);
+      currency = ref(tran.ticker);
+    }
     // const transactionId = '123';
 
     return {
       actionType,
       transactionId,
       date,
+      sum,
+      currency,
     };
   },
 });
@@ -82,6 +93,7 @@ export default defineComponent({
 
   &__currency {
     grid-area: c;
+    text-transform: uppercase;
   }
 
   &__bonus {

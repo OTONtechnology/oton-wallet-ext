@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home__container">
     <Header />
     <Balances />
     <TransactionsContainer />
@@ -16,3 +16,12 @@ export default defineComponent({
   components: { Header, Balances, TransactionsContainer },
 });
 </script>
+<style lang="stylus" scoped>
+.home {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+</style>

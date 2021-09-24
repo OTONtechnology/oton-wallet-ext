@@ -1,7 +1,6 @@
 <template>
   <div class="main-container">
-    {{ walletAddress }}
-    <router-view v-if="walletAddress" />
+    <router-view />
   </div>
   <div>
     <ImportWalletModal :name="'ImportWalletModal'" />
@@ -27,7 +26,9 @@ export default defineComponent({
 
     onMounted(async () => {
       const res = await getAddress();
-      store.commit('SET_WALLET_ADDRESS', res);
+      if (res) {
+        store.commit('SET_WALLET_ADDRESS', res);
+      }
     });
 
     return {
@@ -65,7 +66,7 @@ svg {
 .main-container {
   position: relative;
   min-width: 360px;
-  min-height: 600px;
+  // min-height: 600px;
   margin: 0 auto;
   max-width: 800px;
 }

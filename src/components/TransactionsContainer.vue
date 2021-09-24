@@ -40,6 +40,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch('fetchTransactions', walletAddress.value);
+      $vfm.show('TransferModal');
     });
 
     return {
@@ -119,6 +120,8 @@ export default defineComponent({
 
 <style lang="stylus" scoped>
 .transactions {
+  flex-grow: 2;
+
   &__title {
     opacity: 0.4;
     color: $dark-color-2;
@@ -141,6 +144,7 @@ export default defineComponent({
 
   &__buttons {
     margin-top: 12px;
+    margin-bottom: 12px;
   }
 
   &__transfer {

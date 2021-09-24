@@ -17,7 +17,18 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   // { path: '/create', component: CreateWalletView },
-  { path: '/home', name: 'Home', component: Home },
+  {
+    path: '/home',
+    name: 'Home',
+    component: Home,
+    beforeEnter: async (to, from, next) => {
+      const address = await getAddress();
+      if (address) {
+        return next();
+      }
+      return next('StartView');
+    },
+  },
 ];
 
 const router = createRouter({

@@ -19,7 +19,7 @@
 
 <script>
 import { defineComponent, onMounted, computed } from 'vue';
-import { mapGetters, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
 import getAddress from '@/utils/getAddress';
 
@@ -44,6 +44,7 @@ export default defineComponent({
   padding-bottom: 5px;
   border-bottom: 4px solid;
   border-color: $fade-color;
+  flex-grow: 1;
 }
 
 .balance {

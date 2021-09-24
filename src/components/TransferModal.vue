@@ -16,6 +16,7 @@
       :currency="form.currency"
       :address="form.address"
       :sum="form.sum"
+      :balances="balances"
       @change-currency="changeCurrency"
       @change-address="changeAddress"
       @change-sum="changeSum"
@@ -26,6 +27,7 @@
 
 <script>
 import { defineComponent } from 'vue';
+import { mapState } from 'vuex';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
@@ -41,7 +43,7 @@ export default defineComponent({
     return {
       submitForm: false,
       form: {
-        currency: 'OTON',
+        currency: '',
         address: '',
         sum: '',
       },
@@ -49,6 +51,9 @@ export default defineComponent({
   },
   props: {
     name: String,
+  },
+  computed: {
+    ...mapState(['balances']),
   },
   methods: {
     changeCurrency(value) {
@@ -68,6 +73,11 @@ export default defineComponent({
     },
     handleClose() {
       this.submitForm = false;
+      this.form = {
+        currency: '',
+        address: '',
+        sum: '',
+      };
     },
   },
 });
