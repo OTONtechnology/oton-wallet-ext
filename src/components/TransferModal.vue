@@ -32,6 +32,7 @@ import { mapState } from 'vuex';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
+import transactionSign from '@/utils/transactionSign';
 
 export default defineComponent({
   components: {
@@ -54,7 +55,7 @@ export default defineComponent({
     name: String,
   },
   computed: {
-    ...mapState(['balances']),
+    ...mapState(['balances', 'walletAddress']),
   },
   methods: {
     changeCurrency(value) {
@@ -73,7 +74,7 @@ export default defineComponent({
       this.submitForm = false;
     },
     submitTransfer() {
-
+      console.log(transactionSign({ ...this.form }, this.walletAddress));
     },
     handleClose() {
       this.submitForm = false;
