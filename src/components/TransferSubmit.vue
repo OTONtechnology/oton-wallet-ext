@@ -18,7 +18,7 @@
 
     <div class="form__buttons">
       <button class="button" @click="back">Back</button>
-      <button class="button primary">
+      <button class="button primary" @click="submitTransfer">
         Accept and Transfer {{ sum }} {{ currency }}
       </button>
     </div>
@@ -51,11 +51,11 @@ export default defineComponent({
   },
 
   methods: {
-    submitTransfer() {
-      this.$emit('transfer-submit');
-    },
     back() {
       this.$emit('edit-transfer');
+    },
+    submitTransfer() {
+      this.$emit('submit-transfer');
     },
   },
 });

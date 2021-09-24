@@ -10,6 +10,7 @@
       :address="form.address"
       :sum="form.sum"
       @edit-transfer="showTransferForm"
+      @submit-transfer="submitTransfer"
     />
     <TransferForm
       v-else
@@ -70,6 +71,9 @@ export default defineComponent({
     },
     showTransferForm() {
       this.submitForm = false;
+    },
+    submitTransfer() {
+
     },
     handleClose() {
       this.submitForm = false;

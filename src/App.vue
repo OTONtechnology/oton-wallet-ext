@@ -66,7 +66,7 @@ svg {
 .main-container {
   position: relative;
   min-width: 360px;
-  // min-height: 600px;
+  min-height: 600px;
   margin: 0 auto;
   max-width: 800px;
 }
