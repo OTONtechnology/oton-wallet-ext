@@ -4,15 +4,20 @@ const path = require('path');
 module.exports = {
   configureWebpack: {
     devtool: 'cheap-module-source-map',
+    module: {
+      rules: [
+        {
+          test: /\.proto$/i,
+          use: 'raw-loader',
+        },
+      ],
+    },
   },
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'stylus',
-      patterns: [
-        path.resolve(__dirname, './src/assets/styles/variables.styl'),
-      ],
+      patterns: [path.resolve(__dirname, './src/assets/styles/variables.styl')],
     },
-
     // svgSprite: {
     //   /*
     //    * The directory containing your SVG files.

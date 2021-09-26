@@ -7,7 +7,9 @@
         <button class="card__button button" @click="openImportModal">
           Import a wallet
         </button>
-        <button class="card__button button primary">Create new wallet</button>
+        <button @click="createKeys" class="card__button button primary">
+          Create new wallet
+        </button>
       </div>
     </div>
   </StartLayout>
@@ -17,14 +19,21 @@
 import { defineComponent } from 'vue';
 import { $vfm } from 'vue-final-modal';
 import StartLayout from '@/layouts/StartLayout.vue';
+import { createKeys } from '../utils/cryptoKeys';
 
 export default defineComponent({
+  data: () => ({}),
   components: {
     StartLayout,
   },
   methods: {
     openImportModal() {
       $vfm.show('ImportWalletModal');
+    },
+    async createKeys() {
+      const newKeys = await createKeys();
+      // TODO: shoud be write to user store, and user should save his secret key
+      console.info(newKeys);
     },
   },
 });
