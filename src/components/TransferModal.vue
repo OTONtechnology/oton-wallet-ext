@@ -20,9 +20,11 @@
       :sum="form.sum"
       :fee="form.fee"
       :balances="balances"
+      :sk="form.sk"
       @change-currency="changeCurrency"
       @change-address="changeAddress"
       @change-sum="changeSum"
+      @change-sk="changeSk"
       @transfer="showSubmitForm"
     />
   </DefaultModalLayout>
@@ -52,6 +54,7 @@ export default defineComponent({
         address: '',
         sum: '',
         fee: '1',
+        sk: '',
       },
     };
   },
@@ -71,6 +74,9 @@ export default defineComponent({
     changeSum(value) {
       this.form.sum = value;
     },
+    changeSk(value) {
+      this.form.sk = value;
+    },
     showSubmitForm() {
       this.submitForm = true;
     },
@@ -86,9 +92,10 @@ export default defineComponent({
        */
       const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress);
 
-      const sk = '9275b1960378420c0867a7c341389fe882fd64d03c80543f06b074399daa1c7ac295706afdc968bd8cac54155c01bc190179b0beffcdfb8814d8b8ce763d16ee';
       // TODO: sk(secretKey) should be taken from form
-      const signedTrn = await signTrn(preparedTrn, sk);
+      console.log(this.form.sk);
+
+      const signedTrn = await signTrn(preparedTrn, this.form.sk);
 
       const resp = await this.$store.dispatch('sendTransaction', signedTrn);
 

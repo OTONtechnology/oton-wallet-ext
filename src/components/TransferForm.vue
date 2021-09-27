@@ -29,6 +29,10 @@
       <label for="" class="field__label">Sum</label>
       <input type="text" class="field__input" v-model="sumModel" />
     </div>
+    <div class="transfer__sum field">
+      <label for="" class="field__label">Secret key</label>
+      <input type="text" class="field__input" v-model="secretKeyModel" />
+    </div>
     <div class="transfer__fee">Fee: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
       Transfer {{ sum ? sum : "" }} {{ currency }}
@@ -56,6 +60,10 @@ export default defineComponent({
       required: true,
     },
     fee: {
+      type: String,
+      required: true,
+    },
+    sk: {
       type: String,
       required: true,
     },
@@ -95,6 +103,14 @@ export default defineComponent({
       },
       set(value) {
         this.$emit('change-sum', value);
+      },
+    },
+    secretKeyModel: {
+      get() {
+        return this.sk;
+      },
+      set(value) {
+        this.$emit('change-sk', value);
       },
     },
   },

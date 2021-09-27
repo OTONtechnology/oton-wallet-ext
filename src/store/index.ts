@@ -30,7 +30,6 @@ export default createStore({
       const sorted = sort(
         (a: any, b: any) => b.block.timestamp - a.block.timestamp, transactions.data,
       );
-      console.log(sorted);
       state.transactions = sorted;
     },
     CLEAR(state) {
