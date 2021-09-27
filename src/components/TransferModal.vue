@@ -9,6 +9,7 @@
       :currency="form.currency"
       :address="form.address"
       :sum="form.sum"
+      :fee="fee"
       @edit-transfer="showTransferForm"
       @submit-transfer="submitTransfer"
     />
@@ -17,6 +18,7 @@
       :currency="form.currency"
       :address="form.address"
       :sum="form.sum"
+      :fee="fee"
       :balances="balances"
       @change-currency="changeCurrency"
       @change-address="changeAddress"
@@ -49,6 +51,7 @@ export default defineComponent({
         currency: '',
         address: '',
         sum: '',
+        fee: '1',
       },
     };
   },
@@ -57,6 +60,9 @@ export default defineComponent({
   },
   computed: {
     ...mapState(['balances', 'walletAddress']),
+  },
+  mounted() {
+    $vfm.show('TransferDoneModal');
   },
   methods: {
     changeCurrency(value) {
@@ -90,13 +96,15 @@ export default defineComponent({
       console.info(signedTrn);
 
       // signedTrn should be sended to http://82.196.1.93:26657/broadcast_tx_commit?tx=0x{signedTrn}
-
-      // Promise.all([this.$store.dispatch('sendTransaction', signedTrn)]).then((response) => {
-      // if (response.code === 0) {
-      //   $vfm.hide('TransferModal');
-      //   $vfm.show('TransferDoneModal');
-      // }
-      // });
+      Promise.all([this.$store.dispatch('sendTransaction', signedTrn)]).then((response) => {
+        const resp = response[0];
+        if (resp) {
+          if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
+            $vfm.hide('TransferModal');
+            $vfm.show('TransferDoneModal');
+          }
+        }
+      });
     },
     handleClose() {
       this.submitForm = false;

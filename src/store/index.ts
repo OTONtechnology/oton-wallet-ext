@@ -1,10 +1,17 @@
 import { createStore } from 'vuex';
+import { sort } from 'rambda';
 import api, { blcInstance } from '@/utils/api';
 import {
   FULFILLED, INIT, PENDING, REJECTED,
 } from '@/utils/constants';
 
-const initState = {
+interface InitState {
+  fetchState: string;
+  balances: any;
+  transactions: any[];
+  walletAddress: string;
+}
+const initState: InitState = {
   fetchState: INIT,
   balances: {},
   transactions: [],
@@ -20,7 +27,11 @@ export default createStore({
       state.balances = balance.data;
     },
     UPDATE_TRANSACTIONS(state, transactions) {
-      state.transactions = transactions.data;
+      const sorted = sort(
+        (a: any, b: any) => b.block.timestamp - a.block.timestamp, transactions.data,
+      );
+      console.log(sorted);
+      state.transactions = sorted;
     },
     CLEAR(state) {
       Object.assign(state, initState);
@@ -78,13 +89,13 @@ export default createStore({
 
     async sendTransaction({ commit }, transaction) {
       commit('SET_STATE', PENDING);
+      console.log('send');
 
       try {
         const response = await blcInstance.get(`/broadcast_tx_commit?tx=0x${transaction}`);
-        console.log(response);
 
         commit('SET_STATE', FULFILLED);
-        return response;
+        return response.data;
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);
