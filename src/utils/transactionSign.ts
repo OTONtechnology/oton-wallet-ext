@@ -1,3 +1,4 @@
+import { Decimal } from 'decimal.js';
 import * as ed from 'noble-ed25519';
 import { pathOr } from 'rambda';
 import { blcInstance } from './api';
@@ -77,6 +78,10 @@ type getTrnFromDataType = (out: TransactionMainData, address: string) =>
 export const getTrnFromData: getTrnFromDataType = async (out, address) => {
   const sequence = await getLastSequence(address);
   const fee = out.fee || 1;
+
+  const getRealSum = (sum: number | string) => Decimal.mul(sum, 10000);
+
+  const realSum = getRealSum(out.sum);
   return {
     gas: 1,
     fee: {
@@ -88,7 +93,7 @@ export const getTrnFromData: getTrnFromDataType = async (out, address) => {
         address: hexToBytes(address),
         coins: [{
           name: out.currency,
-          amount: +out.sum,
+          amount: realSum.toNumber(),
         }],
         sequence: sequence + 1,
       },
@@ -98,7 +103,7 @@ export const getTrnFromData: getTrnFromDataType = async (out, address) => {
         address: hexToBytes(out.address),
         coins: [{
           name: out.currency,
-          amount: +out.sum - fee,
+          amount: realSum.minus(fee).toNumber(),
         }],
       },
     ],

@@ -54,6 +54,7 @@ export default defineComponent({
       this.terms = val;
     },
     login() {
+      this.$store.commit('SET_WALLET_ADDRESS', this.address);
       extension.storage.local.set({ addr: this.address }, () => {
         $vfm.hide('ImportWalletModal');
         this.$router.push({ name: 'Home' });

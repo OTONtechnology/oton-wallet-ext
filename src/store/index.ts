@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { sort } from 'rambda';
+import { clone, sort } from 'rambda';
 import api, { blcInstance } from '@/utils/api';
 import {
   FULFILLED, INIT, PENDING, REJECTED,
@@ -10,18 +10,24 @@ interface InitState {
   balances: any;
   transactions: any[];
   walletAddress: string;
+  quizzes: {
+    fetchTransactions: number;
+    fetchBalances: number;
+  };
 }
 const initState: InitState = {
   fetchState: INIT,
   balances: {},
   transactions: [],
   walletAddress: '',
+  quizzes: {
+    fetchTransactions: 0,
+    fetchBalances: 0,
+  },
 };
 
 export default createStore({
-  state: {
-    ...initState,
-  },
+  state: clone(initState),
   mutations: {
     UPDATE_BALANCES(state, balance) {
       state.balances = balance.data;
@@ -33,6 +39,8 @@ export default createStore({
       state.transactions = sorted;
     },
     CLEAR(state) {
+      Object.values(state.quizzes).forEach(clearTimeout);
+
       Object.assign(state, initState);
     },
     SET_STATE(state, fetchState) {
@@ -40,6 +48,12 @@ export default createStore({
     },
     SET_WALLET_ADDRESS(state, address) {
       state.walletAddress = address;
+    },
+    SET_QUIZ_IDS(state, quiz) {
+      state.quizzes = {
+        ...state.quizzes,
+        ...quiz,
+      };
     },
   },
   actions: {
@@ -59,7 +73,8 @@ export default createStore({
         commit('UPDATE_TRANSACTIONS', response.data);
         commit('SET_STATE', FULFILLED);
 
-        setTimeout(() => dispatch('fetchTransactions', address), 60000);
+        const timeoutId = setTimeout(() => dispatch('fetchTransactions', address), 60000);
+        commit('SET_QUIZ_IDS', { fetchTransactions: timeoutId });
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);
@@ -83,7 +98,8 @@ export default createStore({
         commit('UPDATE_BALANCES', response.data);
         commit('SET_STATE', FULFILLED);
 
-        setTimeout(() => dispatch('fetchBalances', address), 60000);
+        const timeoutId = setTimeout(() => dispatch('fetchBalances', address), 60000);
+        commit('SET_QUIZ_IDS', { fetchBalances: timeoutId });
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);

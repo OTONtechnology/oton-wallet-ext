@@ -53,7 +53,7 @@ export default defineComponent({
         currency: '',
         address: '',
         sum: '',
-        fee: '1',
+        fee: 0.0001,
         sk: '',
       },
     };
@@ -111,6 +111,7 @@ export default defineComponent({
     handleClose() {
       this.submitForm = false;
       this.form = {
+        ...this.form,
         currency: '',
         address: '',
         sum: '',

@@ -35,12 +35,13 @@
     </div>
     <div class="transfer__fee">Fee: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
-      Transfer {{ sum ? sum : "" }} {{ currency }}
+      Transfer {{ transferSum }} {{ currency }}
     </button>
   </div>
 </template>
 
 <script>
+import Decimal from 'decimal.js';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -112,6 +113,12 @@ export default defineComponent({
       set(value) {
         this.$emit('change-sk', value);
       },
+    },
+    transferSum() {
+      if (!+this.sum) {
+        return '';
+      }
+      return Decimal.sum(this.fee || 0, this.sum || 0).toString();
     },
   },
 

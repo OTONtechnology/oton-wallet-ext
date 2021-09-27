@@ -23,16 +23,19 @@ import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import '@/assets/svg/ic_menu.svg?sprite';
 import extension from 'extensionizer';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const store = useStore();
     const opened = ref(false);
     const toggleMenu = () => {
       opened.value = !opened.value;
     };
     const logout = () => {
       extension.storage.local.clear(() => {
+        store.commit('CLEAR');
         router.push('/');
       });
     };
