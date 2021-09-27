@@ -11,7 +11,7 @@
     </svg>
     <div class="title">{{ title }}</div>
     <div class="modal__content">
-      <slot />
+      <slot v-if="showModal" />
     </div>
   </vue-final-modal>
 </template>
