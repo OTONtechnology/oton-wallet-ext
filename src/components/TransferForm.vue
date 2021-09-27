@@ -29,7 +29,7 @@
       <label for="" class="field__label">Sum</label>
       <input type="text" class="field__input" v-model="sumModel" />
     </div>
-    <div class="transfer__fee">{{ fee }}</div>
+    <div class="transfer__fee">Fee: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
       Transfer {{ sum ? sum : "" }} {{ currency }}
     </button>

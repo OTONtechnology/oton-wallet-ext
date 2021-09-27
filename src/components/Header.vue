@@ -6,7 +6,7 @@
       </svg>
     </router-link>
     <div class="header__text">Your address</div>
-    <div class="header__address">{{ walletAddress }}</div>
+    <div class="header__address" :title="walletAddress">{{ stripedAddr }}</div>
     <div class="header__menu">
       <HeaderMenu />
     </div>
@@ -27,7 +27,11 @@ export default defineComponent({
     const store = useStore();
     const walletAddress = computed(() => store.state.walletAddress);
 
-    return { walletAddress };
+    const stripedAddr = computed(() => `${walletAddress.value.substring(0, 11)}...${walletAddress.value.substring(walletAddress.value.length - 11)}`);
+
+    return {
+      stripedAddr,
+    };
   },
 });
 </script>

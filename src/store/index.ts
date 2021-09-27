@@ -91,7 +91,11 @@ export default createStore({
       }
     },
 
-    async sendTransaction({ commit }, transaction) {
+    async sendTransaction({ commit, state }, transaction) {
+      if (state.fetchState === PENDING) {
+        return false;
+      }
+
       commit('SET_STATE', PENDING);
       console.log('send');
 

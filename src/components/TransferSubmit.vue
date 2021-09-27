@@ -13,6 +13,7 @@
       <div class="form__value">{{ sum }}</div>
     </div>
     <div class="form__item">
+      <div class="form__title" v-if="fee">Fee</div>
       <div class="form__value fee">{{ fee ? fee : "No fee" }}</div>
     </div>
 
