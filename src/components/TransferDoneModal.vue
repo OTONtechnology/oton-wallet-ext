@@ -1,11 +1,13 @@
 <template>
   <DefaultModalLayout :name="name" :title="''">
     <div class="title">Transfer is done!</div>
+    <div class="button" @click="close">Ok</div>
   </DefaultModalLayout>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
+import { $vfm } from 'vue-final-modal';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 
 export default defineComponent({
@@ -16,6 +18,11 @@ export default defineComponent({
   props: {
     name: String,
   },
+  methods: {
+    close() {
+      $vfm.hide('TransferDoneModal');
+    },
+  },
 });
 </script>
 
@@ -23,9 +30,15 @@ export default defineComponent({
 .title {
   font-size: 24px;
   font-weight: 700;
-  margin-top: 80px;
+  padding-top: 50px;
+  padding-bottom: 50px;
   margin: 0 auto;
   display: block;
+  text-align: center;
+}
+
+.button {
+  width: 100%;
   text-align: center;
 }
 </style>

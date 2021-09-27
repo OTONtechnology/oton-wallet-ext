@@ -44,7 +44,7 @@ export default createStore({
     },
   },
   actions: {
-    async fetchTransactions({ commit, state }, address) {
+    async fetchTransactions({ commit, dispatch }, address) {
       if (typeof address !== 'string' || address.length !== 40) {
         commit('SET_STATE', REJECTED);
       }
@@ -59,13 +59,15 @@ export default createStore({
         const response = await api.get(`/address/${address}/transactions`);
         commit('UPDATE_TRANSACTIONS', response.data);
         commit('SET_STATE', FULFILLED);
+
+        setTimeout(() => dispatch('fetchTransactions', address), 60000);
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);
       }
     },
 
-    async fetchBalances({ commit, state }, address) {
+    async fetchBalances({ commit, dispatch }, address) {
       if (typeof address !== 'string' || address.length !== 40) {
         commit('SET_STATE', REJECTED);
       }
@@ -81,6 +83,8 @@ export default createStore({
 
         commit('UPDATE_BALANCES', response.data);
         commit('SET_STATE', FULFILLED);
+
+        setTimeout(() => dispatch('fetchBalances', address), 60000);
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);

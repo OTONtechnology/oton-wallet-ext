@@ -61,9 +61,6 @@ export default defineComponent({
   computed: {
     ...mapState(['balances', 'walletAddress']),
   },
-  mounted() {
-    $vfm.show('TransferDoneModal');
-  },
   methods: {
     changeCurrency(value) {
       this.form.currency = value;
@@ -88,12 +85,10 @@ export default defineComponent({
        * currency - string
        */
       const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress);
-      console.log(preparedTrn);
+
       const sk = '9275b1960378420c0867a7c341389fe882fd64d03c80543f06b074399daa1c7ac295706afdc968bd8cac54155c01bc190179b0beffcdfb8814d8b8ce763d16ee';
       // TODO: sk(secretKey) should be taken from form
       const signedTrn = await signTrn(preparedTrn, sk);
-
-      console.info(signedTrn);
 
       // signedTrn should be sended to http://82.196.1.93:26657/broadcast_tx_commit?tx=0x{signedTrn}
       Promise.all([this.$store.dispatch('sendTransaction', signedTrn)]).then((response) => {

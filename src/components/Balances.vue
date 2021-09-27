@@ -45,6 +45,9 @@ export default defineComponent({
   border-bottom: 4px solid;
   border-color: $fade-color;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .balance {

@@ -32,7 +32,7 @@
 import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
-import { reduce } from 'rambda';
+import sumInputs from '@/utils/sumInputs';
 import { getActionType } from '@/utils/transactions';
 
 export default defineComponent({
@@ -53,7 +53,7 @@ export default defineComponent({
     let currency = '';
 
     if (actionType === 'sent') {
-      const computedSum = reduce((a, b) => a + Number(b.amount), 0, props.transaction.inputs);
+      const computedSum = sumInputs(props.transaction.inputs);
       sum = ref(computedSum);
       currency = ref(props.transaction.inputs[0].ticker);
     } else {
