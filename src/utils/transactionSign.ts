@@ -1,4 +1,6 @@
 import * as ed from 'noble-ed25519';
+import { pathOr } from 'rambda';
+import { blcInstance } from './api';
 import { SendCoins, Raw } from './protobufTypes';
 
 import { hexToBytes, bytesToHex, getKeysFromSK } from './cryptoKeys';
@@ -7,6 +9,7 @@ interface TransactionMainData {
   currency: string;
   sum: string;
   address: string;
+  fee?: number;
 }
 
 interface TrnInput {
@@ -36,7 +39,7 @@ interface TransactionUnsigned {
   gas: 1,
   fee:{
     name: string,
-    amount: 1
+    amount: number
   },
   inputs: TrnInput[],
   outputs: TrnOutput[];
@@ -45,44 +48,67 @@ interface TransactionSigned {
   gas: 1,
   fee:{
     name: string,
-    amount: 1
+    amount: number
   },
   inputs: TrnSignedInput[],
   outputs: TrnOutput[];
 }
 
-type getTrnFromDataType = (out: TransactionMainData, address: string) => TransactionUnsigned
-export const getTrnFromData: getTrnFromDataType = (out, address) => ({
-  gas: 1,
-  fee: {
-    name: out.currency,
-    amount: 1,
-  },
-  inputs: [
-    {
-      address: hexToBytes(address),
-      coins: [{
-        name: out.currency,
-        amount: +out.sum + 1,
-      }],
-      sequence: 233,
-    },
-  ],
-  outputs: [
-    {
-      address: hexToBytes(out.address),
-      coins: [{
-        name: out.currency,
-        amount: +out.sum,
-      }],
-    },
-  ],
-});
+export const getLastSequence = async (addr: string): Promise<number> => {
+  let sequence = 0;
 
-type signTrnType = (trn: TransactionUnsigned, sk: string | Uint8Array) =>
+  const infoUrl = `/abci_query?path=%22account%22&data=0x${addr}`;
+  const addressInfoResp = await blcInstance.get(infoUrl);
+
+  if (addressInfoResp.statusText === 'OK') {
+    const data = pathOr('{"sequence": 0}', 'data.result.response.info', addressInfoResp) as string;
+
+    const info = JSON.parse(data);
+
+    sequence = Number(info.sequence) || 0;
+  }
+
+  return sequence;
+};
+
+type getTrnFromDataType = (out: TransactionMainData, address: string) =>
+  Promise<TransactionUnsigned>
+
+export const getTrnFromData: getTrnFromDataType = async (out, address) => {
+  const sequence = await getLastSequence(address);
+  const fee = out.fee || 1;
+  return {
+    gas: 1,
+    fee: {
+      name: out.currency,
+      amount: fee,
+    },
+    inputs: [
+      {
+        address: hexToBytes(address),
+        coins: [{
+          name: out.currency,
+          amount: +out.sum,
+        }],
+        sequence: sequence + 1,
+      },
+    ],
+    outputs: [
+      {
+        address: hexToBytes(out.address),
+        coins: [{
+          name: out.currency,
+          amount: +out.sum - fee,
+        }],
+      },
+    ],
+  };
+};
+
+type signTrnType = (trn: TransactionUnsigned, sk: string | Uint8Array, type?: string) =>
  Promise<string>;
 
-export const signTrn: signTrnType = async (trn, sk) => {
+export const signTrn: signTrnType = async (trn, sk, type) => {
   const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
 
   const message = SendCoins.encode(trn).finish();
@@ -109,7 +135,7 @@ export const signTrn: signTrnType = async (trn, sk) => {
   const encodedSignedTrn = SendCoins.encode(signedTrn).finish();
 
   const raw = {
-    type: 'send_coins',
+    type: type || 'send_coins',
     raw: encodedSignedTrn,
   };
 

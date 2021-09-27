@@ -19,6 +19,7 @@
     "js-sha256": "^0.9.0",
     "noble-ed25519": "^1.2.5",
     "protobufjs": "^6.11.2",
+    "rambda": "^6.9.0",
     "vue": "^3.0.0",
     "vue-axios": "^3.3.7",
     "vue-final-modal": "^3.4.1",
