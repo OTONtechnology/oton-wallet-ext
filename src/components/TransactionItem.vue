@@ -1,7 +1,7 @@
 <template>
   <div class="transaction__item">
     <div class="transaction__type">
-      {{ actionType === "out" ? "To" : "From" }}
+      {{ actionType === "sent" ? "To" : "From" }}
     </div>
     <div class="transaction__address">
       {{ transactionId }}
@@ -9,17 +9,17 @@
     <div
       class="transaction__amount"
       :class="{
-        send: actionType === 'out',
-        receive: actionType === 'in',
+        send: actionType === 'sent',
+        receive: actionType === 'receive',
       }"
     >
-      {{ `${transaction.actionType === "out" ? "-" : "+"}${sum}` }}
+      {{ `${actionType === "sent" ? "-" : "+"}${sum}` }}
     </div>
     <div class="transaction__date">
       {{ date }}
     </div>
     <div class="transaction__currency">
-      {{ transaction.outputs[0].ticker }}
+      {{ currency }}
     </div>
     <div class="transaction__bonus">
       <!-- {{ transaction.type }} -->
@@ -32,6 +32,7 @@
 import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
+import { reduce } from 'rambda';
 import { getActionType } from '@/utils/transactions';
 
 export default defineComponent({
@@ -45,19 +46,18 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const walletAddress = computed(() => store.state.walletAddress);
-    const actionType = getActionType(props.transaction, walletAddress);
+    const actionType = getActionType(props.transaction, walletAddress.value);
     const transactionId = `${props.transaction.id.substring(0, 35)}...`;
     const date = dayjs.unix(props.transaction.block.timestamp).format('D MMM HH:mm ');
     let sum = '';
     let currency = '';
-    if (actionType === 'in') {
-      const tran = props.transaction.outputs.find((item) => item.address === walletAddress.value);
 
-      sum = ref(tran.amount);
-      currency = ref(tran.ticker);
+    if (actionType === 'sent') {
+      const computedSum = reduce((a, b) => a + Number(b.amount), 0, props.transaction.inputs);
+      sum = ref(computedSum);
+      currency = ref(props.transaction.inputs[0].ticker);
     } else {
-      const tran = props.transaction.inputs.find((item) => item.address === walletAddress.value);
-
+      const tran = props.transaction.outputs.find((item) => item.address === walletAddress.value);
       sum = ref(tran.amount);
       currency = ref(tran.ticker);
     }

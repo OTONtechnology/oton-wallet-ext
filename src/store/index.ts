@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import api from '@/utils/api';
+import api, { blcInstance } from '@/utils/api';
 import {
   FULFILLED, INIT, PENDING, REJECTED,
 } from '@/utils/constants';
@@ -21,7 +21,6 @@ export default createStore({
     },
     UPDATE_TRANSACTIONS(state, transactions) {
       state.transactions = transactions.data;
-      console.log(transactions.data);
     },
     CLEAR(state) {
       Object.assign(state, initState);
@@ -74,6 +73,22 @@ export default createStore({
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);
+      }
+    },
+
+    async sendTransaction({ commit }, transaction) {
+      commit('SET_STATE', PENDING);
+
+      try {
+        const response = await blcInstance.get(`/broadcast_tx_commit?tx=0x${transaction}`);
+        console.log(response);
+
+        commit('SET_STATE', FULFILLED);
+        return response;
+      } catch (err) {
+        commit('SET_STATE', REJECTED);
+        console.error(err);
+        return false;
       }
     },
   },

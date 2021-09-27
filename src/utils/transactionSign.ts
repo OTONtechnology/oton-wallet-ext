@@ -110,7 +110,6 @@ type signTrnType = (trn: TransactionUnsigned, sk: string | Uint8Array, type?: st
 
 export const signTrn: signTrnType = async (trn, sk, type) => {
   const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
-
   const message = SendCoins.encode(trn).finish();
 
   const pair = await getKeysFromSK(secret);
