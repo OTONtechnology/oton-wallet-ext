@@ -31,7 +31,12 @@
     </div>
     <div class="transfer__sum field">
       <label for="" class="field__label">Secret key</label>
-      <input type="text" class="field__input" v-model="secretKeyModel" />
+      <input
+        type="text"
+        class="field__input"
+        :class="{ field__input_error: skIsError }"
+        v-model="secretKeyModel"
+      />
     </div>
     <div class="transfer__fee">Fee: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
@@ -43,6 +48,8 @@
 <script>
 import Decimal from 'decimal.js';
 import { defineComponent } from 'vue';
+import { mapState } from 'vuex';
+import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
 
 export default defineComponent({
   components: {
@@ -82,6 +89,7 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapState(['walletAddress']),
     currencyModel: {
       get() {
         return this.currency;
@@ -113,6 +121,14 @@ export default defineComponent({
       set(value) {
         this.$emit('change-sk', value);
       },
+    },
+    skIsError() {
+      const address = getAddressFromHexSecret(this.sk);
+      if (this.sk === '') {
+        return false;
+      }
+      console.info(address, this.walletAddress);
+      return address !== this.walletAddress;
     },
     transferSum() {
       if (!+this.sum) {

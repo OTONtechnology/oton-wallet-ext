@@ -115,6 +115,10 @@ svg {
     font-size: 14px;
     font-weight: 400;
     padding: 10px 5px;
+
+    &_error {
+      border: 2px solid $danger-color;
+    }
   }
 }
 

@@ -56,6 +56,19 @@ export const getSha256: Hasher['update'] = (key) => sha256
 type gafp = (pubKey: Uint8Array) => string
 export const getAddressFromPubKey: gafp = (pubKey) => getSha256(pubKey).hex().substring(0, 40);
 
+export const getAddressFromHexSecret = (sk:string): string => {
+  try {
+    const bSk = hexToBytes(sk);
+
+    const pubKey = bSk.slice(-32);
+    const address = getAddressFromPubKey(pubKey);
+
+    return address;
+  } catch (err) {
+    return '';
+  }
+};
+
 export interface IKeys {
   pk: Uint8Array; // publicKey
   sk: Uint8Array; // secretKey

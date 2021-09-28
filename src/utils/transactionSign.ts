@@ -37,7 +37,7 @@ export interface TrnSignedInput extends TrnInput {
   pub_key?: Uint8Array;
 }
 interface TransactionUnsigned {
-  gas: 1,
+  gas?: number,
   fee:{
     name: string,
     amount: number
@@ -46,7 +46,7 @@ interface TransactionUnsigned {
   outputs: TrnOutput[];
 }
 interface TransactionSigned {
-  gas: 1,
+  gas?: number,
   fee:{
     name: string,
     amount: number
@@ -76,14 +76,13 @@ type getTrnFromDataType = (out: TransactionMainData, address: string) =>
   Promise<TransactionUnsigned>
 
 export const getTrnFromData: getTrnFromDataType = async (out, address) => {
-  const sequence = await getLastSequence(address);
-  const fee = out.fee || 1;
-
   const getRealSum = (sum: number | string) => Decimal.mul(sum, 10000);
+  const sequence = await getLastSequence(address);
+  const fee = getRealSum(out.fee || 0.0001).toNumber();
 
   const realSum = getRealSum(out.sum);
+
   return {
-    gas: 1,
     fee: {
       name: out.currency,
       amount: fee,
@@ -137,6 +136,8 @@ export const signTrn: signTrnType = async (trn, sk, type) => {
   };
 
   const encodedSignedTrn = SendCoins.encode(signedTrn).finish();
+
+  console.info('SignBytes: ', bytesToHex(encodedSignedTrn));
 
   const raw = {
     type: type || 'send_coins',
