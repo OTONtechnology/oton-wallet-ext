@@ -43,11 +43,11 @@ export default defineComponent({
       required: true,
     },
     sum: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     fee: {
-      type: String,
+      type: [String, Number],
       required: false,
     },
   },

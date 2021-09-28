@@ -24,10 +24,10 @@ export const getLastSequence = async (addr: string): Promise<number> => {
   return sequence;
 };
 
-type getTrnFromDataType = (out: TransactionMainData, address: string) =>
-  Promise<Transaction>
-
-export const getTrnFromData: getTrnFromDataType = async (out, address) => {
+export const getTrnFromData = async (
+  out:TransactionMainData,
+  address:string,
+): Promise<Transaction> => {
   const getRealSum = (sum: number | string) => Decimal.mul(sum, 10000);
   let sequence = await getLastSequence(address);
   sequence = (sequence || 0) + 1;
@@ -74,6 +74,7 @@ export const stripeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
       delete newInput.signature;
     }
 
+    // TODO: remove from here
     if (+input.sequence === 1) {
       newInput.pub_key = pk;
     }
@@ -100,7 +101,8 @@ const addSignToTrn = (
 ): Transaction => ({
   ...trn,
   inputs: trn.inputs.map((input) => {
-    if (input.address !== currentAddr) {
+    const inputAddress = typeof input.address === 'string' ? input.address : bytesToHex(input.address);
+    if (inputAddress !== currentAddr) {
       return input;
     }
     return {
@@ -124,6 +126,7 @@ export const signTrn = async (
 
   const signature = await ed.sign(signBytes, pair.sk);
   const signedTrn = addSignToTrn(trn, pair.address, signature);
+  console.info({ signedTrn });
   const encodedSignedTrn = SendCoins.encode(signedTrn).finish();
 
   console.info('SignBytes: ', bytesToHex(signBytes));
