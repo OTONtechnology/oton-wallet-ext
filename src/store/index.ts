@@ -1,29 +1,46 @@
 import { createStore } from 'vuex';
-import api from '@/utils/api';
+import { clone, sort } from 'rambda';
+import api, { blcInstance } from '@/utils/api';
 import {
   FULFILLED, INIT, PENDING, REJECTED,
 } from '@/utils/constants';
 
-const initState = {
+interface InitState {
+  fetchState: string;
+  balances: any;
+  transactions: any[];
+  walletAddress: string;
+  quizzes: {
+    fetchTransactions: number;
+    fetchBalances: number;
+  };
+}
+const initState: InitState = {
   fetchState: INIT,
   balances: {},
   transactions: [],
   walletAddress: '',
+  quizzes: {
+    fetchTransactions: 0,
+    fetchBalances: 0,
+  },
 };
 
 export default createStore({
-  state: {
-    ...initState,
-  },
+  state: clone(initState),
   mutations: {
     UPDATE_BALANCES(state, balance) {
       state.balances = balance.data;
     },
     UPDATE_TRANSACTIONS(state, transactions) {
-      state.transactions = transactions.data;
-      console.log(transactions.data);
+      const sorted = sort(
+        (a: any, b: any) => b.block.timestamp - a.block.timestamp, transactions.data,
+      );
+      state.transactions = sorted;
     },
     CLEAR(state) {
+      Object.values(state.quizzes).forEach(clearTimeout);
+
       Object.assign(state, initState);
     },
     SET_STATE(state, fetchState) {
@@ -32,9 +49,15 @@ export default createStore({
     SET_WALLET_ADDRESS(state, address) {
       state.walletAddress = address;
     },
+    SET_QUIZ_IDS(state, quiz) {
+      state.quizzes = {
+        ...state.quizzes,
+        ...quiz,
+      };
+    },
   },
   actions: {
-    async fetchTransactions({ commit, state }, address) {
+    async fetchTransactions({ commit, dispatch }, address) {
       if (typeof address !== 'string' || address.length !== 40) {
         commit('SET_STATE', REJECTED);
       }
@@ -49,13 +72,16 @@ export default createStore({
         const response = await api.get(`/address/${address}/transactions`);
         commit('UPDATE_TRANSACTIONS', response.data);
         commit('SET_STATE', FULFILLED);
+
+        const timeoutId = setTimeout(() => dispatch('fetchTransactions', address), 60000);
+        commit('SET_QUIZ_IDS', { fetchTransactions: timeoutId });
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);
       }
     },
 
-    async fetchBalances({ commit, state }, address) {
+    async fetchBalances({ commit, dispatch }, address) {
       if (typeof address !== 'string' || address.length !== 40) {
         commit('SET_STATE', REJECTED);
       }
@@ -71,9 +97,32 @@ export default createStore({
 
         commit('UPDATE_BALANCES', response.data);
         commit('SET_STATE', FULFILLED);
+
+        const timeoutId = setTimeout(() => dispatch('fetchBalances', address), 60000);
+        commit('SET_QUIZ_IDS', { fetchBalances: timeoutId });
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);
+      }
+    },
+
+    async sendTransaction({ commit, state }, transaction) {
+      if (state.fetchState === PENDING) {
+        return false;
+      }
+
+      commit('SET_STATE', PENDING);
+      console.log('send');
+
+      try {
+        const response = await blcInstance.get(`/broadcast_tx_commit?tx=0x${transaction}`);
+
+        commit('SET_STATE', FULFILLED);
+        return response.data;
+      } catch (err) {
+        commit('SET_STATE', REJECTED);
+        console.error(err);
+        return false;
       }
     },
   },

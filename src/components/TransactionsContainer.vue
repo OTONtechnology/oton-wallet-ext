@@ -17,8 +17,8 @@
       >
         Transfer
       </button>
-      <button class="button">Request</button>
     </div>
+    <!-- <button class="button">Request</button> -->
   </div>
 </template>
 
@@ -49,62 +49,6 @@ export default defineComponent({
   },
   data() {
     return {
-      // transactions: [
-      //   {
-      //     actionType: 'send',
-      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-      //     description: 'Transfer',
-      //     bonus_type: '',
-      //     amount: '12',
-      //     currencySymbol: 'OTON',
-      //     date: '12 sep 15:52',
-      //   },
-      //   {
-      //     actionType: 'receive',
-      //     address: '0x135664530ff838e5659d48b58b6c17651045345',
-      //     description: 'Transfer',
-      //     bonus_type: '-',
-      //     amount: '234',
-      //     currencySymbol: 'USDT',
-      //     date: '12 sep 15:52',
-      //   },
-      //   {
-      //     actionType: 'send',
-      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-      //     description: 'OTON Market',
-      //     bonus_type: 'Awesome bonus',
-      //     amount: '12',
-      //     currencySymbol: 'OTON',
-      //     date: '12 sep 15:52',
-      //   },
-      //   {
-      //     actionType: 'send',
-      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-      //     description: 'OTON Market',
-      //     bonus_type: 'Awesome bonus',
-      //     amount: '12',
-      //     currencySymbol: 'OTON',
-      //     date: '12 sep 15:52',
-      //   },
-      //   {
-      //     actionType: 'send',
-      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-      //     description: 'OTON Market',
-      //     bonus_type: 'Awesome bonus',
-      //     amount: '12',
-      //     currencySymbol: 'OTON',
-      //     date: '12 sep 15:52',
-      //   },
-      //   {
-      //     actionType: 'send',
-      //     address: '0x7455324555ff838e5659d48b58b6c17651011f05',
-      //     description: 'Transfer',
-      //     bonus_type: '',
-      //     amount: '12',
-      //     currencySymbol: 'OTON',
-      //     date: '12 sep 15:52',
-      //   },
-      // ],
     };
   },
 
@@ -134,7 +78,7 @@ export default defineComponent({
     border-bottom: 4px solid;
     border-color: $fade-color;
     padding-bottom: 10px;
-    max-height: 305px;
+    max-height: 350px;
     overflow-y: auto;
   }
 
@@ -144,6 +88,9 @@ export default defineComponent({
   &__buttons {
     margin-top: 12px;
     margin-bottom: 12px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
   }
 
   &__transfer {

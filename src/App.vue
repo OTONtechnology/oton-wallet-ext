@@ -5,6 +5,7 @@
   <div>
     <ImportWalletModal :name="'ImportWalletModal'" />
     <TransferModal :name="'TransferModal'" />
+    <TransferDoneModal :name="'TransferDoneModal'" />
   </div>
 </template>
 <script>
@@ -12,12 +13,14 @@ import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
+import TransferDoneModal from '@/components/TransferDoneModal.vue';
 import getAddress from '@/utils/getAddress';
 
 export default defineComponent({
   components: {
     ImportWalletModal,
     TransferModal,
+    TransferDoneModal,
   },
 
   setup() {
@@ -66,7 +69,7 @@ svg {
 .main-container {
   position: relative;
   min-width: 360px;
-  min-height: 600px;
+  height: 600px;
   margin: 0 auto;
   max-width: 800px;
 }

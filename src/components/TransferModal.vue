@@ -9,6 +9,7 @@
       :currency="form.currency"
       :address="form.address"
       :sum="form.sum"
+      :fee="form.fee"
       @edit-transfer="showTransferForm"
       @submit-transfer="submitTransfer"
     />
@@ -17,10 +18,13 @@
       :currency="form.currency"
       :address="form.address"
       :sum="form.sum"
+      :fee="form.fee"
       :balances="balances"
+      :sk="form.sk"
       @change-currency="changeCurrency"
       @change-address="changeAddress"
       @change-sum="changeSum"
+      @change-sk="changeSk"
       @transfer="showSubmitForm"
     />
   </DefaultModalLayout>
@@ -29,6 +33,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { mapState } from 'vuex';
+import { $vfm } from 'vue-final-modal';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
@@ -48,6 +53,8 @@ export default defineComponent({
         currency: '',
         address: '',
         sum: '',
+        fee: 0.0001,
+        sk: '',
       },
     };
   },
@@ -67,6 +74,9 @@ export default defineComponent({
     changeSum(value) {
       this.form.sum = value;
     },
+    changeSk(value) {
+      this.form.sk = value;
+    },
     showSubmitForm() {
       this.submitForm = true;
     },
@@ -80,18 +90,28 @@ export default defineComponent({
        * address - valid Unit8Array(20)
        * currency - string
        */
-      const preparedTrn = getTrnFromData({ ...this.form }, this.walletAddress);
-      const sk = '9275b1960378420c0867a7c341389fe882fd64d03c80543f06b074399daa1c7ac295706afdc968bd8cac54155c01bc190179b0beffcdfb8814d8b8ce763d16ee';
+      const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress);
+
       // TODO: sk(secretKey) should be taken from form
-      const signedTrn = await signTrn(preparedTrn, sk);
+      console.log(this.form.sk);
 
-      console.info(signedTrn);
+      const signedTrn = await signTrn(preparedTrn, this.form.sk);
 
-      // signedTrn should be sended to http://82.196.1.93:26657/broadcast_tx_commit?tx=0x{signedTrn}
+      const resp = await this.$store.dispatch('sendTransaction', signedTrn);
+
+      if (!resp) {
+        return;
+      }
+
+      if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
+        $vfm.hide('TransferModal');
+        $vfm.show('TransferDoneModal');
+      }
     },
     handleClose() {
       this.submitForm = false;
       this.form = {
+        ...this.form,
         currency: '',
         address: '',
         sum: '',

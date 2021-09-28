@@ -13,19 +13,21 @@
       <div class="form__value">{{ sum }}</div>
     </div>
     <div class="form__item">
+      <div class="form__title" v-if="fee">Fee</div>
       <div class="form__value fee">{{ fee ? fee : "No fee" }}</div>
     </div>
 
     <div class="form__buttons">
       <button class="button" @click="back">Back</button>
       <button class="button primary" @click="submitTransfer">
-        Accept and Transfer {{ sum }} {{ currency }}
+        Accept and Transfer {{ transferSum }} {{ currency }}
       </button>
     </div>
   </div>
 </template>
 
 <script>
+import Decimal from 'decimal.js';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -47,6 +49,15 @@ export default defineComponent({
     fee: {
       type: String,
       required: false,
+    },
+  },
+
+  computed: {
+    transferSum() {
+      if (!+this.sum) {
+        return '';
+      }
+      return Decimal.sum(this.fee || 0, this.sum || 0).toString();
     },
   },
 
