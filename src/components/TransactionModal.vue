@@ -14,7 +14,7 @@
       <div class="transaction__block">
         <div class="transaction__title">Hash</div>
         <div class="transaction__text">
-          {{ transaction.id }}
+          {{ transaction.id.substr(0, 40) + "..." }}
         </div>
       </div>
       <div class="transaction__block address">
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="transaction__block address">
-        <div class="transaction__title">Recipient</div>
+        <div class="transaction__title">Recipients</div>
         <div
           class="transaction__text"
           v-for="output in transaction.outputs"
@@ -50,6 +50,18 @@
         </div>
       </div>
       <div class="transaction__block">
+        <div class="transaction__title">Currency</div>
+        <div class="transaction__text uppercase">
+          {{ currency }}
+        </div>
+      </div>
+      <div class="transaction__block">
+        <div class="transaction__title">Sum</div>
+        <div class="transaction__text">
+          {{ sum }}
+        </div>
+      </div>
+      <div class="transaction__block">
         <div class="transaction__title">Type</div>
         <div class="transaction__text">
           {{ transaction.type }}
@@ -61,11 +73,11 @@
 
 <script>
 import {
-  defineComponent, reactive, ref, computed,
+  defineComponent, reactive, computed,
 } from 'vue';
 import * as dayjs from 'dayjs';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
-import { getActionType } from '@/utils/transactions';
+import sumInputs from '@/utils/sumInputs';
 
 export default defineComponent({
   components: {
@@ -79,10 +91,10 @@ export default defineComponent({
   },
   setup() {
     let transaction = reactive({ });
-    const walletAddress = ref(null);
+    const sum = computed(() => sumInputs(transaction.inputs));
+    const currency = computed(() => transaction.inputs[0].ticker);
 
     const setParams = (params) => {
-      console.log(params.value.transaction);
       transaction = Object.assign(transaction, params.value.transaction);
     };
 
@@ -92,6 +104,8 @@ export default defineComponent({
       transaction,
       setParams,
       convertDate,
+      sum,
+      currency,
     };
   },
 });
