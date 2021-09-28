@@ -92,7 +92,7 @@ export const getTrnFromData: getTrnFromDataType = async (out, address) => {
         address: hexToBytes(address),
         coins: [{
           name: out.currency,
-          amount: realSum.toNumber(),
+          amount: realSum.add(fee).toNumber(),
         }],
         sequence: sequence + 1,
       },
@@ -102,7 +102,7 @@ export const getTrnFromData: getTrnFromDataType = async (out, address) => {
         address: hexToBytes(out.address),
         coins: [{
           name: out.currency,
-          amount: realSum.minus(fee).toNumber(),
+          amount: realSum.toNumber(),
         }],
       },
     ],
