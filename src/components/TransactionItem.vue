@@ -3,7 +3,7 @@
     <div class="transaction__type">
       {{ actionType === "sent" ? "To" : "From" }}
     </div>
-    <div class="transaction__address">
+    <div class="transaction__address" @click="openTransaction">
       {{ transactionId }}
     </div>
     <div
@@ -32,6 +32,7 @@
 import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
+import { $vfm } from 'vue-final-modal';
 import sumInputs from '@/utils/sumInputs';
 import { getActionType } from '@/utils/transactions';
 
@@ -61,6 +62,12 @@ export default defineComponent({
       sum = ref(tran.amount);
       currency = ref(tran.ticker);
     }
+    const openTransaction = () => {
+      $vfm.show('TransactionModal', {
+        transaction: props.transaction,
+        walletAddress: walletAddress.value,
+      });
+    };
     // const transactionId = '123';
 
     return {
@@ -69,6 +76,7 @@ export default defineComponent({
       date,
       sum,
       currency,
+      openTransaction,
     };
   },
 });
@@ -85,6 +93,11 @@ export default defineComponent({
     font-weight: 700;
     grid-area: a;
     margin-bottom: 4px;
+    cursor: pointer;
+
+    &:hover {
+      color: $main-color;
+    }
   }
 
   &__date {

@@ -5,6 +5,7 @@
     content-class="modal-content"
     classes="modal-container"
     @closed="closeHandler"
+    @beforeOpen="setParams"
   >
     <svg class="modal__close" @click="showModal = false">
       <use xlink:href="#ic_close--sprite" />
@@ -39,6 +40,9 @@ export default defineComponent({
     closeHandler() {
       $vfm.hide(this.name);
       this.$emit('close-modal');
+    },
+    setParams(event) {
+      this.$emit('set-params', event.ref.params);
     },
   },
 });
