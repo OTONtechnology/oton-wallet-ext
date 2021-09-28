@@ -3,57 +3,9 @@ import * as ed from 'noble-ed25519';
 import { pathOr } from 'rambda';
 import { blcInstance } from './api';
 import { SendCoins, Raw } from './protobufTypes';
-
-import { hexToBytes, bytesToHex, getKeysFromSK } from './cryptoKeys';
-
-interface TransactionMainData {
-  currency: string;
-  sum: string;
-  address: string;
-  fee?: number;
-}
-
-interface TrnInput {
-  address: string | Uint8Array,
-  sequence: string | number,
-  coins: [
-    {
-      name: string,
-      amount: string | number
-    }
-  ],
-}
-interface TrnOutput {
-  address: string | Uint8Array,
-  coins: [
-    {
-      name: string,
-      amount: string | number
-    }
-  ];
-}
-export interface TrnSignedInput extends TrnInput {
-  signature: string | Uint8Array;
-  pub_key?: Uint8Array;
-}
-interface TransactionUnsigned {
-  gas?: number,
-  fee:{
-    name: string,
-    amount: number
-  },
-  inputs: TrnInput[],
-  outputs: TrnOutput[];
-}
-interface TransactionSigned {
-  gas?: number,
-  fee:{
-    name: string,
-    amount: number
-  },
-  inputs: TrnSignedInput[],
-  outputs: TrnOutput[];
-}
+import { Transaction, TransactionMainData } from '../types/transactions.d';
+import { bytesToHex, hexToBytes } from './crypto';
+import { getKeysFromSK } from './cryptoKeys';
 
 export const getLastSequence = async (addr: string): Promise<number> => {
   let sequence = 0;
@@ -73,11 +25,13 @@ export const getLastSequence = async (addr: string): Promise<number> => {
 };
 
 type getTrnFromDataType = (out: TransactionMainData, address: string) =>
-  Promise<TransactionUnsigned>
+  Promise<Transaction>
 
 export const getTrnFromData: getTrnFromDataType = async (out, address) => {
   const getRealSum = (sum: number | string) => Decimal.mul(sum, 10000);
-  const sequence = await getLastSequence(address);
+  let sequence = await getLastSequence(address);
+  sequence = (sequence || 0) + 1;
+
   const fee = getRealSum(out.fee || 0.0001).toNumber();
 
   const realSum = getRealSum(out.sum);
@@ -94,7 +48,7 @@ export const getTrnFromData: getTrnFromDataType = async (out, address) => {
           name: out.currency,
           amount: realSum.add(fee).toNumber(),
         }],
-        sequence: sequence + 1,
+        sequence,
       },
     ],
     outputs: [
@@ -109,42 +63,70 @@ export const getTrnFromData: getTrnFromDataType = async (out, address) => {
   };
 };
 
-type signTrnType = (trn: TransactionUnsigned, sk: string | Uint8Array, type?: string) =>
- Promise<string>;
+export const stripeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
+  ...trn,
+  inputs: trn.inputs.map((input) => {
+    const newInput = {
+      ...input,
+    };
 
-export const signTrn: signTrnType = async (trn, sk, type) => {
-  const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
-  const message = SendCoins.encode(trn).finish();
+    if (newInput.signature) {
+      delete newInput.signature;
+    }
 
-  const pair = await getKeysFromSK(secret);
-  const signature = await ed.sign(message, pair.sk);
+    if (+input.sequence === 1) {
+      newInput.pub_key = pk;
+    }
 
-  const signedTrn: TransactionSigned = {
-    ...trn,
-    inputs: trn.inputs.map((input) => {
-      const newInput: TrnSignedInput = {
-        ...input,
-        signature,
-      };
+    return newInput;
+  }),
+});
 
-      if (+input.sequence === 1) {
-        newInput.pub_key = pair.pk;
-      }
-
-      return newInput;
-    }),
-  };
-
-  const encodedSignedTrn = SendCoins.encode(signedTrn).finish();
-
-  console.info('SignBytes: ', bytesToHex(encodedSignedTrn));
-
+const createRaw = (payload: Uint8Array, type?: string): string => {
   const raw = {
     type: type || 'send_coins',
-    raw: encodedSignedTrn,
+    raw: payload,
   };
 
   const encodedRaw = Raw.encode(raw).finish();
 
   return bytesToHex(encodedRaw);
+};
+
+const addSignToTrn = (
+  trn: Transaction,
+  currentAddr: string,
+  signature: Uint8Array,
+): Transaction => ({
+  ...trn,
+  inputs: trn.inputs.map((input) => {
+    if (input.address !== currentAddr) {
+      return input;
+    }
+    return {
+      ...input,
+      signature,
+    };
+  }),
+});
+
+export const signTrn = async (
+  trn: Transaction,
+  sk: string | Uint8Array,
+  type?: string,
+): Promise<string> => {
+  const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
+
+  const pair = await getKeysFromSK(secret);
+  const stripedTrn = stripeTrn(trn, pair.pk);
+
+  const signBytes = SendCoins.encode(stripedTrn).finish();
+
+  const signature = await ed.sign(signBytes, pair.sk);
+  const signedTrn = addSignToTrn(trn, pair.address, signature);
+  const encodedSignedTrn = SendCoins.encode(signedTrn).finish();
+
+  console.info('SignBytes: ', bytesToHex(signBytes));
+
+  return createRaw(encodedSignedTrn, type);
 };
