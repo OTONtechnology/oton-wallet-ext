@@ -25,8 +25,8 @@ export const getLastSequence = async (addr: string): Promise<number> => {
 };
 
 export const getTrnFromData = async (
-  out:TransactionMainData,
-  address:string,
+  out: TransactionMainData,
+  address: string,
 ): Promise<Transaction> => {
   const getRealSum = (sum: number | string) => Decimal.mul(sum, 10000);
   let sequence = await getLastSequence(address);
