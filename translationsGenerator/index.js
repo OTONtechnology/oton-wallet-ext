@@ -45,7 +45,7 @@ const generateFiles = async (messages) => {
   await clearDist();
   
   const langs = Object.keys(messages)
-  const filesNames = langs.map((lang) => `${lang}.js`);
+  const filesNames = langs.map((lang) => `${lang}.ts`);
 
   await Promise.all(
     filesNames.map((key, i) => {
