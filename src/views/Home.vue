@@ -14,6 +14,9 @@ import TransactionsContainer from '@/components/TransactionsContainer.vue';
 
 export default defineComponent({
   components: { Header, Balances, TransactionsContainer },
+  setup() {
+    console.log(123123);
+  },
 });
 </script>
 <style lang="stylus" scoped>

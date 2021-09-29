@@ -58,7 +58,7 @@
       <div class="transaction__block">
         <div class="transaction__title">Sum</div>
         <div class="transaction__text">
-          {{ sum }}
+          {{ sum }} (included {{ transaction.fee.amount }} fee)
         </div>
       </div>
       <div class="transaction__block">
@@ -95,6 +95,7 @@ export default defineComponent({
     const currency = computed(() => transaction.inputs[0].ticker);
 
     const setParams = (params) => {
+      console.log(params.value.transaction);
       transaction = Object.assign(transaction, params.value.transaction);
     };
 
