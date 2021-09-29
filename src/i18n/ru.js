@@ -1,0 +1,2 @@
+/* eslint-disable */
+export default {"key1":"ru-trans1","key2":"ru-trans2","key3":"ru-trans3","key4":"ru-trans4","key5":"ru-trans5","key6":"ru-trans6","key7":"ru-trans7","key8":"ru-trans8","key9":"ru-trans9","key10":"ru-trans10","key11":"ru-trans11","key12":"ru-trans12","key13":"ru-trans13"}

@@ -1,0 +1,2 @@
+/* eslint-disable */
+export default {"key1":"de-trans","key2":"de-trans","key3":"de-trans","key4":"de-trans","key5":"de-trans","key6":"de-trans","key7":"de-trans","key8":"de-trans","key9":"de-trans","key10":"de-trans","key11":"de-trans","key12":"de-trans","key13":"de-trans"}
