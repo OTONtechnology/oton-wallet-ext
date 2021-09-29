@@ -1,12 +1,6 @@
-import extension from 'extensionizer';
+// import extension from 'extensionizer';
+import { getStorageItem } from './extension';
 
-const getAddress = async (): Promise<string> => new Promise((resolve) => {
-  extension.storage.local.get('addr', (res: any) => {
-    if (res && res.addr) {
-      resolve(res.addr);
-    }
-    resolve('');
-  });
-});
+const getAddress = (): any => getStorageItem('addr');
 
 export default getAddress;

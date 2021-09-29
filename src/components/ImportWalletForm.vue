@@ -35,8 +35,9 @@
 
 <script>
 import { defineComponent } from 'vue';
-import extension from 'extensionizer';
+// import extension from 'extensionizer';
 import { $vfm } from 'vue-final-modal';
+import { setStorageItem } from '@/utils/extension';
 
 export default defineComponent({
   data() {
@@ -53,12 +54,18 @@ export default defineComponent({
     changeTerms(val) {
       this.terms = val;
     },
-    login() {
+    async login() {
       this.$store.commit('SET_WALLET_ADDRESS', this.address);
-      extension.storage.local.set({ addr: this.address }, () => {
+      const addressInStorage = await setStorageItem('addr', this.address);
+
+      if (addressInStorage === true) {
         $vfm.hide('ImportWalletModal');
         this.$router.push({ name: 'Home' });
-      });
+      }
+      // extension.storage.local.set({ addr: this.address }, () => {
+      //   $vfm.hide('ImportWalletModal');
+      //   this.$router.push({ name: 'Home' });
+      // });
     },
   },
 });

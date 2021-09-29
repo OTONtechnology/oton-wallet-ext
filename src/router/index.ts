@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import StartView from '../views/StartView.vue';
 import Home from '../views/Home.vue';
 import getAddress from '@/utils/getAddress';
+import { getStorageItem } from '@/utils/extension';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -9,9 +10,9 @@ const routes: Array<RouteRecordRaw> = [
     name: 'StartView',
     component: StartView,
     beforeEnter: async (to, from, next) => {
-      const address = await getAddress();
+      const address = await getStorageItem('addr');
       if (address) {
-        return next('Home');
+        return next({ name: 'Home' });
       }
       return next();
     },
@@ -22,11 +23,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Home',
     component: Home,
     beforeEnter: async (to, from, next) => {
-      const address = await getAddress();
+      const address = await getStorageItem('addr');
       if (address) {
         return next();
       }
-      return next('StartView');
+      return next({ name: 'StartView' });
     },
   },
 ];

@@ -7,16 +7,19 @@
     <TransferModal :name="'TransferModal'" />
     <TransferDoneModal :name="'TransferDoneModal'" />
     <TransactionModal :name="'TransactionModal'" />
+    <SettingsModal :name="'SettingsModal'" />
   </div>
 </template>
 <script>
 import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
 import TransferDoneModal from '@/components/TransferDoneModal.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
-import getAddress from '@/utils/getAddress';
+import SettingsModal from '@/components/SettingsModal.vue';
+import { getStorageItem } from '@/utils/extension';
 
 export default defineComponent({
   components: {
@@ -24,16 +27,21 @@ export default defineComponent({
     TransferModal,
     TransferDoneModal,
     TransactionModal,
+    SettingsModal,
   },
 
   setup() {
     const store = useStore();
     const walletAddress = computed(() => store.state.walletAddress);
+    const router = useRouter();
 
     onMounted(async () => {
-      const res = await getAddress();
+      const res = await getStorageItem('addr');
+
       if (res) {
         store.commit('SET_WALLET_ADDRESS', res);
+      } else {
+        router.push('/');
       }
     });
 
@@ -75,6 +83,9 @@ svg {
   height: 600px;
   margin: 0 auto;
   max-width: 800px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  // border-radius: 4px;
+  background-color: $extra-color;
 }
 
 .button {
@@ -112,6 +123,20 @@ svg {
   }
 
   &__input {
+    width: 100%;
+    border-radius: 4px;
+    border: 2px solid $fade-color;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px 5px;
+
+    &_error {
+      border: 2px solid $danger-color;
+    }
+  }
+
+  &__selectbox {
+    display: block;
     width: 100%;
     border-radius: 4px;
     border: 2px solid $fade-color;

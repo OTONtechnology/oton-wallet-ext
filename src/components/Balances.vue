@@ -21,17 +21,15 @@
 import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
-import getAddress from '@/utils/getAddress';
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const balances = computed(() => store.state.balances);
+    const walletAddress = computed(() => store.state.walletAddress);
 
     onMounted(async () => {
-      const address = await getAddress();
-
-      store.dispatch('fetchBalances', address);
+      store.dispatch('fetchBalances', walletAddress.value);
     });
 
     return { balances };

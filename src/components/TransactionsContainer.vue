@@ -88,7 +88,7 @@ export default defineComponent({
   &__buttons {
     margin-top: 12px;
     margin-bottom: 12px;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
   }

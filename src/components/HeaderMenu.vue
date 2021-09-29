@@ -10,7 +10,8 @@
       <div class="menu__layer" @click="opened = false"></div>
       <div class="menu__list">
         <div class="menu__item">Custom transaction</div>
-        <div class="menu__item">Settings</div>
+        <div class="menu__item" @click="openSettings">Settings</div>
+        <div class="menu__item" @click="openInTab">Open in tab</div>
         <div class="menu__divider"></div>
         <div class="menu__item" @click="logout">Log out</div>
       </div>
@@ -19,11 +20,12 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import '@/assets/svg/ic_menu.svg?sprite';
-import extension from 'extensionizer';
 import { useStore } from 'vuex';
+import { $vfm } from 'vue-final-modal';
+import { clearStorage, openExtensionInBrowser } from '@/utils/extension';
 
 export default defineComponent({
   setup() {
@@ -33,17 +35,30 @@ export default defineComponent({
     const toggleMenu = () => {
       opened.value = !opened.value;
     };
-    const logout = () => {
-      extension.storage.local.clear(() => {
+
+    const logout = async () => {
+      const clear = await clearStorage();
+      console.log(clear);
+      if (clear === true) {
         store.commit('CLEAR');
         router.push('/');
-      });
+      }
+    };
+
+    const openSettings = () => {
+      $vfm.show('SettingsModal');
+    };
+
+    const openInTab = () => {
+      openExtensionInBrowser('/');
     };
 
     return {
       opened,
       toggleMenu,
       logout,
+      openInTab,
+      openSettings,
     };
   },
 });

@@ -7,6 +7,7 @@ import {
 
 interface InitState {
   fetchState: string;
+  lang: 'en',
   balances: any;
   transactions: any[];
   walletAddress: string;
@@ -17,6 +18,7 @@ interface InitState {
 }
 const initState: InitState = {
   fetchState: INIT,
+  lang: 'en',
   balances: {},
   transactions: [],
   walletAddress: '',
@@ -54,6 +56,9 @@ export default createStore({
         ...state.quizzes,
         ...quiz,
       };
+    },
+    CHANGE_LANG(state, value) {
+      state.lang = value;
     },
   },
   actions: {
