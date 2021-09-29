@@ -84,17 +84,7 @@ export default defineComponent({
       this.submitForm = false;
     },
     async submitTransfer() {
-      // TODO: check valid form data
-      /**
-       * sum - valid number
-       * address - valid Unit8Array(20)
-       * currency - string
-       */
       const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress);
-
-      // TODO: sk(secretKey) should be taken from form
-      console.log(this.form.sk);
-
       const signedTrn = await signTrn(preparedTrn, this.form.sk);
 
       const resp = await this.$store.dispatch('sendTransaction', signedTrn);

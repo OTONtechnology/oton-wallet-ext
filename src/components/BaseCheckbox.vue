@@ -49,7 +49,7 @@ export default defineComponent({
     visibility: hidden;
 
     &:checked {
-      ~ ::v-deep .checkbox__label:after {
+      ~ :deep(.checkbox__label:after) {
         position: absolute;
         content: '';
         top: 4px;
@@ -62,13 +62,13 @@ export default defineComponent({
   }
 }
 
-::v-deep .checkbox__label {
+:deep(.checkbox__label) {
   position: relative;
   font-size: 14px;
   color: $dark-color-2;
 }
 
-::v-deep .checkbox__label:before {
+:deep(.checkbox__label:before) {
   position: absolute;
   content: '';
   top: 0;

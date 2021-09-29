@@ -48,7 +48,7 @@ export default defineComponent({
   &__input {
     // visibility: hidden;
     &:checked {
-      ~ ::v-deep .radio__label:after {
+      ~ :deep(.radio__label:after) {
         position: absolute;
         content: '';
         top: 4px;
@@ -61,13 +61,13 @@ export default defineComponent({
   }
 }
 
-::v-deep .radio__label {
+:deep(.radio__label) {
   position: relative;
   font-size: 14px;
   color: $dark-color-2;
 }
 
-::v-deep .radio__label:before {
+:deep(.radio__label:before) {
   position: absolute;
   content: '';
   top: 0;
