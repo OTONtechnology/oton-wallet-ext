@@ -18,6 +18,7 @@ module.exports = {
       preProcessor: 'stylus',
       patterns: [path.resolve(__dirname, './src/assets/styles/variables.styl')],
     },
+
     // svgSprite: {
     //   /*
     //    * The directory containing your SVG files.
@@ -41,5 +42,11 @@ module.exports = {
     //     plainSprite: true,
     //   },
     // },
+  },
+  chainWebpack: (config) => {
+    // config.output.chunkFilename('js/[name].[hash:8].js');
+    // config.output.filename('js/[name].[hash:8].js');
+
+    config.resolve.alias.set('vue-i18n', 'vue-i18n/dist/vue-i18n.esm-bundler.js');
   },
 };
