@@ -89,8 +89,8 @@ svg {
   min-width: 360px;
   height: 600px;
   margin: 0 auto;
-  max-width: 800px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 360px;
+  // box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   // border-radius: 4px;
   background-color: $extra-color;
 }

@@ -77,7 +77,7 @@ import {
 } from 'vue';
 import * as dayjs from 'dayjs';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
-import sumInputs from '@/utils/sumInputs';
+import { sumInputs } from '@/utils/sumInputs';
 
 export default defineComponent({
   components: {

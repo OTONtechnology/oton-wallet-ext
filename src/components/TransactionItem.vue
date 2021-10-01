@@ -1,30 +1,37 @@
 <template>
-  <div class="transaction__item">
-    <div class="transaction__type">
-      {{ actionType === "sent" ? "To" : "From" }}
+  <div class="transaction">
+    <div class="transaction__box">
+      <div @click="openTransaction" class="transaction__hash">
+        {{ transaction.id }}
+      </div>
+      <div class="transaction__info">
+        <div class="transaction__date">{{ date }}</div>
+        <div class="transaction__type">
+          {{ transaction.type }}
+        </div>
+      </div>
+      <div class="transaction__recepient">
+        <span>{{ recepient }}</span>
+        <span></span>
+      </div>
     </div>
-    <div class="transaction__address" @click="openTransaction">
-      {{ transactionId }}
+    <div class="transaction__box">
+      <div
+        class="transaction__input"
+        v-for="(sum, name) in sumByTickers"
+        :key="`ticker-${sum}-${name}`"
+      >
+        <span
+          class="transaction__amount"
+          :class="{
+            sent: actionType === 'sent',
+            receive: actionType === 'receive',
+          }"
+          >{{ sum }}</span
+        >
+        <span class="transaction__ticker">{{ name }}</span>
+      </div>
     </div>
-    <div
-      class="transaction__amount"
-      :class="{
-        send: actionType === 'sent',
-        receive: actionType === 'receive',
-      }"
-    >
-      {{ `${actionType === "sent" ? "-" : "+"}${sum}` }}
-    </div>
-    <div class="transaction__date">
-      {{ date }}
-    </div>
-    <div class="transaction__currency">
-      {{ currency }}
-    </div>
-    <div class="transaction__bonus">
-      <!-- {{ transaction.type }} -->
-    </div>
-    <div class="transaction__description">Transfer</div>
   </div>
 </template>
 
@@ -33,7 +40,7 @@ import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
 import { $vfm } from 'vue-final-modal';
-import sumInputs from '@/utils/sumInputs';
+import { sumInputs, sumInputsGrouped } from '@/utils/sumInputs';
 import { getActionType } from '@/utils/transactions';
 
 export default defineComponent({
@@ -50,33 +57,30 @@ export default defineComponent({
     const actionType = getActionType(props.transaction, walletAddress.value);
     const transactionId = `${props.transaction.id.substring(0, 35)}...`;
     const date = dayjs.unix(props.transaction.block.timestamp).format('D MMM HH:mm ');
-    let sum = '';
-    let currency = '';
+    const recepient = computed(() => {
+      if (props.transaction.outputs.length === 0) {
+        return '';
+      } if (props.transaction.outputs.length > 1) {
+        return `${props.transaction.outputs.length} addresses`;
+      }
+      return props.transaction.outputs[0].address;
+    });
+    const sumByTickers = sumInputsGrouped(props.transaction.inputs);
 
-    if (actionType === 'sent') {
-      const computedSum = sumInputs(props.transaction.inputs);
-      sum = ref(computedSum);
-      currency = ref(props.transaction.inputs[0].ticker);
-    } else {
-      const tran = props.transaction.outputs.find((item) => item.address === walletAddress.value);
-      sum = ref(tran.amount);
-      currency = ref(tran.ticker);
-    }
     const openTransaction = () => {
       $vfm.show('TransactionModal', {
         transaction: props.transaction,
         walletAddress: walletAddress.value,
       });
     };
-    // const transactionId = '123';
 
     return {
       actionType,
       transactionId,
       date,
-      sum,
-      currency,
       openTransaction,
+      recepient,
+      sumByTickers,
     };
   },
 });
@@ -84,59 +88,109 @@ export default defineComponent({
 
 <style lang="stylus" scoped>
 .transaction {
-  &__type {
-    opacity: 0.4;
-    grid-area: h;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+
+  &__box {
+    position: relative;
+    // min-width: 235px;
+    display: flex;
+    flex-direction: column;
+
+    &:first-of-type {
+      // max-width: 170px;
+      flex-shrink: 1;
+      flex-grow: 1;
+      flex-basis: min-content;
+      word-break: break-all;
+    }
+
+    &:last-of-type {
+      // flex: 1;
+      text-align: right;
+    }
+
+    &:after {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      right: 0;
+      content: '';
+      display: block;
+      width: 20px;
+      height: 100%;
+      background-image: linear-gradient(90deg, hsla(0, 0%, 100%, 0) 0, #fff);
+    }
   }
 
-  &__address {
+  &__hash {
+    display: block;
+    overflow: hidden;
+    color: $dark-color-2;
+    font-size: 12px;
     font-weight: 700;
-    grid-area: a;
-    margin-bottom: 4px;
     cursor: pointer;
+    line-height: 20px;
+    height: 20px;
+    overflow: hidden;
 
     &:hover {
       color: $main-color;
     }
+
+    &:active {
+      opacity: 0.8;
+    }
+  }
+
+  &__info {
+    display: flex;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    font-size: 12px;
   }
 
   &__date {
-    grid-area: d;
+    width: 100px;
   }
 
-  &__currency {
-    grid-area: c;
-    text-transform: uppercase;
+  &__recepient {
+    opacity: 0.4;
+    font-size: 12px;
+    overflow: hidden;
+    display: block;
+    overflow: hidden;
+    line-height: 18px;
+    height: 18px;
   }
 
-  &__bonus {
-    grid-area: b;
+  &__input {
+    display: flex;
   }
 
   &__amount {
-    font-weight: 700;
-    grid-area: v;
-    justify-self: end;
+    margin-left: 5px;
+    text-align: right;
+    font-weight: bold;
+
+    &.sent {
+      color: $danger-color;
+    }
 
     &.receive {
       color: $success-color;
     }
-
-    &.send {
-      color: $danger-color;
-    }
   }
 
-  &__description {
-    grid-area: des;
-  }
-
-  &__item {
-    font-size: 12px;
-    margin-top: 8px;
-    display: grid;
-    grid-template-columns: 52px 1fr 1fr 52px;
-    grid-template-areas: 'h h h h' 'a a a v' 'd c b .' 'd des . .';
+  &__ticker {
+    display: block;
+    overflow: hidden;
+    text-transform: uppercase;
+    font-weight: bold;
+    width: 52px;
+    padding-left: 4px;
+    opacity: 0.4;
   }
 }
 </style>
