@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 import { clone, sort } from 'rambda';
-import api, { blcInstance } from '@/utils/api';
+import api, { blcInstance, webWalletInstance } from '@/utils/api';
 import {
   FULFILLED, INIT, PENDING, REJECTED,
 } from '@/utils/constants';
@@ -9,6 +9,7 @@ interface InitState {
   fetchState: string;
   lang: 'en',
   balances: any;
+  rates: any,
   transactions: any[];
   walletAddress: string;
   quizzes: {
@@ -20,6 +21,7 @@ const initState: InitState = {
   fetchState: INIT,
   lang: 'en',
   balances: {},
+  rates: {},
   transactions: [],
   walletAddress: '',
   quizzes: {
@@ -51,6 +53,10 @@ export default createStore({
     SET_WALLET_ADDRESS(state, address) {
       state.walletAddress = address;
     },
+    SET_RATES(state, rates) {
+      state.rates = rates.data;
+    },
+
     SET_QUIZ_IDS(state, quiz) {
       state.quizzes = {
         ...state.quizzes,
@@ -117,13 +123,26 @@ export default createStore({
       }
 
       commit('SET_STATE', PENDING);
-      console.log('send');
 
       try {
         const response = await blcInstance.get(`/broadcast_tx_commit?tx=0x${transaction}`);
 
         commit('SET_STATE', FULFILLED);
         return response.data;
+      } catch (err) {
+        commit('SET_STATE', REJECTED);
+        console.error(err);
+        return false;
+      }
+    },
+
+    async fetchRates({ commit }) {
+      try {
+        const response = await webWalletInstance.post('/index/getRates');
+
+        commit('SET_RATES', response.data);
+        commit('SET_STATE', FULFILLED);
+        return response.data.data;
       } catch (err) {
         commit('SET_STATE', REJECTED);
         console.error(err);

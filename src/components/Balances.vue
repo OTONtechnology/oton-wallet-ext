@@ -9,10 +9,14 @@
         <span class="balance__balance">{{ balance.balance }}</span>
         <span class="balance__currency">{{ currency }}</span>
       </div>
-      <!-- <div class="balance__footer">
-        <span class="balance__eur">{{ balance.balance_eur }} €</span>
-        <span class="balance__course">{{ balance.course }}</span>
-      </div> -->
+      <div class="balance__footer">
+        <span class="balance__eur">
+          {{ getEur("oton", balance.balance) }} €
+        </span>
+        <span class="balance__course">
+          1 {{ currency }} = {{ getRate("oton") }} €
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -21,18 +25,39 @@
 import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
+import Decimal from 'decimal.js';
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const balances = computed(() => store.state.balances);
+    const rates = computed(() => store.state.rates);
     const walletAddress = computed(() => store.state.walletAddress);
+
+    const getEur = (currency, sum) => {
+      if (!rates.value[currency]) {
+        return '-';
+      }
+      const converted = Decimal.div(sum, rates.value[currency]).mul(rates.value.eur);
+      return converted.toNumber();
+    };
+
+    const getRate = (currency) => {
+      if (!rates.value[currency]) {
+        return '-';
+      }
+      const course = Decimal.div(rates.value[currency], rates.value.eur);
+      return course.toNumber();
+    };
 
     onMounted(async () => {
       store.dispatch('fetchBalances', walletAddress.value);
+      store.dispatch('fetchRates');
     });
 
-    return { balances };
+    return {
+      balances, rates, getEur, getRate,
+    };
   },
 });
 </script>
@@ -74,6 +99,7 @@ export default defineComponent({
     opacity: 0.4;
     color: $dark-color-2;
     font-size: 14px;
+    margin-left: 8px;
   }
 }
 </style>

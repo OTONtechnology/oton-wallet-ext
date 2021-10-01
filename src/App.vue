@@ -8,6 +8,7 @@
     <TransferDoneModal :name="'TransferDoneModal'" />
     <TransactionModal :name="'TransactionModal'" />
     <SettingsModal :name="'SettingsModal'" />
+    <CreateWalletModal :name="'CreateWalletModal'" />
   </div>
 </template>
 <script>
@@ -19,7 +20,8 @@ import TransferModal from '@/components/TransferModal.vue';
 import TransferDoneModal from '@/components/TransferDoneModal.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
 import SettingsModal from '@/components/SettingsModal.vue';
-import { getStorageItem } from '@/utils/extension';
+import getAddressFromStorage from '@/utils/getAddressFromStorage';
+import CreateWalletModal from '@/components/CreateWalletModal.vue';
 
 export default defineComponent({
   components: {
@@ -28,6 +30,7 @@ export default defineComponent({
     TransferDoneModal,
     TransactionModal,
     SettingsModal,
+    CreateWalletModal,
   },
 
   setup() {
@@ -36,7 +39,8 @@ export default defineComponent({
     const router = useRouter();
 
     onMounted(async () => {
-      const res = await getStorageItem('addr');
+      const res = await getAddressFromStorage();
+      console.log(res);
 
       if (res) {
         store.commit('SET_WALLET_ADDRESS', res);

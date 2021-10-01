@@ -7,7 +7,7 @@
         <button class="card__button button" @click="openImportModal">
           Import a wallet
         </button>
-        <button @click="createKeys" class="card__button button primary">
+        <button @click="openCreateModal" class="card__button button primary">
           Create new wallet
         </button>
       </div>
@@ -19,7 +19,6 @@
 import { defineComponent } from 'vue';
 import { $vfm } from 'vue-final-modal';
 import StartLayout from '@/layouts/StartLayout.vue';
-import { createKeys } from '../utils/cryptoKeys';
 
 export default defineComponent({
   data: () => ({}),
@@ -30,11 +29,10 @@ export default defineComponent({
     openImportModal() {
       $vfm.show('ImportWalletModal');
     },
-    async createKeys() {
-      const newKeys = await createKeys();
-      // TODO: shoud be write to user store, and user should save his secret key
-      console.info(newKeys);
+    openCreateModal() {
+      $vfm.show('CreateWalletModal');
     },
+
   },
 });
 

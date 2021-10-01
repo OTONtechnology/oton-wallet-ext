@@ -3,7 +3,7 @@
     <p class="import__text">Import a wallet with a secret recovery phrase.</p>
 
     <div class="field">
-      <label for="" class="field__label">Address</label>
+      <label for="" class="field__label">Secret Key</label>
       <input type="text" class="field__input" v-model="address" />
     </div>
     <!-- <div class="field">
@@ -38,6 +38,7 @@ import { defineComponent } from 'vue';
 // import extension from 'extensionizer';
 import { $vfm } from 'vue-final-modal';
 import { setStorageItem } from '@/utils/extension';
+import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
 
 export default defineComponent({
   data() {
@@ -55,12 +56,16 @@ export default defineComponent({
       this.terms = val;
     },
     async login() {
-      this.$store.commit('SET_WALLET_ADDRESS', this.address);
-      const addressInStorage = await setStorageItem('addr', this.address);
+      if (this.address.length === 128) {
+        const secret = this.address;
 
-      if (addressInStorage === true) {
-        $vfm.hide('ImportWalletModal');
-        this.$router.push({ name: 'Home' });
+        this.$store.commit('SET_WALLET_ADDRESS', secret);
+        const addressInStorage = await setStorageItem('addr', secret);
+
+        if (addressInStorage === true) {
+          $vfm.hide('ImportWalletModal');
+          this.$router.push({ name: 'Home' });
+        }
       }
       // extension.storage.local.set({ addr: this.address }, () => {
       //   $vfm.hide('ImportWalletModal');
