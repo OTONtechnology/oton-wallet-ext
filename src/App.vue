@@ -9,6 +9,7 @@
     <TransactionModal :name="'TransactionModal'" />
     <SettingsModal :name="'SettingsModal'" />
     <CreateWalletModal :name="'CreateWalletModal'" />
+    <RequestModal :name="'RequestModal'" />
   </div>
 </template>
 <script>
@@ -22,6 +23,8 @@ import TransactionModal from '@/components/TransactionModal.vue';
 import SettingsModal from '@/components/SettingsModal.vue';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import CreateWalletModal from '@/components/CreateWalletModal.vue';
+import RequestModal from '@/components/RequestModal.vue';
+import 'vue-toastification/dist/index.css';
 
 export default defineComponent({
   components: {
@@ -31,6 +34,7 @@ export default defineComponent({
     TransactionModal,
     SettingsModal,
     CreateWalletModal,
+    RequestModal,
   },
 
   setup() {
@@ -40,7 +44,6 @@ export default defineComponent({
 
     onMounted(async () => {
       const res = await getAddressFromStorage();
-      console.log(res);
 
       if (res) {
         store.commit('SET_WALLET_ADDRESS', res);

@@ -17,15 +17,17 @@
       >
         Transfer
       </button>
+      <button class="button" @click="openRequestModal">Request</button>
     </div>
-    <!-- <button class="button">Request</button> -->
   </div>
 </template>
 
 <script>
-import { defineComponent, computed, onMounted } from 'vue';
+import {
+  defineComponent, computed, onMounted, inject,
+} from 'vue';
 import { useStore } from 'vuex';
-import { $vfm } from 'vue-final-modal';
+// import { $vfm } from 'vue-final-modal';
 
 import TransactionItem from '@/components/TransactionItem.vue';
 
@@ -34,9 +36,17 @@ export default defineComponent({
     TransactionItem,
   },
   setup() {
+    const $vfm = inject('$vfm');
     const store = useStore();
     const transactions = computed(() => store.state.transactions);
     const walletAddress = computed(() => store.state.walletAddress);
+
+    const openRequestModal = () => {
+      $vfm.show('RequestModal');
+    };
+    const openTransferModal = () => {
+      $vfm.show('TransferModal');
+    };
 
     onMounted(() => {
       store.dispatch('fetchTransactions', walletAddress.value);
@@ -45,17 +55,15 @@ export default defineComponent({
     return {
       transactions,
       fetch,
-    };
-  },
-  data() {
-    return {
+      openRequestModal,
+      openTransferModal,
     };
   },
 
   methods: {
-    openTransferModal() {
-      $vfm.show('TransferModal');
-    },
+    // openTransferModal() {
+    //   $vfm.show('TransferModal');
+    // },
 
   },
 });
