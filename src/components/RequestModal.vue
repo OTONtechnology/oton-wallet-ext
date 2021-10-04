@@ -31,9 +31,7 @@ export default defineComponent({
     const doCopy = () => {
       copyText(walletAddress.value, undefined, (error, event) => {
         if (error) {
-          alert('Can not copy');
-
-          console.log(error);
+          console.error('Copy error');
         } else {
           toast.success('Copied!', {
             timeout: 2000,

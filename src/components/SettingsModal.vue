@@ -1,8 +1,10 @@
 <template>
   <DefaultModalLayout :name="name" :title="'Settings'">
     <div class="field">
-      <label for="" class="field__label">Language</label>
-      <select type="text" class="field__selectbox" v-model="currentLang">
+      <label for="" class="field__label">
+        <Tr>Language</Tr>
+      </label>
+      <select type="text" class="field__selectbox" v-model="locale">
         <option :value="key" v-for="(label, key) in langs" :key="`lang-${key}`">
           {{ label }}
         </option>
@@ -12,8 +14,8 @@
 </template>
 
 <script>
-import { defineComponent, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 
 export default defineComponent({
@@ -21,16 +23,13 @@ export default defineComponent({
     DefaultModalLayout,
   },
   setup() {
-    const store = useStore();
     const langs = reactive({ en: 'English', ru: 'Русский' });
-    const currentLang = computed({
-      get: () => store.state.lang,
-      set: (value) => store.commit('CHANGE_LANG', value),
-    });
+    const { t, locale } = useI18n();
 
     return {
       langs,
-      currentLang,
+      t,
+      locale,
     };
   },
 });

@@ -12,7 +12,6 @@
       </div>
       <div class="transaction__recepient">
         <span>{{ recepient }}</span>
-        <span></span>
       </div>
     </div>
     <div class="transaction__box">
@@ -27,8 +26,9 @@
             sent: actionType === 'sent',
             receive: actionType === 'receive',
           }"
-          >{{ sum }}</span
         >
+          {{ sum }}
+        </span>
         <span class="transaction__ticker">{{ name }}</span>
       </div>
     </div>
@@ -59,7 +59,7 @@ export default defineComponent({
     const date = dayjs.unix(props.transaction.block.timestamp).format('D MMM HH:mm ');
     const recepient = computed(() => {
       if (props.transaction.outputs.length === 0) {
-        return '';
+        return 'n/a';
       } if (props.transaction.outputs.length > 1) {
         return `${props.transaction.outputs.length} addresses`;
       }

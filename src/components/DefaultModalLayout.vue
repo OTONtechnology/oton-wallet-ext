@@ -4,13 +4,12 @@
     :name="name"
     content-class="modal-content"
     classes="modal-container"
-    @closed="closeHandler"
     @beforeOpen="setParams"
   >
     <svg class="modal__close" @click="showModal = false">
       <use xlink:href="#ic_close--sprite" />
     </svg>
-    <div class="title">{{ title }}</div>
+    <div class="title">{{ t(title) }}</div>
     <div class="modal__content">
       <slot v-if="showModal" />
     </div>
@@ -18,14 +17,11 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { $vfm } from 'vue-final-modal';
+import { defineComponent, ref } from 'vue';
 import '@/assets/svg/ic_close.svg?sprite';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-  data: () => ({
-    showModal: false,
-  }),
   props: {
     name: {
       required: true,
@@ -36,14 +32,21 @@ export default defineComponent({
       type: String,
     },
   },
-  methods: {
-    closeHandler() {
-      $vfm.hide(this.name);
-      this.$emit('close-modal');
-    },
-    setParams(event) {
-      this.$emit('set-params', event.ref.params);
-    },
+  emits: ['set-params'],
+
+  setup(props, { emit }) {
+    const showModal = ref(false);
+    const { t } = useI18n();
+
+    const setParams = (event) => {
+      emit('set-params', event.ref.params);
+    };
+
+    return {
+      showModal,
+      setParams,
+      t,
+    };
   },
 });
 </script>

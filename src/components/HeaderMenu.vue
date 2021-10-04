@@ -9,11 +9,11 @@
     <div class="menu__container" v-show="opened">
       <div class="menu__layer" @click="opened = false"></div>
       <div class="menu__list">
-        <div class="menu__item">Custom transaction</div>
-        <div class="menu__item" @click="openSettings">Settings</div>
-        <div class="menu__item" @click="openInTab">Open in tab</div>
+        <!-- <div class="menu__item">{{ t("Custom transaction") }}</div> -->
+        <div class="menu__item" @click="openSettings">{{ t("Settings") }}</div>
+        <div class="menu__item" @click="openInTab">{{ t("Open in tab") }}</div>
         <div class="menu__divider"></div>
-        <div class="menu__item" @click="logout">Log out</div>
+        <div class="menu__item" @click="logout">{{ t("Log out") }}</div>
       </div>
     </div>
   </div>
@@ -25,6 +25,7 @@ import { useRouter } from 'vue-router';
 import '@/assets/svg/ic_menu.svg?sprite';
 import { useStore } from 'vuex';
 import { $vfm } from 'vue-final-modal';
+import { useI18n } from 'vue-i18n';
 import { clearStorage, openExtensionInBrowser } from '@/utils/extension';
 
 export default defineComponent({
@@ -32,13 +33,13 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
     const opened = ref(false);
+    const { t } = useI18n();
     const toggleMenu = () => {
       opened.value = !opened.value;
     };
 
     const logout = async () => {
       const clear = await clearStorage();
-      console.log(clear);
       if (clear === true) {
         store.commit('CLEAR');
         router.push('/');
@@ -59,6 +60,7 @@ export default defineComponent({
       logout,
       openInTab,
       openSettings,
+      t,
     };
   },
 });

@@ -7,6 +7,7 @@
       v-model:terms="form.terms"
       @submit="formSubmit"
     />
+    <CreateWalletConfirm />
   </div>
 </template>
 
@@ -14,10 +15,12 @@
 import { defineComponent, ref } from 'vue';
 import CreateWalletPassword from '@/components/CreateWalletPassword.vue';
 import { createKeys } from '../utils/cryptoKeys';
+import CreateWalletConfirm from '@/components/CreateWalletConfirm.vue';
 
 export default defineComponent({
   components: {
     CreateWalletPassword,
+    CreateWalletConfirm,
   },
   setup() {
     let activeView = ref('pass');
