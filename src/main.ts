@@ -8,6 +8,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import BaseCheckbox from './components/BaseCheckbox.vue';
+import Tr from './components/Tr.vue';
 
 const app = createApp(App);
 
@@ -25,5 +26,6 @@ app.use(store)
   });
 
 app.component('BaseCheckbox', BaseCheckbox);
+app.component('Tr', Tr);
 
 app.mount('#app');

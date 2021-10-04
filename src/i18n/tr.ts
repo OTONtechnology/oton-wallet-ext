@@ -1,2 +1,2 @@
 /* eslint-disable */
-export default {"key1":"tr-trans1","key2":"tr-trans2","key3":"tr-trans3","key4":"tr-trans4","key5":"tr-trans5","key6":"tr-trans6","key7":"tr-trans7","key8":"tr-trans8","key9":"tr-trans9","key10":"tr-trans10","key11":"tr-trans11","key12":"tr-trans12","key13":"tr-trans13"}
+export default {"Settings":"Settings","Language":"Language","Your address":"Your address","Transactions":"Transactions","Transaction":"Transaction","Date and Time":"Date and Time","Type":"Type","Total":"Total","Senders":"Senders","Recepients":"Recepients"}

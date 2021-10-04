@@ -1,6 +1,8 @@
 <template>
   <div class="transactions">
-    <div class="transactions__title wrapper">Transactions</div>
+    <div class="transactions__title wrapper">
+      <Tr>Transactions</Tr>
+    </div>
     <div class="transactions__list">
       <div class="transactions__list-inner wrapper">
         <TransactionItem
@@ -15,9 +17,11 @@
         class="button primary transactions__transfer"
         @click="openTransferModal"
       >
-        Transfer
+        <Tr>Transfer</Tr>
       </button>
-      <button class="button" @click="openRequestModal">Request</button>
+      <button class="button" @click="openRequestModal">
+        <Tr>Request</Tr>
+      </button>
     </div>
   </div>
 </template>
@@ -58,13 +62,6 @@ export default defineComponent({
       openRequestModal,
       openTransferModal,
     };
-  },
-
-  methods: {
-    // openTransferModal() {
-    //   $vfm.show('TransferModal');
-    // },
-
   },
 });
 </script>

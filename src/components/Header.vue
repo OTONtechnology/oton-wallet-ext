@@ -5,8 +5,16 @@
         <use xlink:href="#ic_logo--sprite" />
       </svg>
     </router-link>
-    <div class="header__text">Your address</div>
-    <div class="header__address" :title="walletAddress">{{ stripedAddr }}</div>
+    <div class="header__text" @click="$vfm.show('RequestModal')">
+      {{ t("Your address") }}
+    </div>
+    <div
+      class="header__address"
+      :title="walletAddress"
+      @click="$vfm.show('RequestModal')"
+    >
+      {{ stripedAddr }}
+    </div>
     <div class="header__menu">
       <HeaderMenu />
     </div>
@@ -14,9 +22,10 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
+import { useI18n } from 'vue-i18n';
 import HeaderMenu from '@/components/HeaderMenu.vue';
 
 export default defineComponent({
@@ -25,12 +34,16 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const { t } = useI18n();
+    const $vfm = inject('$vfm');
     const walletAddress = computed(() => store.state.walletAddress);
 
     const stripedAddr = computed(() => `${walletAddress.value.substring(0, 11)}...${walletAddress.value.substring(walletAddress.value.length - 11)}`);
 
     return {
       stripedAddr,
+      $vfm,
+      t,
     };
   },
 });
@@ -57,11 +70,13 @@ export default defineComponent({
     opacity: 0.4;
     color: $dark-color-2;
     font-size: 12px;
+    cursor: pointer;
   }
 
   &__address {
     color: $dark-color-2;
     font-size: 14px;
+    cursor: pointer;
   }
 
   &__menu {
