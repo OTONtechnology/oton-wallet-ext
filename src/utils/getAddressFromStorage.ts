@@ -1,11 +1,12 @@
 // import extension from 'extensionizer';
+import { getLocalSecret } from './auth';
 import { getAddressFromHexSecret } from './cryptoKeys';
-import { getStorageItem } from './extension';
+// import { getStorageItem } from './extension';
 
 const getAddressFromStorage = async (): Promise<string> => {
-  const sk = await getStorageItem('addr');
-  if (sk) {
-    return getAddressFromHexSecret(sk);
+  const localSk = await getLocalSecret();
+  if (localSk) {
+    return getAddressFromHexSecret(localSk);
   }
 
   return '';

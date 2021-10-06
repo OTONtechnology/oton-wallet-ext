@@ -5,13 +5,14 @@
     content-class="modal-content"
     classes="modal-container"
     @beforeOpen="setParams"
+    @closed="handleClose"
   >
-    <svg class="modal__close" @click="showModal = false">
+    <svg class="modal__close" @click="handleClose">
       <use xlink:href="#ic_close--sprite" />
     </svg>
     <div class="title">{{ t(title) }}</div>
     <div class="modal__content">
-      <slot v-if="showModal" />
+      <slot v-if="showModal" :key="`modal-name-${name}`" />
     </div>
   </vue-final-modal>
 </template>
@@ -32,20 +33,24 @@ export default defineComponent({
       type: String,
     },
   },
-  emits: ['set-params'],
+  emits: ['set-params', 'close-modal'],
 
   setup(props, { emit }) {
     const showModal = ref(false);
     const { t } = useI18n();
-
     const setParams = (event) => {
       emit('set-params', event.ref.params);
+    };
+    const handleClose = () => {
+      showModal.value = false;
+      emit('close-modal');
     };
 
     return {
       showModal,
       setParams,
       t,
+      handleClose,
     };
   },
 });

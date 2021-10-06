@@ -14,11 +14,9 @@ export default defineComponent({
     DefaultModalLayout,
     CreateWalletContainer,
   },
-
   props: {
     name: String,
   },
+
 });
 </script>
-
-<style lang="stylus"></style>

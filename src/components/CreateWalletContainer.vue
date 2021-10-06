@@ -1,21 +1,19 @@
 <template>
   <div>
-    <CreateWalletPassword
-      v-if="activeView === 'pass'"
-      v-model:password="form.password"
-      v-model:password1="form.password1"
-      v-model:terms="form.terms"
-      @submit="formSubmit"
-    />
-    <CreateWalletConfirm />
+    <CreateWalletPassword v-if="activeView === 'pass'" @create="create" />
+    <CreateWalletConfirm :keys="keys" v-else @confirm="confirm" />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, reactive } from 'vue';
+import { $vfm } from 'vue-final-modal';
+import { useRouter } from 'vue-router';
 import CreateWalletPassword from '@/components/CreateWalletPassword.vue';
-import { createKeys } from '../utils/cryptoKeys';
 import CreateWalletConfirm from '@/components/CreateWalletConfirm.vue';
+import { createKeys } from '../utils/cryptoKeys';
+import { bytesToHex } from '../utils/crypto';
+import { importWalletFunc } from '@/utils/auth';
 
 export default defineComponent({
   components: {
@@ -23,27 +21,37 @@ export default defineComponent({
     CreateWalletConfirm,
   },
   setup() {
-    let activeView = ref('pass');
-    const form = ref({
-      password: '',
-      password1: '',
-      terms: false,
+    const router = useRouter();
+    const activeView = ref('pass');
+    const keys = ref({
+      pk: '',
+      secret: '',
     });
+    const form = reactive({});
 
-    const switchView = (name) => { activeView = name; };
-
-    const formSubmit = () => {
-      console.log('submit');
-    };
-
-    const generateKeys = async () => {
+    const create = async (passForm) => {
       const newKeys = await createKeys();
-      return newKeys;
+
+      form.value = passForm;
+      keys.value.pk = bytesToHex(newKeys.pk);
+      keys.value.secret = bytesToHex(newKeys.secret);
+
+      activeView.value = 'confirm';
     };
-    // TODO: shoud be write to user store, and user should save his secret key
+
+    const confirm = async () => {
+      const { secret } = keys.value;
+
+      const addressInStorage = await importWalletFunc(secret, form.value.password);
+
+      if (addressInStorage === true) {
+        $vfm.hide('CreateWalletModal');
+        router.push({ name: 'Home' });
+      }
+    };
 
     return {
-      form, activeView, switchView, formSubmit,
+      activeView, create, keys, confirm,
     };
   },
 });

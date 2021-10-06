@@ -1,4 +1,5 @@
 import extension from 'extensionizer';
+import { toString } from 'rambda';
 import { ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } from './constants';
 
 function checkForError() {
@@ -31,11 +32,11 @@ export const openTab = (options: any) => new Promise((resolve, reject) => {
   });
 });
 
-export const clearStorage = () => new Promise((res, rej) => {
+export const clearStorage = (type = 'local') => new Promise((res, rej) => {
   const envType = getEnvironmentType();
 
   if (envType === ENVIRONMENT_TYPE_POPUP) {
-    extension.storage.local.clear(() => {
+    extension.storage[type].clear(() => {
       const error = checkForError();
       if (error) {
         return rej(error);
@@ -48,26 +49,26 @@ export const clearStorage = () => new Promise((res, rej) => {
   }
 });
 
-export const getStorageItem = (name: string): any => new Promise((res, rej) => {
+export const getStorageItem = (name: string, type = 'local'): any => new Promise((res, rej) => {
   const envType = getEnvironmentType();
 
   if (envType === ENVIRONMENT_TYPE_POPUP) {
-    extension.storage.local.get(name, (response: any) => {
+    extension.storage[type].get(name, (response: any) => {
       if (response && response[name]) {
         return res(response[name]);
       }
       return res('');
     });
   } else if (envType === ENVIRONMENT_TYPE_FULLSCREEN) {
-    res(localStorage.getItem('addr'));
+    res(localStorage.getItem(name));
   }
 });
 
-export const setStorageItem = (name: string, value: string): any => new Promise((res, rej) => {
+export const setStorageItem = (name: string, value: string | Record<string, unknown>, type = 'local'): any => new Promise((res, rej) => {
   const envType = getEnvironmentType();
 
   if (envType === ENVIRONMENT_TYPE_POPUP) {
-    extension.storage.local.set({ [name]: value }, () => {
+    extension.storage[type].set({ [name]: value }, () => {
       const error = checkForError();
 
       if (error) {
@@ -76,8 +77,14 @@ export const setStorageItem = (name: string, value: string): any => new Promise(
       return res(true);
     });
   } else if (envType === ENVIRONMENT_TYPE_FULLSCREEN) {
-    localStorage.setItem(name, value);
-    res(true);
+    if (typeof value === 'string') {
+      localStorage.setItem(name, value);
+      res(true);
+    } else {
+      const string = JSON.stringify(value);
+      localStorage.setItem(name, string);
+      res(true);
+    }
   }
 });
 

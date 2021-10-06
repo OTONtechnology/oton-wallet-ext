@@ -2,22 +2,32 @@
   <div class="create">
     <div class="create__block field">
       <label for="" class="field__label">Password</label>
-      <input type="password" class="field__input" v-model="passwordState" />
+      <input type="password" class="field__input" v-model="form.password" />
     </div>
     <div class="create__block field">
       <label for="" class="field__label">Repeat Password</label>
-      <input type="password" class="field__input" v-model="password1State" />
+      <input type="password" class="field__input" v-model="form.password1" />
+      <div class="field__errors">
+        <div class="field__error" v-for="error in errors.password" :key="error">
+          {{ error }}
+        </div>
+      </div>
     </div>
-    <div class="create__block field terms">
-      <BaseCheckbox :name="'terms'" v-model="termsState">
+    <!-- <div class="create__block field terms">
+      <BaseCheckbox :name="'terms'" v-model="form.terms">
         <label class="checkbox__label" for="terms">
           I agree to the Terms of Use
         </label>
       </BaseCheckbox>
-    </div>
+      <div class="field__errors">
+        <div class="field__error" v-for="error in errors.terms" :key="error">
+          {{ error }}
+        </div>
+      </div>
+    </div> -->
 
     <div class="buttons">
-      <button class="buttons__create button primary" @click="$emit('submit')">
+      <button class="buttons__create button primary" @click="create">
         Create
       </button>
     </div>
@@ -25,21 +35,46 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import useVModel from '@/utils/useVModel';
+import { defineComponent, reactive, ref } from 'vue';
 
 export default defineComponent({
-  props: {
-    password: String,
-    password1: String,
-    terms: Boolean,
-  },
-  emits: ['update:password', 'update:password1', 'terms'],
-  setup(props) {
+  emits: ['create'],
+  setup(props, { emit }) {
+    const errors = reactive({});
+    const form = reactive({
+      password: '123456',
+      password1: '123456',
+      terms: true,
+    });
+    const validate = () => {
+      let isValid = true;
+
+      if (!form.terms) {
+        console.log(1);
+        errors.terms = ['You must agree with Terms of Use'];
+        isValid = false;
+      }
+      if (form.password.length < 6 || form.password1.length < 6) {
+        console.log(2);
+        errors.password = ['Password cannot be less than 6 characters'];
+        isValid = false;
+      } else if (form.password !== form.password1) {
+        console.log(3);
+        errors.password = ['Passwords do not match'];
+        isValid = false;
+      }
+
+      return isValid;
+    };
+    const create = () => {
+      if (validate()) {
+        emit('create', form);
+      }
+    };
     return {
-      passwordState: useVModel(props, 'password'),
-      password1State: useVModel(props, 'password1'),
-      termsState: useVModel(props, 'terms'),
+      form,
+      create,
+      errors,
     };
   },
 });

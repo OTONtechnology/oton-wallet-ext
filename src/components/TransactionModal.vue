@@ -132,9 +132,9 @@
         </div>
       </div>
       <div class="transaction__buttons">
-        <a :href="outLink" target="__blank" class="transaction__button button"
-          >View in Explorer</a
-        >
+        <a :href="outLink" target="__blank" class="transaction__button button">
+          <Tr>View in Explorer</Tr>
+        </a>
       </div>
     </div>
   </DefaultModalLayout>

@@ -16,12 +16,12 @@
 import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
 import TransferDoneModal from '@/components/TransferDoneModal.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
 import SettingsModal from '@/components/SettingsModal.vue';
-import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import CreateWalletModal from '@/components/CreateWalletModal.vue';
 import RequestModal from '@/components/RequestModal.vue';
 import 'vue-toastification/dist/index.css';
@@ -43,10 +43,10 @@ export default defineComponent({
     const router = useRouter();
 
     onMounted(async () => {
-      const res = await getAddressFromStorage();
+      const address = await getAddressFromStorage();
 
-      if (res) {
-        store.commit('SET_WALLET_ADDRESS', res);
+      if (address) {
+        store.commit('SET_WALLET_ADDRESS', address);
       } else {
         router.push('/');
       }
@@ -105,6 +105,7 @@ svg {
   cursor: pointer;
   letter-spacing: normal;
   line-height: normal;
+  text-align: center;
 
   &.primary {
     background: $main-color;
@@ -155,6 +156,11 @@ svg {
     &_error {
       border: 2px solid $danger-color;
     }
+  }
+
+  &__error {
+    color: $danger-color;
+    font-size: 12px;
   }
 }
 
