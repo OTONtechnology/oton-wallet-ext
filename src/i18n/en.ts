@@ -1,2 +1,2 @@
 /* eslint-disable */
-export default {"Settings":"Settings","Language":"Language","Your address":"Your address","Transactions":"Transactions","Transaction":"Transaction","Date and Time":"Date and Time","Type":"Type","Total":"Total","Senders":"Senders","Recepients":"Recepients"}
+export default {"Settings":"Settings","Language":"Language","Your address":"Your address","Transactions":"Transactions","Transaction":"Transaction","Date and Time":"Date and Time","Type":"Type","Total":"Total","Senders":"Senders","Recepients":"Recepients","Transfer":"Transfer","Request":"Request","View in Explorer":"View in Explorer","Open in tab":"Open in tab","Log out":"Log out"}

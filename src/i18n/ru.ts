@@ -1,2 +1,2 @@
 /* eslint-disable */
-export default {"Settings":"Настройки","Language":"Язык","Your address":"Ваш адрес","Transactions":"Транзакции","Transaction":"Транзакция","Date and Time":"Дата и время","Type":"Тип","Total":"Всего","Senders":"Отправители","Recepients":"Получатели"}
+export default {"Settings":"Настройки","Language":"Язык","Your address":"Ваш адрес","Transactions":"Транзакции","Transaction":"Транзакция","Date and Time":"Дата и время","Type":"Тип","Total":"Всего","Senders":"Отправители","Recepients":"Получатели","Transfer":"Перевод","Request":"Запросить","View in Explorer":"Посмотреть в Эксплорер","Open in tab":"Открыть во вкладке","Log out":"Выход"}

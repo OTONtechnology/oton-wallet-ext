@@ -10,6 +10,7 @@
         <button @click="openCreateModal" class="card__button button primary">
           Create new wallet
         </button>
+        <button @click="test">test</button>
       </div>
     </div>
   </StartLayout>
@@ -32,6 +33,10 @@ export default defineComponent({
     openCreateModal() {
       $vfm.show('CreateWalletModal');
     },
+    // async sendMessage() {
+    //   const messageSent = await sendMessageToExtension();
+    //   console.log(messageSent);
+    // },
 
   },
 });

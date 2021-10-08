@@ -24,18 +24,21 @@ export const setLocalKey = async (decryptedKey: string) => {
 
 export const getLocalSecret = async () => {
   const sk = await getStorageItem('sk', 'local');
+  if (sk) {
+    if (typeof sk === 'object') {
+      if (isExpired(sk.expired)) {
+        return '';
+      }
+      return sk.value;
+    }
 
-  if (sk && typeof sk === 'object') {
-    if (isExpired(sk.expired)) {
+    const parsed = JSON.parse(sk);
+    if (!parsed || isExpired(parsed.expired)) {
       return '';
     }
-    return sk.value;
+    return parsed.value;
   }
-  const parsed = JSON.parse(sk);
-  if (!parsed || isExpired(parsed.expired)) {
-    return '';
-  }
-  return parsed.value;
+  return '';
 };
 
 export const importWalletFunc = (sk: string, password: string) => new Promise((res, rej) => {

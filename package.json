@@ -7,7 +7,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --mode development --no-clean --watch",
     "postbuild": "npm-run-all copy:* copy:*:*",
-    "prebuild": "npm-run-all copy:* copy:*:* generate:messages",
+    "prebuild": "npm-run-all copy:* copy:*:*",
     "copy:manifest:chrome": "cp -r manifest/manifest.chrome.json dist/manifest.json",
     "copy:icons": "cp -r manifest/icons dist/icons",
     "lint": "vue-cli-service lint"
@@ -34,6 +34,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/chrome": "^0.0.158",
     "@types/crypto-js": "^4.0.2",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",

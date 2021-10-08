@@ -104,3 +104,18 @@ export const openExtensionInBrowser = (route = null, queryString = null) => {
   //   window.close();
   // }
 };
+
+export const sendMessageToExtension = () => new Promise((res, rej) => {
+  const extId = 'acnemppcfdbegflceimmpbganhbigjce';
+  const url = '';
+
+  console.log(chrome.runtime);
+  // extension.runtime.sendMessage(extId, { openUrlInEditor: url },
+  //   (response: any) => {
+  //     if (!response.success) {
+  //       rej();
+  //     } else {
+  //       res(response);
+  //     }
+  //   });
+});
