@@ -6,6 +6,7 @@
     "generate:messages": "node translationsGenerator/index.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --mode development --no-clean --watch",
+    "build-content": "vue-cli-service build --target lib --name content --filename content.js ",
     "postbuild": "npm-run-all copy:* copy:*:*",
     "prebuild": "npm-run-all copy:* copy:*:*",
     "copy:manifest:chrome": "cp -r manifest/manifest.chrome.json dist/manifest.json",

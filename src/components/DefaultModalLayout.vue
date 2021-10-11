@@ -7,7 +7,7 @@
     @beforeOpen="setParams"
     @closed="handleClose"
   >
-    <svg class="modal__close" @click="handleClose">
+    <svg class="modal__close" @click="handleClose" v-if="!resealable">
       <use xlink:href="#ic_close--sprite" />
     </svg>
     <div class="title">{{ t(title) }}</div>
@@ -32,11 +32,20 @@ export default defineComponent({
       required: true,
       type: String,
     },
+    show: {
+      required: false,
+      type: Boolean,
+    },
+    resealable: {
+      required: false,
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['set-params', 'close-modal'],
 
   setup(props, { emit }) {
-    const showModal = ref(false);
+    const showModal = ref(props.show ? props.show : false);
     const { t } = useI18n();
     const setParams = (event) => {
       emit('set-params', event.ref.params);

@@ -105,11 +105,8 @@ export const openExtensionInBrowser = (route = null, queryString = null) => {
   // }
 };
 
-export const sendMessageToExtension = () => new Promise((res, rej) => {
-  const extId = 'acnemppcfdbegflceimmpbganhbigjce';
-  const url = '';
-
-  console.log(chrome.runtime);
+export const sendMessageToTab = () => new Promise((res, rej) => {
+  extension.tabs.sendMessage({ payload: { address: 'some address' } });
   // extension.runtime.sendMessage(extId, { openUrlInEditor: url },
   //   (response: any) => {
   //     if (!response.success) {

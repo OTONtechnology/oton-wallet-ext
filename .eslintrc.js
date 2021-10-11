@@ -14,5 +14,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'no-shadow': ['error', { allow: ['state'] }],
     camelcase: 'off',
+    'no-else-return': 'off',
+    'consistent-return': 'off'
   },
 };

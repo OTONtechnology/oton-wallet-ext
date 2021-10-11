@@ -1,7 +1,19 @@
 // eslint-disable-next-line
 const path = require('path');
+// const BackgroundScriptsPlugin = require('./webpackPlugins/BackgroundScriptsPlugin.js');
 
 module.exports = {
+  // pages: {
+  //   index: {
+  //     entry: 'src/main.ts',
+  //     template: 'public/index.html',
+  //   },
+  //   notification: {
+  //     entry: 'src/content.js',
+  //     filename: 'content.js',
+  //   },
+  // },
+
   configureWebpack: {
     devtool: 'cheap-module-source-map',
     module: {
@@ -12,6 +24,9 @@ module.exports = {
         },
       ],
     },
+    // plugins: [
+    //   new BackgroundScriptsPlugin(['./src/background.js']),
+    // ],
   },
   pluginOptions: {
     'style-resources-loader': {

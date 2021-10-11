@@ -1,7 +1,8 @@
-import extension from 'extensionizer';
+// import extension from 'extensionizer';
 
-extension.runtime.onMessage.addListener((data, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
   console.log(sender);
   alert(data);
-  extension.tabs.create({ url: 'index.html' });
+  // chrome.tabs.create({ url: 'index.html' });
+  chrome.windows.create({ url: 'index.html/#/permission', type: 'popup' });
 });

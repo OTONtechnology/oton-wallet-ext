@@ -10,7 +10,6 @@
         <button @click="openCreateModal" class="card__button button primary">
           Create new wallet
         </button>
-        <button @click="test">test</button>
       </div>
     </div>
   </StartLayout>
@@ -19,6 +18,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { $vfm } from 'vue-final-modal';
+import { sendMessageToTab } from '@/utils/extension';
 import StartLayout from '@/layouts/StartLayout.vue';
 
 export default defineComponent({
@@ -33,10 +33,9 @@ export default defineComponent({
     openCreateModal() {
       $vfm.show('CreateWalletModal');
     },
-    // async sendMessage() {
-    //   const messageSent = await sendMessageToExtension();
-    //   console.log(messageSent);
-    // },
+    test() {
+      sendMessageToTab();
+    },
 
   },
 });

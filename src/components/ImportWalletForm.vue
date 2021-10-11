@@ -49,6 +49,7 @@ import { defineComponent } from 'vue';
 // import { getStorageItem } from '@/utils/extension';
 import { $vfm } from 'vue-final-modal';
 import { importWalletFunc, getLocalSecret } from '@/utils/auth';
+import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
 
 export default defineComponent({
   data() {
@@ -70,6 +71,7 @@ export default defineComponent({
         const secret = this.phrase;
 
         const addressInStorage = await importWalletFunc(secret, this.password1);
+        this.$store.commit('SET_WALLET_ADDRESS', getAddressFromHexSecret(secret));
 
         if (addressInStorage === true) {
           $vfm.hide('ImportWalletModal');
