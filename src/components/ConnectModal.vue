@@ -54,7 +54,7 @@ export default defineComponent({
         chrome.tabs.query({ currentWindow: false }, (tabSS) => {
           console.log(tabSS);
         });
-        chrome.tabs.sendMessage(Number(tabId), { type: 'toContent:authData', address: address.value, secret });
+        chrome.tabs.sendMessage(Number(tabId), { type: 'toContent:authData', ad: address.value, sk: secret });
         console.log('send message to tab (id): ', tabId);
       });
     };
