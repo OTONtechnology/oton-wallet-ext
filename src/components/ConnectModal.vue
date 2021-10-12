@@ -20,7 +20,7 @@
         {{ address }}
       </div>
     </div>
-    <button class="button primary">
+    <button class="button primary" @click="submit">
       <Tr>Connect</Tr>
     </button>
   </DefaultModalLayout>
@@ -29,6 +29,8 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { getLocalSecret } from '@/utils/auth';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 
 export default defineComponent({
@@ -40,9 +42,23 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const route = useRoute();
     const resource = ref('https://pupkin-ltd.com');
     const address = computed(() => store.state.walletAddress);
-    return { resource, address };
+
+    const submit = async () => {
+      const secret = await getLocalSecret();
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+        const tabId = route.query.tab;
+        console.log(tabId);
+        chrome.tabs.query({ currentWindow: false }, (tabSS) => {
+          console.log(tabSS);
+        });
+        chrome.tabs.sendMessage(Number(tabId), { type: 'toContent:authData', address: address.value, secret });
+        console.log('send message to tab (id): ', tabId);
+      });
+    };
+    return { resource, address, submit };
   },
 });
 </script>

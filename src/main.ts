@@ -12,9 +12,8 @@ import Tr from './components/Tr.vue';
 
 const app = createApp(App);
 
-app.use(store)
+app.use(router).use(store)
   .use(i18n)
-  .use(router)
   .use(VueFinalModal())
   .use(VueAxios, axios)
   .use(Toast, {

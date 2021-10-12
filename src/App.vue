@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, computed } from 'vue';
+import { defineComponent, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
@@ -42,7 +42,7 @@ export default defineComponent({
     const walletAddress = computed(() => store.state.walletAddress);
     const router = useRouter();
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
       const address = await getAddressFromStorage();
 
       if (address) {
