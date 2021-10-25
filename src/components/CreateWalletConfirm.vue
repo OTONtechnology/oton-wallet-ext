@@ -12,13 +12,12 @@
         {{ keys.secret }}
       </div>
     </div>
-    <!-- <div class="confirmation__block">
+    <div class="confirmation__block">
       <div class="confirmation__title">Secret Recovery Phrase</div>
       <div class="confirmation__text">
-        mobile thing property repair sorry spring lamp gasp unhappy surface
-        winter problem
+        {{ keys.mnemonic }}
       </div>
-    </div> -->
+    </div>
     <div class="confirmation__block iconed">
       <div class="confirmation__icon">
         <svg class="confirmation__img">

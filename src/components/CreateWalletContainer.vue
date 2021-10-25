@@ -26,6 +26,7 @@ export default defineComponent({
     const keys = ref({
       pk: '',
       secret: '',
+      mnemonic: '',
     });
     const form = reactive({});
 
@@ -35,6 +36,7 @@ export default defineComponent({
       form.value = passForm;
       keys.value.pk = bytesToHex(newKeys.pk);
       keys.value.secret = bytesToHex(newKeys.secret);
+      keys.value.mnemonic = newKeys.mnemonic;
 
       activeView.value = 'confirm';
     };

@@ -3,7 +3,9 @@
     <p class="import__text">Import a wallet with a secret recovery phrase.</p>
 
     <div class="field">
-      <label for="" class="field__label">Secret Key</label>
+      <label for="" class="field__label"
+        >Secret Key or Secret Recovery Phrase</label
+      >
       <input type="text" class="field__input" v-model="phrase" />
       <div class="field__errors">
         <div class="field__error" v-for="error in errors.phrase" :key="error">
@@ -48,8 +50,13 @@ import { defineComponent } from 'vue';
 // import extension from 'extensionizer';
 // import { getStorageItem } from '@/utils/extension';
 import { $vfm } from 'vue-final-modal';
-import { importWalletFunc, getLocalSecret } from '@/utils/auth';
-import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
+import { mnemonicToEntropy } from 'bip39';
+import {
+  importWalletFunc,
+// getLocalSecret
+} from '@/utils/auth';
+import { getKeysFromHexSK } from '@/utils/cryptoKeys';
+import { bytesToHex } from '@/utils/crypto';
 
 export default defineComponent({
   data() {
@@ -68,10 +75,17 @@ export default defineComponent({
     },
     async login() {
       if (this.validate()) {
-        const secret = this.phrase;
+        let secret = this.getNormalizePhrase();
 
-        const addressInStorage = await importWalletFunc(secret, this.password1);
-        this.$store.commit('SET_WALLET_ADDRESS', getAddressFromHexSecret(secret));
+        if (this.checkIsMnemonic()) {
+          secret = mnemonicToEntropy(secret);
+        }
+
+        const keys = await getKeysFromHexSK(secret);
+        const hexSecretKey = bytesToHex(keys.secret);
+
+        const addressInStorage = await importWalletFunc(hexSecretKey, this.password1);
+        this.$store.commit('SET_WALLET_ADDRESS', keys.address);
 
         if (addressInStorage === true) {
           $vfm.hide('ImportWalletModal');
@@ -80,25 +94,59 @@ export default defineComponent({
       }
     },
 
+    getNormalizePhrase() {
+      return this.phrase.replace(/\s+/g, ' ').trim();
+    },
+
+    checkIsMnemonic() {
+      return this.getNormalizePhrase().includes(' ');
+    },
+
     validate() {
-      let isValid = true;
-      if (!this.terms) {
-        this.errors.terms = ['You must agree with Terms of Use'];
-        isValid = false;
-      }
-      if (this.password1.length < 6 || this.password2.length < 6) {
-        this.errors.password = ['Password cannot be less than 6 characters'];
-        isValid = false;
-      } else if (this.password1 !== this.password2) {
-        this.errors.password = ['Passwords do not match'];
-        isValid = false;
-      }
-      if (this.phrase.length !== 128) {
-        this.errors.phrase = ['Secret key length not valid'];
-        isValid = false;
+      this.errors = {
+        terms: [],
+        password: [],
+        phrase: [],
+      };
+
+      if (typeof this.phrase !== 'string') {
+        this.errors.phrase.push('Secret key is not valid');
+        return false;
       }
 
-      return isValid;
+      const phrase = this.getNormalizePhrase();
+      const isRecoveryPhrase = this.checkIsMnemonic();
+
+      if (!this.terms) {
+        this.errors.terms.push('You must agree with Terms of Use');
+      }
+      if (this.password1.length < 6 || this.password2.length < 6) {
+        this.errors.password.push('Password cannot be less than 6 characters');
+      } else if (this.password1 !== this.password2) {
+        this.errors.password.push('Passwords do not match');
+      }
+
+      if (isRecoveryPhrase) {
+        if (phrase.split(' ').length !== 24) {
+          this.errors.phrase.push('Secret Recovery Phrase length not valid');
+        } else {
+          try {
+            mnemonicToEntropy(phrase);
+          } catch (e) {
+            this.errors.phrase.push(e.message);
+          }
+        }
+      } else if (phrase.length !== 128) {
+        this.errors.phrase = ['Secret key length not valid'];
+      }
+
+      const {
+        terms,
+        password,
+        phrase: errorPhrase,
+      } = this.errors;
+
+      return (terms.length + password.length + errorPhrase.length) === 0;
     },
   },
 });
