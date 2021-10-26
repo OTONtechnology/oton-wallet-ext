@@ -32,9 +32,14 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.name === 'StartView') {
+    const address = await getAddressFromStorage();
+    if (address) {
+      return next('Home');
+    }
     return next();
   } else {
     const address = await getAddressFromStorage();
+    console.log(address);
     if (address) {
       return next();
     }
