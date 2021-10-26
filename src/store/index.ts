@@ -52,7 +52,6 @@ export default createStore({
     },
     SET_WALLET_ADDRESS(state, address) {
       state.walletAddress = address;
-      console.log(state);
     },
     SET_RATES(state, rates) {
       state.rates = rates.data;
