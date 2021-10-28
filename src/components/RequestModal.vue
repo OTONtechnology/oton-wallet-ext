@@ -2,7 +2,7 @@
   <DefaultModalLayout :name="name" :title="'Your address'">
     {{ walletAddress }}
     <div class="buttons">
-      <button class="buttons__copy" @click="doCopy">Copy</button>
+      <button class="buttons__copy" @click="doCopy"><Tr>Copy</Tr></button>
     </div>
   </DefaultModalLayout>
 </template>

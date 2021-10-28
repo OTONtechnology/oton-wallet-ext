@@ -1,19 +1,25 @@
 <template>
   <div class="confirmation">
     <div class="confirmation__block">
-      <div class="confirmation__title">Your address</div>
+      <div class="confirmation__title">
+        <Tr> Your address </Tr>
+      </div>
       <div class="confirmation__text">
         {{ keys.pk }}
       </div>
     </div>
     <div class="confirmation__block">
-      <div class="confirmation__title">Secret key</div>
+      <div class="confirmation__title">
+        <Tr> Secret key </Tr>
+      </div>
       <div class="confirmation__text">
         {{ keys.secret }}
       </div>
     </div>
     <div class="confirmation__block">
-      <div class="confirmation__title">Secret Recovery Phrase</div>
+      <div class="confirmation__title">
+        <Tr> Secret Recovery Phrase </Tr>
+      </div>
       <div class="confirmation__text">
         {{ keys.mnemonic }}
       </div>
@@ -25,9 +31,13 @@
         </svg>
       </div>
       <div class="confirmation__box">
-        <p>Copy the address and the key to a safe</p>
+        <p>
+          <Tr> Copy the address and the key to a safe </Tr>
+        </p>
         <BaseCheckbox :name="'copy'" v-model="termsState">
-          <label class="checkbox__label" for="copy"> I copied </label>
+          <label class="checkbox__label" for="copy">
+            <Tr> I copied </Tr>
+          </label>
         </BaseCheckbox>
       </div>
     </div>
@@ -38,9 +48,13 @@
         </svg>
       </div>
       <div class="confirmation__box">
-        <p>Take a picture of the address and the key</p>
+        <p>
+          <Tr> Take a picture of the address and the key </Tr>
+        </p>
         <BaseCheckbox :name="'copy'" v-model="termsState">
-          <label class="checkbox__label" for="copy"> I took a picture </label>
+          <label class="checkbox__label" for="copy">
+            <Tr> I took a picture </Tr>
+          </label>
         </BaseCheckbox>
       </div>
     </div>
@@ -51,9 +65,13 @@
         </svg>
       </div>
       <div class="confirmation__box">
-        <p>Print the address and the key</p>
+        <p>
+          <Tr> Print the address and the key </Tr>
+        </p>
         <BaseCheckbox :name="'copy'" v-model="termsState">
-          <label class="checkbox__label" for="copy"> I printed </label>
+          <label class="checkbox__label" for="copy">
+            <Tr> I printed </Tr>
+          </label>
         </BaseCheckbox>
       </div>
     </div>
@@ -62,7 +80,7 @@
         class="confirmation__button button primary"
         @click="$emit('confirm')"
       >
-        Go
+        <Tr> Go </Tr>
       </button>
     </div>
   </div>

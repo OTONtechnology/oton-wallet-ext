@@ -1,15 +1,21 @@
 <template>
   <div class="create">
     <div class="create__block field">
-      <label for="" class="field__label">Password</label>
+      <label for="" class="field__label">
+        <Tr> Password </Tr>
+      </label>
       <input type="password" class="field__input" v-model="form.password" />
     </div>
     <div class="create__block field">
-      <label for="" class="field__label">Repeat Password</label>
+      <label for="" class="field__label">
+        <Tr> Repeat Password </Tr>
+      </label>
       <input type="password" class="field__input" v-model="form.password1" />
       <div class="field__errors">
         <div class="field__error" v-for="error in errors.password" :key="error">
-          {{ error }}
+          <Tr>
+            {{ error }}
+          </Tr>
         </div>
       </div>
     </div>
@@ -28,7 +34,7 @@
 
     <div class="buttons">
       <button class="buttons__create button primary" @click="create">
-        Create
+        <Tr> Create </Tr>
       </button>
     </div>
   </div>

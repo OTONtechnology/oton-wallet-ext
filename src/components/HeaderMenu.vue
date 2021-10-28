@@ -10,10 +10,10 @@
       <div class="menu__layer" @click="opened = false"></div>
       <div class="menu__list">
         <!-- <div class="menu__item">{{ t("Custom transaction") }}</div> -->
-        <div class="menu__item" @click="openSettings">{{ t("Settings") }}</div>
-        <div class="menu__item" @click="openInTab">{{ t("Open in tab") }}</div>
+        <div class="menu__item" @click="openSettings"><Tr>Settings</Tr></div>
+        <div class="menu__item" @click="openInTab"><Tr>Open in tab</Tr></div>
         <div class="menu__divider"></div>
-        <div class="menu__item" @click="logout">{{ t("Log out") }}</div>
+        <div class="menu__item" @click="logout"><Tr>Log out</Tr></div>
       </div>
     </div>
   </div>

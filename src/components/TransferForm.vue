@@ -1,7 +1,9 @@
 <template>
   <div class="transfer">
     <div class="transfer__currency">
-      <div class="transfer__currency-title">Currency</div>
+      <div class="transfer__currency-title">
+        <Tr> Currency </Tr>
+      </div>
       <div class="transfer__currencies-list">
         <div
           class="transfer__radio radio"
@@ -16,21 +18,27 @@
             v-model="currencyModel"
           />
           <label class="radio__label" :for="key">
-            {{ key }} <span class="max">(max: {{ cur.balance }})</span>
+            {{ key }} <span class="max">(<Tr>max</Tr>: {{ cur.balance }})</span>
           </label>
         </div>
       </div>
     </div>
     <div class="transfer__address field">
-      <label for="" class="field__label">Address</label>
+      <label for="" class="field__label">
+        <Tr> Address </Tr>
+      </label>
       <input type="text" class="field__input" v-model="addressModel" />
     </div>
     <div class="transfer__sum field">
-      <label for="" class="field__label">Sum</label>
+      <label for="" class="field__label">
+        <Tr> Sum </Tr>
+      </label>
       <input type="text" class="field__input" v-model="sumModel" />
     </div>
     <div class="transfer__sum field">
-      <label for="" class="field__label">Secret key</label>
+      <label for="" class="field__label">
+        <Tr> Secret key </Tr>
+      </label>
       <input
         type="text"
         class="field__input"
@@ -38,9 +46,11 @@
         v-model="secretKeyModel"
       />
     </div>
-    <div class="transfer__fee">Fee: {{ fee }}</div>
+    <div class="transfer__fee"><Tr>Fee</Tr>: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
-      Transfer {{ transferSum }} {{ currency }}
+      <Tr :settings="{ transferSum, currency }">
+        Transfer {transferSum} {currency}
+      </Tr>
     </button>
   </div>
 </template>

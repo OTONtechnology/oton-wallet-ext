@@ -6,7 +6,7 @@
       </svg>
     </router-link>
     <div class="header__text" @click="$vfm.show('RequestModal')">
-      {{ t("Your address") }}
+      <Tr> Your address </Tr>
     </div>
     <div
       class="header__address"
@@ -25,7 +25,7 @@
 import { defineComponent, computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
-import { useI18n } from 'vue-i18n';
+
 import HeaderMenu from '@/components/HeaderMenu.vue';
 
 export default defineComponent({
@@ -34,16 +34,20 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { t } = useI18n();
+
     const $vfm = inject('$vfm');
     const walletAddress = computed(() => store.state.walletAddress);
+    const walletParts = computed(() => [
+      walletAddress.value.substring(0, 11),
+      walletAddress.value.substring(walletAddress.value.length - 11),
+    ]);
 
-    const stripedAddr = computed(() => `${walletAddress.value.substring(0, 11)}...${walletAddress.value.substring(walletAddress.value.length - 11)}`);
+    const stripedAddr = computed(() => `${walletParts.value[0]}...${walletParts.value[1]}`);
 
     return {
       stripedAddr,
       $vfm,
-      t,
+
     };
   },
 });

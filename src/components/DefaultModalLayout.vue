@@ -10,7 +10,11 @@
     <svg class="modal__close" @click="handleClose" v-if="!resealable">
       <use xlink:href="#ic_close--sprite" />
     </svg>
-    <div class="title">{{ t(title) }}</div>
+    <div class="title">
+      <Tr>
+        {{ title }}
+      </Tr>
+    </div>
     <div class="modal__content">
       <slot v-if="showModal" :key="`modal-name-${name}`" />
     </div>
@@ -20,7 +24,6 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import '@/assets/svg/ic_close.svg?sprite';
-import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -46,7 +49,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const showModal = ref(props.show ? props.show : false);
-    const { t } = useI18n();
+
     const setParams = (event) => {
       emit('set-params', event.ref.params);
     };
@@ -58,7 +61,7 @@ export default defineComponent({
     return {
       showModal,
       setParams,
-      t,
+
       handleClose,
     };
   },

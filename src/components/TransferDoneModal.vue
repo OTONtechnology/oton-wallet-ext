@@ -1,7 +1,11 @@
 <template>
   <DefaultModalLayout :name="name" :title="''">
-    <div class="title">Transfer is done!</div>
-    <div class="button" @click="close">Ok</div>
+    <div class="title">
+      <Tr> Transfer is done! </Tr>
+    </div>
+    <div class="button" @click="close">
+      <Tr> Ok </Tr>
+    </div>
   </DefaultModalLayout>
 </template>
 
