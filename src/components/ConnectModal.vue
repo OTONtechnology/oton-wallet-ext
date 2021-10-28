@@ -66,7 +66,6 @@ export default defineComponent({
 
       extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
         extension.tabs.query({ currentWindow: false }, (tabSS) => {
-          console.log(tabSS);
         });
         extension.tabs.sendMessage(Number(tabId),
           { type: 'toContent:authData', payload: { ad: address.value, pk } });

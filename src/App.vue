@@ -45,7 +45,6 @@ export default defineComponent({
 
     onBeforeMount(async () => {
       const address = await getAddressFromStorage();
-      console.log(address);
 
       if (address) {
         store.commit('SET_WALLET_ADDRESS', address);

@@ -50,16 +50,13 @@ export default defineComponent({
       let isValid = true;
 
       if (!form.terms) {
-        console.log(1);
         errors.terms = ['You must agree with Terms of Use'];
         isValid = false;
       }
       if (form.password.length < 6 || form.password1.length < 6) {
-        console.log(2);
         errors.password = ['Password cannot be less than 6 characters'];
         isValid = false;
       } else if (form.password !== form.password1) {
-        console.log(3);
         errors.password = ['Passwords do not match'];
         isValid = false;
       }

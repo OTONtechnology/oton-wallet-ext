@@ -60,7 +60,6 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      console.log(walletAddress.value);
       store.dispatch('fetchBalances', walletAddress.value);
       store.dispatch('fetchRates');
     });
