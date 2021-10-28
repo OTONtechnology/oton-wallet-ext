@@ -16,6 +16,10 @@ interface InitState {
     fetchTransactions: number;
     fetchBalances: number;
   };
+  nextAfterAuth: {
+    tab: string | number | null;
+    resource: string | null;
+  }
 }
 const initState: InitState = {
   fetchState: INIT,
@@ -27,6 +31,10 @@ const initState: InitState = {
   quizzes: {
     fetchTransactions: 0,
     fetchBalances: 0,
+  },
+  nextAfterAuth: {
+    tab: null,
+    resource: null,
   },
 };
 
@@ -65,6 +73,9 @@ export default createStore({
     },
     CHANGE_LANG(state, value) {
       state.lang = value;
+    },
+    SET_NEXT_AFTER_AUTH(state, data) {
+      state.nextAfterAuth = data;
     },
   },
   actions: {

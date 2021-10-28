@@ -9,6 +9,7 @@
 import { defineComponent, ref, reactive } from 'vue';
 import { $vfm } from 'vue-final-modal';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import CreateWalletPassword from '@/components/CreateWalletPassword.vue';
 import CreateWalletConfirm from '@/components/CreateWalletConfirm.vue';
 import { createKeys } from '../utils/cryptoKeys';
@@ -22,6 +23,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
+    const store = useStore();
     const activeView = ref('pass');
     const keys = ref({
       pk: '',
@@ -48,7 +50,12 @@ export default defineComponent({
 
       if (addressInStorage === true) {
         $vfm.hide('CreateWalletModal');
-        router.push({ name: 'Home' });
+
+        if (store.state.nextAfterAuth.tab && store.state.nextAfterAuth.resource) {
+          this.$router.push({ name: 'Permission' });
+        } else {
+          router.push({ name: 'Home' });
+        }
       }
     };
 

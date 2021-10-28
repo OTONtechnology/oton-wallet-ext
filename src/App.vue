@@ -15,7 +15,7 @@
 <script>
 import { defineComponent, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
@@ -41,6 +41,7 @@ export default defineComponent({
     const store = useStore();
     const walletAddress = computed(() => store.state.walletAddress);
     const router = useRouter();
+    const route = useRoute();
 
     onBeforeMount(async () => {
       const address = await getAddressFromStorage();
@@ -49,6 +50,13 @@ export default defineComponent({
       if (address) {
         store.commit('SET_WALLET_ADDRESS', address);
       } else {
+        const hasReason = route.query.reason;
+        if (hasReason && hasReason === 'get_access') {
+          store.commit('SET_NEXT_AFTER_AUTH', {
+            tab: route.query.tab,
+            resource: route.query.resource,
+          });
+        }
         router.push('/');
       }
     });

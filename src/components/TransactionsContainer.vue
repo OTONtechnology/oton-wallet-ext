@@ -3,7 +3,7 @@
     <div class="transactions__title wrapper">
       <Tr>Transactions</Tr>
     </div>
-    <div class="transactions__list">
+    <div class="transactions__list" v-if="transactions.length">
       <div class="transactions__list-inner wrapper">
         <TransactionItem
           v-for="transaction in transactions"
@@ -11,6 +11,11 @@
           :transaction="transaction"
         />
       </div>
+    </div>
+    <div class="" v-else>
+      <EmptyState>
+        <Tr>No transactions</Tr>
+      </EmptyState>
     </div>
     <div class="transactions__buttons wrapper">
       <button
@@ -34,10 +39,12 @@ import { useStore } from 'vuex';
 // import { $vfm } from 'vue-final-modal';
 
 import TransactionItem from '@/components/TransactionItem.vue';
+import EmptyState from '@/components/EmptyState.vue';
 
 export default defineComponent({
   components: {
     TransactionItem,
+    EmptyState,
   },
   setup() {
     const $vfm = inject('$vfm');
@@ -80,8 +87,6 @@ export default defineComponent({
   }
 
   &__list {
-    border-bottom: 4px solid;
-    border-color: $fade-color;
     padding-bottom: 10px;
     max-height: 350px;
     overflow-y: auto;
@@ -96,6 +101,10 @@ export default defineComponent({
     position: absolute;
     bottom: 0;
     left: 0;
+    width: calc(100% - 40px);
+    border-top: 4px solid;
+    border-color: $fade-color;
+    padding-top: 12px;
   }
 
   &__transfer {

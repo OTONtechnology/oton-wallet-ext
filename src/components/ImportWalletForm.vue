@@ -69,6 +69,11 @@ export default defineComponent({
       errors: {},
     };
   },
+  computed: {
+    nextAfterAuth() {
+      return !!(this.$store.state.nextAfterAuth.tab && this.$store.state.nextAfterAuth.resource);
+    },
+  },
   methods: {
     changeTerms(val) {
       this.terms = val;
@@ -89,7 +94,12 @@ export default defineComponent({
 
         if (addressInStorage === true) {
           $vfm.hide('ImportWalletModal');
-          this.$router.push({ name: 'Home' });
+
+          if (this.nextAfterAuth) {
+            this.$router.push({ name: 'Permission' });
+          } else {
+            this.$router.push({ name: 'Home' });
+          }
         }
       }
     },

@@ -1,9 +1,10 @@
 <template>
   <vue-final-modal
     v-model="showModal"
-    :name="name"
     content-class="modal-content"
     classes="modal-container"
+    :name="name"
+    :click-to-close="!unclosable"
     @beforeOpen="setParams"
     @closed="handleClose"
   >
@@ -40,6 +41,10 @@ export default defineComponent({
       required: false,
       type: Boolean,
       default: true,
+    },
+    unclosable: {
+      required: false,
+      type: Boolean,
     },
   },
   emits: ['set-params', 'close-modal'],
