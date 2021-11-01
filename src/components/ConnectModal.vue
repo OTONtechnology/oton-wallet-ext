@@ -65,8 +65,8 @@ export default defineComponent({
       const pk = bytesToHex(uncrypt.pk);
 
       extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-        extension.tabs.query({ currentWindow: false }, (tabSS) => {
-        });
+        // extension.tabs.query({ currentWindow: false }, (tabSS) => {
+        // });
         extension.tabs.sendMessage(Number(tabId),
           { type: 'toContent:authData', payload: { ad: address.value, pk } });
 

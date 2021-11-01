@@ -38,8 +38,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const balances = computed(() => store.state.balances);
-    const rates = computed(() => store.state.rates);
+    const balances = computed(() => store.getters['balances/balances']);
+    const rates = computed(() => store.getters['rates/rates']);
     const walletAddress = computed(() => store.state.walletAddress);
     const balancesIsEmpty = computed(() => isEmpty(store.state.balances));
 
@@ -60,8 +60,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      store.dispatch('fetchBalances', walletAddress.value);
-      store.dispatch('fetchRates');
+      store.dispatch('balances/fetchBalances', walletAddress.value);
+      store.dispatch('rates/fetchRates');
     });
 
     return {
