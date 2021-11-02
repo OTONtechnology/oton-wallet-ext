@@ -61,10 +61,10 @@ import { bytesToHex } from '@/utils/crypto';
 export default defineComponent({
   data() {
     return {
-      phrase: '9275b1960378420c0867a7c341389fe882fd64d03c80543f06b074399daa1c7ac295706afdc968bd8cac54155c01bc190179b0beffcdfb8814d8b8ce763d16ee',
-      password1: '123123',
-      password2: '123123',
-      terms: true,
+      phrase: '',
+      password1: '',
+      password2: '',
+      terms: false,
 
       errors: {},
     };

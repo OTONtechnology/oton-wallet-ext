@@ -42,9 +42,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const errors = reactive({});
     const form = reactive({
-      password: '123456',
-      password1: '123456',
-      terms: true,
+      password: '',
+      password1: '',
+      terms: false,
     });
     const validate = () => {
       let isValid = true;
