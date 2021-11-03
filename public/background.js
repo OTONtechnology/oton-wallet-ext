@@ -1,6 +1,7 @@
 // import extension from 'extensionizer';
 
 chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
+  console.log(sendResponse);
   let top = window.screen.height - 600;
   top = top > 0 ? top / 2 : 0;
 

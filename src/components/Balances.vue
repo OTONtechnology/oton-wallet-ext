@@ -41,7 +41,7 @@ export default defineComponent({
     const balances = computed(() => store.getters['balances/balances']);
     const rates = computed(() => store.getters['rates/rates']);
     const walletAddress = computed(() => store.state.walletAddress);
-    const balancesIsEmpty = computed(() => isEmpty(store.state.balances));
+    const balancesIsEmpty = computed(() => isEmpty(store.getters['balances/balances']));
 
     const getEur = (currency, sum) => {
       if (!rates.value[currency]) {

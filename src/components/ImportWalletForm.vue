@@ -64,7 +64,7 @@ export default defineComponent({
       phrase: '',
       password1: '',
       password2: '',
-      terms: false,
+      terms: true,
 
       errors: {},
     };

@@ -4,6 +4,11 @@ document.addEventListener('app:auth', (data) => {
   chrome.runtime.sendMessage(data.detail);
 });
 
+document.addEventListener('app:customTs', (data) => {
+  console.log(data);
+  chrome.runtime.sendMessage(data.detail);
+});
+
 chrome.runtime.onMessage.addListener(
   (data) => {
     if (data.type && data.type === 'toContent:authData') {

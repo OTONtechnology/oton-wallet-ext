@@ -44,7 +44,7 @@ export default defineComponent({
     const form = reactive({
       password: '',
       password1: '',
-      terms: false,
+      terms: true,
     });
     const validate = () => {
       let isValid = true;
@@ -60,7 +60,6 @@ export default defineComponent({
         errors.password = ['Passwords do not match'];
         isValid = false;
       }
-
       return isValid;
     };
     const create = () => {

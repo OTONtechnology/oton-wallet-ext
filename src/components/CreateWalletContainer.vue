@@ -13,6 +13,7 @@ import { useStore } from 'vuex';
 import CreateWalletPassword from '@/components/CreateWalletPassword.vue';
 import CreateWalletConfirm from '@/components/CreateWalletConfirm.vue';
 import { createKeys } from '../utils/cryptoKeys';
+import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import { bytesToHex } from '../utils/crypto';
 import { importWalletFunc } from '@/utils/auth';
 
@@ -39,7 +40,6 @@ export default defineComponent({
       keys.value.pk = bytesToHex(newKeys.pk);
       keys.value.secret = bytesToHex(newKeys.secret);
       keys.value.mnemonic = newKeys.mnemonic;
-
       activeView.value = 'confirm';
     };
 
@@ -47,9 +47,12 @@ export default defineComponent({
       const { secret } = keys.value;
 
       const addressInStorage = await importWalletFunc(secret, form.value.password);
+      const address = await getAddressFromStorage();
 
-      if (addressInStorage === true) {
+      if (addressInStorage === true && address) {
         $vfm.hide('CreateWalletModal');
+        // console.log(pk);
+        store.commit('SET_WALLET_ADDRESS', address);
 
         if (store.state.nextAfterAuth.tab && store.state.nextAfterAuth.resource) {
           this.$router.push({ name: 'Permission' });

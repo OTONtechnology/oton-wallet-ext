@@ -87,8 +87,6 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch('transactions/fetchTransactions', walletAddress.value);
 
-      // const list = document.getElementById('transactions-list');
-      console.log();
       scrollLoader.value.addEventListener('scroll', handleScroll);
     });
 

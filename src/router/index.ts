@@ -38,6 +38,10 @@ router.beforeEach(async (to, from, next) => {
     }
     return next();
   } else {
+    const address = await getAddressFromStorage();
+    if (!address) {
+      return next('Home');
+    }
     return next();
     // const address = await getAddressFromStorage();
     // console.log(address);
