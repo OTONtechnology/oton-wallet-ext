@@ -5,6 +5,10 @@ export const sumInputs = (inputs: any[]): number => inputs
   .reduce((prev, { amount }) => prev.plus(amount), new Decimal(0))
   .toNumber();
 
+export const sumInputsUnsignedTx = (inputs: any[]): number => inputs
+  .reduce((prev, cur) => prev.plus(cur.coins[0].amount), new Decimal(0))
+  .toNumber();
+
 export const sumInputsGrouped = (inputs: any[]): any => {
   const grouped = groupBy(
     (input) => input.ticker,

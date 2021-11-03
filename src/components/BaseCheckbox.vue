@@ -24,7 +24,7 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    modelValue: {
+    value: {
       type: Boolean,
       required: true,
     },
@@ -33,10 +33,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const inputModel = computed(() => ({
       get() {
-        return props.modelValue;
+        return props.value;
       },
       set(e) {
-        emit('update:modelValue', e);
+        emit('change-value', e);
       },
     }));
 

@@ -18,6 +18,9 @@
         </span>
       </div>
     </div>
+    <EmptyState v-if="balancesIsEmpty">
+      <Tr>No currencies</Tr>
+    </EmptyState>
   </div>
 </template>
 
@@ -26,13 +29,19 @@ import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import '@/assets/svg/ic_logo.svg?sprite';
 import Decimal from 'decimal.js';
+import { isEmpty } from 'rambda';
+import EmptyState from '@/components/EmptyState.vue';
 
 export default defineComponent({
+  components: {
+    EmptyState,
+  },
   setup() {
     const store = useStore();
-    const balances = computed(() => store.state.balances);
-    const rates = computed(() => store.state.rates);
+    const balances = computed(() => store.getters['balances/balances']);
+    const rates = computed(() => store.getters['rates/rates']);
     const walletAddress = computed(() => store.state.walletAddress);
+    const balancesIsEmpty = computed(() => isEmpty(store.getters['balances/balances']));
 
     const getEur = (currency, sum) => {
       if (!rates.value[currency]) {
@@ -51,13 +60,12 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      console.log(walletAddress.value);
-      store.dispatch('fetchBalances', walletAddress.value);
-      store.dispatch('fetchRates');
+      store.dispatch('balances/fetchBalances', walletAddress.value);
+      store.dispatch('rates/fetchRates');
     });
 
     return {
-      balances, rates, getEur, getRate,
+      balances, rates, balancesIsEmpty, getEur, getRate,
     };
   },
 });

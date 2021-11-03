@@ -10,12 +10,14 @@
     <SettingsModal :name="'SettingsModal'" />
     <CreateWalletModal :name="'CreateWalletModal'" />
     <RequestModal :name="'RequestModal'" />
+    <ExternalTxModal :name="'ExternalTxModal'" />
   </div>
 </template>
 <script>
 import { defineComponent, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+// import { $vfm } from 'vue-final-modal';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
@@ -24,6 +26,7 @@ import TransactionModal from '@/components/TransactionModal.vue';
 import SettingsModal from '@/components/SettingsModal.vue';
 import CreateWalletModal from '@/components/CreateWalletModal.vue';
 import RequestModal from '@/components/RequestModal.vue';
+import ExternalTxModal from '@/components/ExternalTxModal.vue';
 import 'vue-toastification/dist/index.css';
 
 export default defineComponent({
@@ -35,20 +38,29 @@ export default defineComponent({
     SettingsModal,
     CreateWalletModal,
     RequestModal,
+    ExternalTxModal,
   },
 
   setup() {
     const store = useStore();
     const walletAddress = computed(() => store.state.walletAddress);
     const router = useRouter();
+    const route = useRoute();
 
     onBeforeMount(async () => {
       const address = await getAddressFromStorage();
-      console.log(address);
+      // $vfm.show('ExternalTxModal');
 
       if (address) {
         store.commit('SET_WALLET_ADDRESS', address);
       } else {
+        const hasReason = route.query.reason;
+        if (hasReason && hasReason === 'get_access') {
+          store.commit('SET_NEXT_AFTER_AUTH', {
+            tab: route.query.tab,
+            resource: route.query.resource,
+          });
+        }
         router.push('/');
       }
     });

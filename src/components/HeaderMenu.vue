@@ -40,7 +40,7 @@ export default defineComponent({
 
     const logout = async () => {
       const clear = await clearStorage('local');
-      console.log(clear);
+
       if (clear === true) {
         store.commit('CLEAR');
         router.push('/');

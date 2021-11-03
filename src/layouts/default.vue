@@ -1,6 +1,7 @@
 <template>
   <div>
     <slot />
+    <div class="footer"></div>
   </div>
 </template>
 
@@ -8,9 +9,17 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  setup() {
+
+  },
 
 });
 </script>
 
-<style>
+<style lang="stylus" scoped>
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
 </style>
