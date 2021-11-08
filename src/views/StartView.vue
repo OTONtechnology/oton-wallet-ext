@@ -1,14 +1,16 @@
 <template>
   <StartLayout>
     <div class="card">
-      <p class="card__text">Create a new wallet or import an existing one.</p>
+      <p class="card__text">
+        <Tr> Create a new wallet or import an existing one. </Tr>
+      </p>
 
       <div class="card__buttons">
         <button class="card__button button" @click="openImportModal">
-          Import a wallet
+          <Tr> Import a wallet </Tr>
         </button>
         <button @click="openCreateModal" class="card__button button primary">
-          Create new wallet
+          <Tr> Create new wallet </Tr>
         </button>
       </div>
     </div>

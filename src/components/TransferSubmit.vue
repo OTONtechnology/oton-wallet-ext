@@ -1,26 +1,41 @@
 <template>
   <div class="form">
     <div class="form__item">
-      <div class="form__title">Currency</div>
+      <div class="form__title">
+        <Tr> Currency </Tr>
+      </div>
       <div class="form__value">{{ currency }}</div>
     </div>
     <div class="form__item">
-      <div class="form__title">Address</div>
+      <div class="form__title">
+        <Tr> Address </Tr>
+      </div>
       <div class="form__value">{{ address }}</div>
     </div>
     <div class="form__item">
-      <div class="form__title">Sum</div>
+      <div class="form__title">
+        <Tr> Sum </Tr>
+      </div>
       <div class="form__value">{{ sum }}</div>
     </div>
     <div class="form__item">
-      <div class="form__title" v-if="fee">Fee</div>
-      <div class="form__value fee">{{ fee ? fee : "No fee" }}</div>
+      <div class="form__title" v-if="fee">
+        <Tr> Fee </Tr>
+      </div>
+      <div class="form__value fee">
+        {{ fee ? fee : "" }}
+        <Tr v-if="!fee">No fee</Tr>
+      </div>
     </div>
 
     <div class="form__buttons">
-      <button class="button" @click="back">Back</button>
+      <button class="button" @click="back">
+        <Tr> Back </Tr>
+      </button>
       <button class="button primary" @click="submitTransfer">
-        Accept and Transfer {{ transferSum }} {{ currency }}
+        <Tr :settings="{ transferSum, currency }">
+          Accept and Transfer {transferSum} {currency}
+        </Tr>
       </button>
     </div>
   </div>

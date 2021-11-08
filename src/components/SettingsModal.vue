@@ -24,11 +24,10 @@ export default defineComponent({
   },
   setup() {
     const langs = reactive({ en: 'English', ru: 'Русский' });
-    const { t, locale } = useI18n();
+    const { locale } = useI18n();
 
     return {
       langs,
-      t,
       locale,
     };
   },

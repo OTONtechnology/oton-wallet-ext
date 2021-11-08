@@ -1,29 +1,39 @@
 <template>
   <div class="import">
-    <p class="import__text">Import a wallet with a secret recovery phrase.</p>
+    <p class="import__text">
+      <Tr> Import a wallet with a secret recovery phrase. </Tr>
+    </p>
 
     <div class="field">
-      <label for="" class="field__label"
-        >Secret Key or Secret Recovery Phrase</label
-      >
+      <label for="" class="field__label">
+        <Tr> Secret Key or Secret Recovery Phrase </Tr>
+      </label>
       <input type="text" class="field__input" v-model="phrase" />
       <div class="field__errors">
         <div class="field__error" v-for="error in errors.phrase" :key="error">
-          {{ error }}
+          <Tr>
+            {{ error }}
+          </Tr>
         </div>
       </div>
     </div>
     <div class="field">
-      <label for="" class="field__label">New Password</label>
+      <label for="" class="field__label">
+        <Tr> New Password </Tr>
+      </label>
       <input type="password" class="field__input" v-model="password1" />
     </div>
 
     <div class="field">
-      <label for="" class="field__label">Repeat Password</label>
+      <label for="" class="field__label">
+        <Tr> Repeat Password </Tr>
+      </label>
       <input type="password" class="field__input" v-model="password2" />
       <div class="field__errors">
         <div class="field__error" v-for="error in errors.password" :key="error">
-          {{ error }}
+          <Tr>
+            {{ error }}
+          </Tr>
         </div>
       </div>
     </div>
@@ -31,17 +41,21 @@
     <div class="field">
       <BaseCheckbox :name="'terms'" :value="terms" @change-value="changeTerms">
         <label class="checkbox__label" for="terms">
-          I agree to the Terms of Use
+          <Tr> I agree to the Terms of Use </Tr>
         </label>
       </BaseCheckbox>
       <div class="field__errors">
         <div class="field__error" v-for="error in errors.terms" :key="error">
-          {{ error }}
+          <Tr>
+            {{ error }}
+          </Tr>
         </div>
       </div>
     </div>
 
-    <button class="import__button button primary" @click="login">Import</button>
+    <button class="import__button button primary" @click="login">
+      <Tr> Import </Tr>
+    </button>
   </div>
 </template>
 

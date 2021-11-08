@@ -71,19 +71,19 @@
     <div class="transaction">
       <div class="transaction__block flexed">
         <div>
-          <div class="transaction__title">{{ t("Date and Time") }}</div>
+          <div class="transaction__title"><Tr>Date and Time</Tr></div>
           <div class="transaction__text">
             {{ convertDate(transaction.block.timestamp) }}
           </div>
         </div>
         <div>
-          <div class="transaction__title">{{ t("Type") }}</div>
+          <div class="transaction__title"><Tr>Type</Tr></div>
           <div class="transaction__text">
             {{ transaction.type }}
           </div>
         </div>
         <div>
-          <div class="transaction__title">{{ t("Total") }}</div>
+          <div class="transaction__title"><Tr>Total</Tr></div>
           <div class="transaction__text">
             <div
               class="transaction__sum"
@@ -97,7 +97,7 @@
         </div>
       </div>
       <div class="transaction__block">
-        <div class="transaction__title">{{ t("Senders") }}</div>
+        <div class="transaction__title"><Tr>Senders</Tr></div>
         <div>
           <div
             class="transaction__put"
@@ -113,7 +113,7 @@
         </div>
       </div>
       <div class="transaction__block">
-        <div class="transaction__title">{{ t("Recepients") }}</div>
+        <div class="transaction__title"><Tr>Recepients</Tr></div>
         <div v-if="transaction.outputs.length">
           <div
             class="transaction__put"
@@ -128,7 +128,7 @@
           </div>
         </div>
         <div v-else>
-          <div class="transaction__address">n/a</div>
+          <div class="transaction__address"><Tr>n/a</Tr></div>
         </div>
       </div>
       <div class="transaction__buttons">
