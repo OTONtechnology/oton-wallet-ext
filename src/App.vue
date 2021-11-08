@@ -15,7 +15,7 @@
 </template>
 <script>
 import {
-  defineComponent, onBeforeMount, computed, onMounted,
+  defineComponent, onBeforeMount, computed, onMounted, watch,
 } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
@@ -52,30 +52,58 @@ export default defineComponent({
     onBeforeMount(async () => {
       const address = await getAddressFromStorage();
 
-      if (address) {
+      const loaderWithAddress = () => {
         store.commit('SET_WALLET_ADDRESS', address);
-      } else {
+
+        watch(() => route.query, () => {
+          const hasReason = route.query.reason;
+          if (hasReason === 'customTx') {
+            const payload = JSON.parse(route.query.payload);
+            const resourceAddress = payload.address;
+
+            if (resourceAddress === address) {
+              $vfm.show('ExternalTxModal', {
+                transaction: payload.transaction,
+                resource: route.query.resource,
+              });
+            } else {
+              console.error('addresses do not match');
+            }
+          }
+        });
+      };
+
+      const loaderWithoutAddress = () => {
         const hasReason = route.query.reason;
-        if (hasReason && hasReason === 'get_access') {
-          store.commit('SET_NEXT_AFTER_AUTH', {
-            tab: route.query.tab,
-            resource: route.query.resource,
-          });
+
+        if (hasReason) {
+          if (hasReason === 'get_access') {
+            store.commit('SET_NEXT_AFTER_AUTH', {
+              tab: route.query.tab,
+              resource: route.query.resource,
+            });
+          }
         }
 
         router.push('/');
+      };
+
+      if (address) {
+        loaderWithAddress();
+      } else {
+        loaderWithoutAddress();
       }
     });
 
     onMounted(async () => {
       const address = await getAddressFromStorage();
 
-      if (address) {
-        console.log(route.query);
-        // if (hasReason && hasReason === 'customTx') {
-        //   $vfm.show('ExternalTxModal');
-        // }
-      }
+      // if (address) {
+      //   console.log(route.query);
+      //   if (hasReason && hasReason === 'customTx') {
+      //     $vfm.show('ExternalTxModal');
+      //   }
+      // }
     });
 
     return {

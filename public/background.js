@@ -26,15 +26,16 @@ const auth = (data, sender) => openWindow(
 );
 
 const createTx = (data, sender) => openWindow(
-  `index.html/#/home?tab=${sender.tab.id}&resource=${sender.origin}&reason=customTx`,
+  `index.html/#/home?tab=${sender.tab.id}&resource=${sender.origin}&reason=customTx&payload=${data}`,
 );
 
-chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((data, sender) => {
   if (data.type === 'auth') {
-    auth(data, sender, sendResponse);
+    auth(data, sender);
   }
 
-  if (data.type === 'customTx') {
-    createTx(data, sender, sendResponse);
+  if (data.type === 'customTs') {
+    const stringified = JSON.stringify(data.payload);
+    createTx(stringified, sender);
   }
 });

@@ -63,18 +63,17 @@ export default defineComponent({
       const secret = await getLocalSecret();
       const uncrypt = await getKeysFromHexSK(secret);
       const pk = bytesToHex(uncrypt.pk);
-      console.log(pk);
 
-      // extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-      //   extension.tabs.sendMessage(Number(tabId),
-      //     { type: 'toContent:authData', payload: { ad: address.value, pk } });
+      extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+        extension.tabs.sendMessage(Number(tabId),
+          { type: 'toContent:authData', payload: { ad: address.value, pk } });
 
-      //   store.commit('SET_NEXT_AFTER_AUTH', { tab: null, resource: null });
+        store.commit('SET_NEXT_AFTER_AUTH', { tab: null, resource: null });
 
-      //   extension.tabs.getCurrent((tab) => {
-      //     extension.tabs.remove(tab.id);
-      //   });
-      // });
+        extension.tabs.getCurrent((tab) => {
+          extension.tabs.remove(tab.id);
+        });
+      });
     };
 
     const abort = () => {

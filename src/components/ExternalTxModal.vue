@@ -1,5 +1,9 @@
 <template>
-  <DefaultModalLayout :name="name" :title="'Confirm transaction'">
+  <DefaultModalLayout
+    :name="name"
+    :title="'Confirm transaction'"
+    @set-params="setParams"
+  >
     <div class="form">
       <div class="form__item">
         <div class="form__title">
@@ -53,14 +57,17 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-import { useRoute } from 'vue-router';
-// import { $vfm } from 'vue-final-modal';
+import {
+  defineComponent, ref, reactive, computed,
+} from 'vue';
+import { isEmpty } from 'rambda';
+import $vfm from 'vue-final-modal';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { sumInputsUnsignedTx } from '@/utils/sumInputs';
+import { signTrn } from '@/utils/transactionSign';
+import { getLocalSecret } from '@/utils/auth';
 
 export default defineComponent({
-  // name: 'TransferDoneModal',
   components: {
     DefaultModalLayout,
   },
@@ -68,40 +75,45 @@ export default defineComponent({
     name: String,
   },
   setup() {
-    const route = useRoute();
     const showJSON = ref(false);
-    const resource = ref(route.query.resource);
-    const transaction = {
-      code: 0,
-      message: 'None',
-      data: {
+    const resource = ref('');
+    const transaction = reactive({});
+    const sum = computed(() => (isEmpty(transaction.value.fee) ? '0' : sumInputsUnsignedTx(transaction.value.inputs)));
+    const address = computed(() => (isEmpty(transaction.value.fee) ? '' : `${transaction.value.inputs.length} recepients`));
+    const fee = computed(() => (isEmpty(transaction.value.fee) ? { amount: '', name: '' } : transaction.value.fee));
+
+    const setParams = (params) => {
+      // transaction.value = params.value.transaction;
+      transaction.value = {
         fee: { name: 'bitboneCoin', amount: '1' },
         inputs: [{
-          address: 'HuqdUB4S2sPCsta+UUwAIWzVMaQ=',
-          coins: [{ name: 'bitboneCoin', amount: '1' }],
-          sequence: '380',
-          signature: '7olyjSQXYTLjCrowejqTZARmlxWg2kYjbh2ymhUwSiCy1tXSKCsyl/muManrYw4ukKiXFbmlVlTs/du9S7fVCA==',
-          pubKey: '7qXFq0CyhHf5DfO1HbZCnBt3DSZgQ5BFlYWE2Fc/MvU=',
-        },
-        {
-          address: 'TQs8Eh65DoBiPPNsONtungZyLfU=',
-          coins: [{ name: 'bitboneCoin', amount: '1' }],
-          sequence: '1',
-        }],
-        address: 'W5znQ9IZcK+tSQ+SFRTdbKPJukc=',
-        referal: 'TQs8Eh65DoBiPPNsONtungZyLfU=',
-        value: { name: 'TarifBitBone', amount: '299' },
-        delta: { name: 'bitboneCoin', amount: '100' },
-      },
+          address: 'HuqdUB4S2sPCsta UUwAIWzVMaQ=', coins: [{ name: 'bitboneCoin', amount: '1' }], sequence: '387', signature: 'tiN9PbkQx1P2tABGnQqxJEte366plJhWUOvJdDj9YkMlJydMJ3ayG3xGonFima7NzX/pw3ZaDm98TrYzA7t/BQ==', pubKey: 'qicSC9 kNiJts5cdxZlgpDM82rb05K1rzPqirIYNHrQ=',
+        }, { address: 'KzVmt Pf4w3BsC9qq7KiQQi1VCg=', coins: [{ name: 'bitboneCoin', amount: '2990000' }], sequence: '1' }],
+        address: 'W5znQ9IZcK tSQ SFRTdbKPJukc=',
+        referal: 'KzVmt Pf4w3BsC9qq7KiQQi1VCg=',
+        value: { name: 'TarifBitBone', amount: '2990000' },
+        delta: { name: 'bitboneCoin', amount: '1000000' },
+      };
+      resource.value = params.value.resource;
+      console.log(JSON.stringify(transaction.value));
     };
 
-    const sum = sumInputsUnsignedTx(transaction.data.inputs);
-    const address = `${transaction.data.inputs.length} recepients`;
+    const submitTransfer = async () => {
+      if (!isEmpty(transaction.value)) {
+        const localSk = await getLocalSecret();
+        const signedTrn = await signTrn(transaction.value, localSk);
 
-    const { fee } = transaction.data;
+        const resp = await this.$store.dispatch('sendTransaction', signedTrn);
 
-    const submitTransfer = () => {
-      console.log('confirm');
+        if (!resp) {
+          return;
+        }
+
+        if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
+          $vfm.hide('TransferModal');
+          $vfm.show('TransferDoneModal');
+        }
+      }
     };
 
     const back = () => {
@@ -117,6 +129,7 @@ export default defineComponent({
       showJSON,
       submitTransfer,
       back,
+      setParams,
     };
   },
 });
