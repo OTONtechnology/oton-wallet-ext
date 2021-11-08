@@ -62,6 +62,7 @@ import {
 } from 'vue';
 import { isEmpty } from 'rambda';
 import $vfm from 'vue-final-modal';
+import { useStore } from 'vuex';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { sumInputsUnsignedTx } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
@@ -75,6 +76,7 @@ export default defineComponent({
     name: String,
   },
   setup() {
+    const store = useStore();
     const showJSON = ref(false);
     const resource = ref('');
     const transaction = reactive({});
@@ -83,34 +85,26 @@ export default defineComponent({
     const fee = computed(() => (isEmpty(transaction.value.fee) ? { amount: '', name: '' } : transaction.value.fee));
 
     const setParams = (params) => {
-      // transaction.value = params.value.transaction;
-      transaction.value = {
-        fee: { name: 'bitboneCoin', amount: '1' },
-        inputs: [{
-          address: 'HuqdUB4S2sPCsta UUwAIWzVMaQ=', coins: [{ name: 'bitboneCoin', amount: '1' }], sequence: '387', signature: 'tiN9PbkQx1P2tABGnQqxJEte366plJhWUOvJdDj9YkMlJydMJ3ayG3xGonFima7NzX/pw3ZaDm98TrYzA7t/BQ==', pubKey: 'qicSC9 kNiJts5cdxZlgpDM82rb05K1rzPqirIYNHrQ=',
-        }, { address: 'KzVmt Pf4w3BsC9qq7KiQQi1VCg=', coins: [{ name: 'bitboneCoin', amount: '2990000' }], sequence: '1' }],
-        address: 'W5znQ9IZcK tSQ SFRTdbKPJukc=',
-        referal: 'KzVmt Pf4w3BsC9qq7KiQQi1VCg=',
-        value: { name: 'TarifBitBone', amount: '2990000' },
-        delta: { name: 'bitboneCoin', amount: '1000000' },
-      };
+      transaction.value = params.value.transaction;
+
       resource.value = params.value.resource;
-      console.log(JSON.stringify(transaction.value));
     };
 
     const submitTransfer = async () => {
       if (!isEmpty(transaction.value)) {
         const localSk = await getLocalSecret();
-        const signedTrn = await signTrn(transaction.value, localSk);
+        const testTx = JSON.parse(JSON.stringify(transaction.value));
+        console.log(testTx);
+        const signedTrn = await signTrn(testTx, localSk, 'buy_in_amc');
 
-        const resp = await this.$store.dispatch('sendTransaction', signedTrn);
+        const resp = await store.dispatch('sendTransaction', signedTrn);
 
         if (!resp) {
           return;
         }
 
         if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
-          $vfm.hide('TransferModal');
+          $vfm.hide('ExternalTxModal');
           $vfm.show('TransferDoneModal');
         }
       }

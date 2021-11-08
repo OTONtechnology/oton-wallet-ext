@@ -2,10 +2,12 @@ import { Decimal } from 'decimal.js';
 import * as ed from 'noble-ed25519';
 import { pathOr } from 'rambda';
 import { blcInstance } from './api';
-import { SendCoins, Raw } from './protobufTypes';
+import { SendCoins, Raw, BuyInAmc } from './protobufTypes';
 import { Transaction, TransactionMainData } from '../types/transactions.d';
 import { bytesToHex, hexToBytes } from './crypto';
 import { getKeysFromSK } from './cryptoKeys';
+
+const stringOrBytes = (payload: string | Uint8Array) => (typeof payload === 'string' ? hexToBytes(payload) : payload);
 
 export const getLastSequence = async (addr: string): Promise<number> => {
   let sequence = 0;
@@ -65,9 +67,13 @@ export const getTrnFromData = async (
 
 export const stripeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
   ...trn,
+  ...(trn.address ? { address: stringOrBytes(trn.address) } : {}),
+  ...(trn.referal ? { referal: stringOrBytes(trn.referal) } : {}),
   inputs: trn.inputs.map((input) => {
     const newInput = {
       ...input,
+      ...(input.pub_key ? { pub_key: stringOrBytes(input.pub_key) } : {}),
+      address: stringOrBytes(input.address),
     };
 
     if (newInput.signature) {
@@ -115,21 +121,28 @@ const addSignToTrn = (
 export const signTrn = async (
   trn: Transaction,
   sk: string | Uint8Array,
-  type?: string,
+  type?: 'buy_in_amc' | 'send_coins',
 ): Promise<string> => {
+  const methods = {
+    buy_in_amc: BuyInAmc,
+    send_coins: SendCoins,
+  };
+  const methodType = methods[type || 'send_coins'];
   const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
 
   const pair = await getKeysFromSK(secret);
   const stripedTrn = stripeTrn(trn, pair.pk);
 
-  const signBytes = SendCoins.encode(stripedTrn).finish();
+  console.log(stripedTrn);
+
+  const signBytes = methodType.encode(stripedTrn).finish();
 
   const signature = await ed.sign(signBytes, pair.sk);
   const signedTrn = addSignToTrn(trn, pair.address, signature);
   console.info({ signedTrn });
-  const encodedSignedTrn = SendCoins.encode(signedTrn).finish();
+  const encodedSignedTrn = methodType.encode(signedTrn).finish();
 
-  console.info('SignBytes: ', bytesToHex(signBytes));
+  console.info(type, bytesToHex(signBytes));
 
   return createRaw(encodedSignedTrn, type);
 };
