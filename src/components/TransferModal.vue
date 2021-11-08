@@ -32,7 +32,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { $vfm } from 'vue-final-modal';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
@@ -62,7 +62,8 @@ export default defineComponent({
     name: String,
   },
   computed: {
-    ...mapState(['balances', 'walletAddress']),
+    ...mapState(['walletAddress']),
+    ...mapGetters({ balances: 'balances/balances' }),
   },
   methods: {
     changeCurrency(value) {

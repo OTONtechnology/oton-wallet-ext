@@ -1,23 +1,12 @@
-// import extension from 'extensionizer';
-
-chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
-  console.log(sendResponse);
+const openWindow = (url) => {
   let top = window.screen.height - 600;
   top = top > 0 ? top / 2 : 0;
 
   let left = window.screen.width - 360;
   left = left > 0 ? left / 2 : 0;
 
-  // chrome.windows.create({
-  //   url: `index.html/#/permission?tab=${sender.tab.id}&resource=${sender.origin}`,
-  //   height: 450,
-  //   width: 360,
-  //   focused: true,
-  //   top,
-  //   left,
-  // });
   window.open(
-    `index.html/#/permission?tab=${sender.tab.id}&resource=${sender.origin}&reason=get_access`,
+    url,
     'targetWindow',
     `toolbar=no,
       location=no,
@@ -30,4 +19,22 @@ chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
       top=${top},
       left=${left}`,
   );
+};
+
+const auth = (data, sender) => openWindow(
+  `index.html/#/permission?tab=${sender.tab.id}&resource=${sender.origin}&reason=get_access`,
+);
+
+const createTx = (data, sender) => openWindow(
+  `index.html/#/home?tab=${sender.tab.id}&resource=${sender.origin}&reason=customTx`,
+);
+
+chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
+  if (data.type === 'auth') {
+    auth(data, sender, sendResponse);
+  }
+
+  if (data.type === 'customTx') {
+    createTx(data, sender, sendResponse);
+  }
 });

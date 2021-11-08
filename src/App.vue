@@ -14,10 +14,12 @@
   </div>
 </template>
 <script>
-import { defineComponent, onBeforeMount, computed } from 'vue';
+import {
+  defineComponent, onBeforeMount, computed, onMounted,
+} from 'vue';
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
-// import { $vfm } from 'vue-final-modal';
+import { $vfm } from 'vue-final-modal';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
@@ -49,7 +51,6 @@ export default defineComponent({
 
     onBeforeMount(async () => {
       const address = await getAddressFromStorage();
-      // $vfm.show('ExternalTxModal');
 
       if (address) {
         store.commit('SET_WALLET_ADDRESS', address);
@@ -61,7 +62,19 @@ export default defineComponent({
             resource: route.query.resource,
           });
         }
+
         router.push('/');
+      }
+    });
+
+    onMounted(async () => {
+      const address = await getAddressFromStorage();
+
+      if (address) {
+        console.log(route.query);
+        // if (hasReason && hasReason === 'customTx') {
+        //   $vfm.show('ExternalTxModal');
+        // }
       }
     });
 

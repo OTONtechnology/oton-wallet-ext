@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+// import { useStore } from 'vuex';
 import StartView from '../views/StartView.vue';
 import Home from '../views/Home.vue';
 import Permission from '../views/Permission.vue';
@@ -40,7 +41,7 @@ router.beforeEach(async (to, from, next) => {
   } else {
     const address = await getAddressFromStorage();
     if (!address) {
-      return next('Home');
+      return next('StartView');
     }
     return next();
     // const address = await getAddressFromStorage();
