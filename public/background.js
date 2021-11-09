@@ -36,7 +36,6 @@ chrome.runtime.onMessage.addListener((data, sender) => {
 
   if (data.type === 'customTs') {
     const stringified = JSON.stringify(data.payload);
-    console.log(stringified);
     createTx(stringified, sender);
   }
 });

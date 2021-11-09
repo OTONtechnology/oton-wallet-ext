@@ -123,6 +123,7 @@ export const signTrn = async (
   sk: string | Uint8Array,
   type?: 'buy_in_amc' | 'send_coins',
 ): Promise<string> => {
+  console.log({ trn });
   const methods = {
     buy_in_amc: BuyInAmc,
     send_coins: SendCoins,
