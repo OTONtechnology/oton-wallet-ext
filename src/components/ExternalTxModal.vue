@@ -108,18 +108,20 @@ export default defineComponent({
         }
 
         const status = resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0;
-        $vfm.hide('ExternalTxModal');
 
         if (status) {
-          extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-            extension.tabs.sendMessage(Number(tabId.value),
-              { type: 'toContent:customTx', payload: { status, response: resp } });
+          $vfm.hide('ExternalTxModal');
+          $vfm.hide('TransferDoneModal');
+          // extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+          //   extension.tabs.sendMessage(Number(tabId.value),
+          //     { type: 'toContent:customTx', payload: { status, response: resp } });
 
-            extension.tabs.getCurrent((tab) => {
-              extension.tabs.remove(tab.id);
-            });
-          });
+          //   extension.tabs.getCurrent((tab) => {
+          //     extension.tabs.remove(tab.id);
+          //   });
+          // });
         } else {
+          console.info(resp.result);
           toast.error('Error! Something went wrong');
         }
       }
