@@ -111,7 +111,7 @@ export default defineComponent({
 
         if (status) {
           $vfm.hide('ExternalTxModal');
-          $vfm.hide('TransferDoneModal');
+          $vfm.show('TransferDoneModal');
           // extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
           //   extension.tabs.sendMessage(Number(tabId.value),
           //     { type: 'toContent:customTx', payload: { status, response: resp } });
