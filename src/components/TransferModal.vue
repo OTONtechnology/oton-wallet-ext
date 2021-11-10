@@ -34,10 +34,12 @@
 import { defineComponent } from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import { $vfm } from 'vue-final-modal';
+import { toast } from 'vue-toastification';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
 import { getTrnFromData, signTrn } from '@/utils/transactionSign';
+import { getLocalSecret } from '@/utils/auth';
 
 export default defineComponent({
   components: {
@@ -85,8 +87,10 @@ export default defineComponent({
       this.submitForm = false;
     },
     async submitTransfer() {
+      const localSk = await getLocalSecret();
+
       const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress);
-      const signedTrn = await signTrn(preparedTrn, this.form.sk);
+      const signedTrn = await signTrn(preparedTrn, localSk);
 
       const resp = await this.$store.dispatch('sendTransaction', signedTrn);
 
@@ -97,6 +101,8 @@ export default defineComponent({
       if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
         $vfm.hide('TransferModal');
         $vfm.show('TransferDoneModal');
+      } else {
+        toast.error('Error! Something went wrong');
       }
     },
     handleClose() {

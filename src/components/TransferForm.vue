@@ -22,6 +22,13 @@
           </label>
         </div>
       </div>
+      <div class="field__errors">
+        <div class="field__error" v-for="error in errors.currency" :key="error">
+          <Tr>
+            {{ error }}
+          </Tr>
+        </div>
+      </div>
     </div>
     <div class="transfer__address field">
       <label for="" class="field__label">
@@ -29,13 +36,27 @@
       </label>
       <input type="text" class="field__input" v-model="addressModel" />
     </div>
+    <div class="field__errors">
+      <div class="field__error" v-for="error in errors.address" :key="error">
+        <Tr>
+          {{ error }}
+        </Tr>
+      </div>
+    </div>
     <div class="transfer__sum field">
       <label for="" class="field__label">
         <Tr> Sum </Tr>
       </label>
       <input type="text" class="field__input" v-model="sumModel" />
     </div>
-    <div class="transfer__sum field">
+    <div class="field__errors">
+      <div class="field__error" v-for="error in errors.sum" :key="error">
+        <Tr>
+          {{ error }}
+        </Tr>
+      </div>
+    </div>
+    <!-- <div class="transfer__sum field">
       <label for="" class="field__label">
         <Tr> Secret key </Tr>
       </label>
@@ -45,12 +66,16 @@
         :class="{ field__input_error: skIsError }"
         v-model="secretKeyModel"
       />
-    </div>
+    </div> -->
     <div class="transfer__fee"><Tr>Fee</Tr>: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
-      <Tr :settings="{ transferSum, currency }">
-        Transfer {transferSum} {currency}
-      </Tr>
+      <!-- <Tr :settings="{ transferSum, currency }">
+        Transfer {{ transferSum }} {{ currency }}
+      </Tr> -->
+      <Tr :settings="{ transferSum, currency }"> Transfer </Tr>
+      <span v-if="transferSum && currency">
+        {{ transferSum }} {{ currency }}
+      </span>
     </button>
   </div>
 </template>
@@ -62,8 +87,6 @@ import { mapState } from 'vuex';
 import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
 
 export default defineComponent({
-  components: {
-  },
   props: {
     currency: {
       type: String,
@@ -96,6 +119,12 @@ export default defineComponent({
         { id: 'OTON' },
         { id: 'USDT' },
       ],
+      errors: {
+        currency: [],
+        address: [],
+        sum: [],
+        sk: [],
+      },
     };
   },
   computed: {
@@ -149,8 +178,39 @@ export default defineComponent({
   },
 
   methods: {
-    transfer() {
-      this.$emit('transfer');
+    async transfer() {
+      if (this.validate()) {
+        this.$emit('transfer');
+      }
+    },
+    validate() {
+      this.errors = {
+        currency: [],
+        address: [],
+        sum: [],
+        sk: [],
+      };
+      let hasErrors = false;
+
+      if (!this.currency) {
+        this.errors.currency.push('Select currency');
+        hasErrors = true;
+      }
+      if (!this.address || this.address.length !== 40) {
+        this.errors.address.push('Wrong address');
+        hasErrors = true;
+      }
+      if (!Number(this.sum)) {
+        this.errors.sum.push('Wrong sum');
+        hasErrors = true;
+      }
+
+      return !hasErrors;
+
+      // if (!this.sk) {
+      //   this.errors.address.push('Wrong secret key');
+      //   return false;
+      // }
     },
   },
 });

@@ -56,6 +56,7 @@ export default defineComponent({
         store.commit('SET_WALLET_ADDRESS', address);
 
         watch(() => route.query, () => {
+          console.log(route.query);
           const hasReason = route.query.reason;
           if (hasReason === 'customTx') {
             const payload = JSON.parse(route.query.payload);
@@ -65,6 +66,7 @@ export default defineComponent({
               $vfm.show('ExternalTxModal', {
                 transaction: payload.transaction,
                 resource: route.query.resource,
+                tabId: route.query.tab,
               });
             } else {
               console.error('addresses do not match');

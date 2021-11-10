@@ -65,7 +65,7 @@ export const getTrnFromData = async (
   };
 };
 
-export const stripeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
+export const normalizeTrn = (trn: Transaction, pk: Uint8Array):Transaction => ({
   ...trn,
   ...(trn.address ? { address: stringOrBytes(trn.address) } : {}),
   ...(trn.referal ? { referal: stringOrBytes(trn.referal) } : {}),
@@ -73,16 +73,28 @@ export const stripeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
     const newInput = {
       ...input,
       ...(input.pub_key ? { pub_key: stringOrBytes(input.pub_key) } : {}),
+      ...(input.signature ? { signature: stringOrBytes(input.signature) } : {}),
       address: stringOrBytes(input.address),
     };
-
-    if (newInput.signature) {
-      delete newInput.signature;
-    }
 
     // TODO: remove from here
     if (+input.sequence === 1) {
       newInput.pub_key = pk;
+    }
+
+    return newInput;
+  }),
+});
+
+export const stripeTrn = (trn: Transaction): Transaction => ({
+  ...trn,
+  inputs: trn.inputs.map((input) => {
+    const newInput = {
+      ...input,
+    };
+
+    if (newInput.signature) {
+      delete newInput.signature;
     }
 
     return newInput;
@@ -123,24 +135,18 @@ export const signTrn = async (
   sk: string | Uint8Array,
   type?: 'buy_in_amc' | 'send_coins',
 ): Promise<string> => {
-  console.log({ trn });
   const methods = {
     buy_in_amc: BuyInAmc,
     send_coins: SendCoins,
   };
   const methodType = methods[type || 'send_coins'];
   const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
-
   const pair = await getKeysFromSK(secret);
-  const stripedTrn = stripeTrn(trn, pair.pk);
-
-  console.log(stripedTrn);
-
+  const normalizedTrn = normalizeTrn(trn, pair.pk);
+  const stripedTrn = stripeTrn(normalizedTrn);
   const signBytes = methodType.encode(stripedTrn).finish();
-
   const signature = await ed.sign(signBytes, pair.sk);
-  const signedTrn = addSignToTrn(trn, pair.address, signature);
-  console.info({ signedTrn });
+  const signedTrn = addSignToTrn(normalizedTrn, pair.address, signature);
   const encodedSignedTrn = methodType.encode(signedTrn).finish();
 
   console.info(type, bytesToHex(signBytes));

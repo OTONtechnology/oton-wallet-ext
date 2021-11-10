@@ -61,8 +61,9 @@ import {
   defineComponent, ref, reactive, computed,
 } from 'vue';
 import { isEmpty } from 'rambda';
-import $vfm from 'vue-final-modal';
+import { $vfm } from 'vue-final-modal';
 import { useStore } from 'vuex';
+import extension from 'extensionizer';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { sumInputsUnsignedTx } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
@@ -79,6 +80,7 @@ export default defineComponent({
     const store = useStore();
     const showJSON = ref(false);
     const resource = ref('');
+    const tabId = ref('');
     const transaction = reactive({});
     const sum = computed(() => (isEmpty(transaction.value.fee) ? '0' : sumInputsUnsignedTx(transaction.value.inputs)));
     const address = computed(() => (isEmpty(transaction.value.fee) ? '' : `${transaction.value.inputs.length} recepients`));
@@ -86,8 +88,8 @@ export default defineComponent({
 
     const setParams = (params) => {
       transaction.value = params.value.transaction;
-
       resource.value = params.value.resource;
+      tabId.value = params.value.tabId;
     };
 
     const submitTransfer = async () => {
@@ -103,15 +105,24 @@ export default defineComponent({
           return;
         }
 
-        if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
-          $vfm.hide('ExternalTxModal');
-          $vfm.show('TransferDoneModal');
-        }
+        const status = resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0;
+        $vfm.hide('ExternalTxModal');
+
+        extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+          extension.tabs.sendMessage(Number(tabId.value),
+            { type: 'toContent:customTx', payload: { status, response: resp } });
+
+          extension.tabs.getCurrent((tab) => {
+            extension.tabs.remove(tab.id);
+          });
+        });
       }
     };
 
     const back = () => {
-      console.log('back');
+      extension.tabs.getCurrent((tab) => {
+        extension.tabs.remove(tab.id);
+      });
     };
 
     return {

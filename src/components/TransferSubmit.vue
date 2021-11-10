@@ -34,7 +34,7 @@
       </button>
       <button class="button primary" @click="submitTransfer">
         <Tr :settings="{ transferSum, currency }">
-          Accept and Transfer {transferSum} {currency}
+          Accept and Transfer {{ transferSum }} {{ currency }}
         </Tr>
       </button>
     </div>

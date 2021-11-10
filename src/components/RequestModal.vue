@@ -32,6 +32,9 @@ export default defineComponent({
       copyText(walletAddress.value, undefined, (error, event) => {
         if (error) {
           console.error('Copy error');
+          toast.error('Error!', {
+            timeout: 2000,
+          });
         } else {
           toast.success('Copied!', {
             timeout: 2000,
