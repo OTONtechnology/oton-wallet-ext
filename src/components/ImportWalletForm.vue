@@ -110,9 +110,9 @@ export default defineComponent({
           $vfm.hide('ImportWalletModal');
 
           if (this.nextAfterAuth) {
-            this.$router.push({ name: 'Permission' });
+            this.$router.push('/permission');
           } else {
-            this.$router.push({ name: 'Home' });
+            this.$router.push('/home');
           }
         }
       }

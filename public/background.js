@@ -9,6 +9,21 @@ const openWindow = (url) => {
   let left = window.screen.width - 360;
   left = left > 0 ? left / 2 : 0;
 
+  // window.open(
+  //   url,
+  //   'targetWindow',
+  //   `toolbar=no,
+  //     location=no,
+  //     status=no,
+  //     menubar=no,
+  //     scrollbars=yes,
+  //     resizable=yes,
+  //     width=360,
+  //     height=600,
+  //     top=${top},
+  //     left=${left}`,
+  // );
+
   if (isWindows()) {
     chrome.tabs.create({ url });
   } else {
