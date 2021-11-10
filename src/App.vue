@@ -87,7 +87,7 @@ export default defineComponent({
           }
         }
 
-        router.push('');
+        router.push('/');
       };
 
       if (address) {

@@ -64,6 +64,7 @@ import { isEmpty } from 'rambda';
 import { $vfm } from 'vue-final-modal';
 import { useStore } from 'vuex';
 import extension from 'extensionizer';
+import { useToast } from 'vue-toastification';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { sumInputsUnsignedTx } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
@@ -77,6 +78,7 @@ export default defineComponent({
     name: String,
   },
   setup() {
+    const toast = useToast();
     const store = useStore();
     const showJSON = ref(false);
     const resource = ref('');
@@ -108,14 +110,18 @@ export default defineComponent({
         const status = resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0;
         $vfm.hide('ExternalTxModal');
 
-        extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-          extension.tabs.sendMessage(Number(tabId.value),
-            { type: 'toContent:customTx', payload: { status, response: resp } });
+        if (status) {
+          extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+            extension.tabs.sendMessage(Number(tabId.value),
+              { type: 'toContent:customTx', payload: { status, response: resp } });
 
-          extension.tabs.getCurrent((tab) => {
-            extension.tabs.remove(tab.id);
+            extension.tabs.getCurrent((tab) => {
+              extension.tabs.remove(tab.id);
+            });
           });
-        });
+        } else {
+          toast.error('Error! Something went wrong');
+        }
       }
     };
 

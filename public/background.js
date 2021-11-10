@@ -1,6 +1,6 @@
-function isWindows() {
-  return navigator.appVersion.indexOf('Win') !== -1;
-}
+// function isWindows() {
+//   return navigator.appVersion.indexOf('Win') !== -1;
+// }
 
 const openWindow = (url) => {
   let top = window.screen.height - 600;
@@ -9,39 +9,39 @@ const openWindow = (url) => {
   let left = window.screen.width - 360;
   left = left > 0 ? left / 2 : 0;
 
-  // window.open(
-  //   url,
-  //   'targetWindow',
-  //   `toolbar=no,
-  //     location=no,
-  //     status=no,
-  //     menubar=no,
-  //     scrollbars=yes,
-  //     resizable=yes,
-  //     width=360,
-  //     height=600,
-  //     top=${top},
-  //     left=${left}`,
-  // );
+  window.open(
+    url,
+    'targetWindow',
+    `toolbar=no,
+      location=no,
+      status=no,
+      menubar=no,
+      scrollbars=yes,
+      resizable=yes,
+      width=360,
+      height=600,
+      top=${top},
+      left=${left}`,
+  );
 
-  if (isWindows()) {
-    chrome.tabs.create({ url });
-  } else {
-    window.open(
-      url,
-      'targetWindow',
-      `toolbar=no,
-        location=no,
-        status=no,
-        menubar=no,
-        scrollbars=yes,
-        resizable=yes,
-        width=360,
-        height=600,
-        top=${top},
-        left=${left}`,
-    );
-  }
+  // if (isWindows()) {
+  //   chrome.tabs.create({ url });
+  // } else {
+  //   window.open(
+  //     url,
+  //     'targetWindow',
+  //     `toolbar=no,
+  //       location=no,
+  //       status=no,
+  //       menubar=no,
+  //       scrollbars=yes,
+  //       resizable=yes,
+  //       width=360,
+  //       height=600,
+  //       top=${top},
+  //       left=${left}`,
+  //   );
+  // }
 };
 
 const auth = (data, sender) => openWindow(
