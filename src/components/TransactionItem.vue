@@ -40,7 +40,7 @@ import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
 import { $vfm } from 'vue-final-modal';
-import { sumInputs, sumInputsGrouped } from '@/utils/sumInputs';
+import { sumByAddressGrouped, sumInputsGrouped } from '@/utils/sumInputs';
 import { getActionType } from '@/utils/transactions';
 
 export default defineComponent({
@@ -65,7 +65,9 @@ export default defineComponent({
       }
       return props.transaction.outputs[0].address;
     });
-    const sumByTickers = sumInputsGrouped(props.transaction.inputs);
+    const sumByTickers = actionType === 'sent'
+      ? sumByAddressGrouped(props.transaction.inputs, walletAddress.value)
+      : sumInputsGrouped(props.transaction.inputs);
 
     const openTransaction = () => {
       $vfm.show('TransactionModal', {

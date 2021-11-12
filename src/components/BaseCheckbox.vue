@@ -24,37 +24,26 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
-    const inputModel = computed(() => ({
+    const inputModel = computed({
       get() {
-        return props.value;
+        return props.modelValue;
       },
       set(e) {
-        emit('change-value', e);
+        emit('update:modelValue', e);
       },
-    }));
+    });
 
     return {
       inputModel,
     };
   },
-
-  // computed: {
-  //   inputModel: {
-  //     get() {
-  //       return this.val;
-  //     },
-  //     set(value) {
-  //       this.$emit('change-value', value);
-  //     },
-  //   },
-  // },
 });
 </script>
 

@@ -39,7 +39,7 @@
     </div>
 
     <div class="field">
-      <BaseCheckbox :name="'terms'" :value="terms" @change-value="changeTerms">
+      <BaseCheckbox :name="'terms'" v-model="terms">
         <label class="checkbox__label" for="terms">
           <Tr> I agree to the Terms of Use </Tr>
         </label>
@@ -78,7 +78,7 @@ export default defineComponent({
       phrase: '',
       password1: '',
       password2: '',
-      terms: true,
+      terms: false,
 
       errors: {},
     };
@@ -90,6 +90,7 @@ export default defineComponent({
   },
   methods: {
     changeTerms(val) {
+      console.log(val);
       this.terms = val;
     },
     async login() {

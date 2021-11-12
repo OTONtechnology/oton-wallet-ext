@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <!-- <div class="create__block field terms">
+    <div class="create__block field terms">
       <BaseCheckbox :name="'terms'" v-model="form.terms">
         <label class="checkbox__label" for="terms">
           I agree to the Terms of Use
@@ -30,7 +30,7 @@
           {{ error }}
         </div>
       </div>
-    </div> -->
+    </div>
 
     <div class="buttons">
       <button class="buttons__create button primary" @click="create">
@@ -50,9 +50,12 @@ export default defineComponent({
     const form = reactive({
       password: '',
       password1: '',
-      terms: true,
+      terms: false,
     });
     const validate = () => {
+      errors.terms = [];
+      errors.password = [];
+
       let isValid = true;
 
       if (!form.terms) {

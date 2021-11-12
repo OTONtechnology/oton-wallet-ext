@@ -164,7 +164,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const sumByTickers = computed(() => sumInputsGrouped(transaction.inputs));
-    const outLink = computed(() => `https://otn-explorer.pages.dev/transaction/${transaction.id}`);
+    const outLink = computed(() => `${process.env.VUE_APP_EXPLORER_URL}/transaction/${transaction.id}`);
 
     const setParams = (params) => {
       transaction = Object.assign(transaction, params.value.transaction);

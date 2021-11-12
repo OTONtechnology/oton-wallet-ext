@@ -11,10 +11,10 @@
       </div>
       <div class="balance__footer">
         <span class="balance__eur">
-          {{ getEur("oton", balance.balance) }} €
+          {{ toFixedDown(getEur("oton", balance.balance), 4) }} €
         </span>
         <span class="balance__course">
-          1 {{ currency }} = {{ getRate("oton") }} €
+          1 {{ currency }} = {{ toFixedDown(getRate("oton"), 4) }} €
         </span>
       </div>
     </div>
@@ -31,6 +31,7 @@ import '@/assets/svg/ic_logo.svg?sprite';
 import Decimal from 'decimal.js';
 import { isEmpty } from 'rambda';
 import EmptyState from '@/components/EmptyState.vue';
+import toFixedDown from '@/utils/toFixedDown';
 
 export default defineComponent({
   components: {
@@ -42,6 +43,8 @@ export default defineComponent({
     const rates = computed(() => store.getters['rates/rates']);
     const walletAddress = computed(() => store.state.walletAddress);
     const balancesIsEmpty = computed(() => isEmpty(store.getters['balances/balances']));
+
+    const floorNum = (num) => Math.round((num + Number.EPSILON) * 10000) / 10000;
 
     const getEur = (currency, sum) => {
       if (!rates.value[currency]) {
@@ -65,7 +68,13 @@ export default defineComponent({
     });
 
     return {
-      balances, rates, balancesIsEmpty, getEur, getRate,
+      balances,
+      rates,
+      balancesIsEmpty,
+      getEur,
+      getRate,
+      floorNum,
+      toFixedDown,
     };
   },
 });
