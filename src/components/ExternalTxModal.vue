@@ -2,6 +2,7 @@
   <DefaultModalLayout
     :name="name"
     :title="'Confirm transaction'"
+    :unclosable="true"
     @set-params="setParams"
   >
     <div class="form">
@@ -39,8 +40,9 @@
           :value="JSON.stringify(transaction)"
           id=""
           cols="30"
-          rows="10"
+          rows="7"
           spellcheck="false"
+          readonly="true"
         ></textarea>
       </div>
       <button class="form__showJSON" @click="showJSON = !showJSON">
@@ -69,6 +71,7 @@ import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { sumInputsUnsignedTx } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
 import { getLocalSecret } from '@/utils/auth';
+import maskCoinsAmount from '@/utils/maskCoinsAmount';
 
 export default defineComponent({
   components: {
@@ -84,9 +87,27 @@ export default defineComponent({
     const resource = ref('');
     const tabId = ref('');
     const transaction = reactive({});
-    const sum = computed(() => (isEmpty(transaction.value.fee) ? '0' : sumInputsUnsignedTx(transaction.value.inputs)));
+    const coins = computed(() => store.getters['coins/coinsList']);
+    const sum = computed(() => (
+      isEmpty(transaction.value.fee)
+        ? '0'
+        : maskCoinsAmount(
+          coins.value,
+          sumInputsUnsignedTx(transaction.value.inputs),
+          'bitboneCoin',
+        )));
     const address = computed(() => (isEmpty(transaction.value.fee) ? '' : `${transaction.value.inputs.length} recepients`));
-    const fee = computed(() => (isEmpty(transaction.value.fee) ? { amount: '', name: '' } : transaction.value.fee));
+    const fee = computed(() => (
+      isEmpty(transaction.value.fee)
+        ? { amount: '', name: '' }
+        : {
+          ...transaction.value.fee,
+          amount: maskCoinsAmount(
+            coins.value,
+            transaction.value.fee.amount,
+            transaction.value.fee.name,
+          ),
+        }));
 
     const setParams = (params) => {
       transaction.value = params.value.transaction;
@@ -98,7 +119,7 @@ export default defineComponent({
       if (!isEmpty(transaction.value)) {
         const localSk = await getLocalSecret();
         const testTx = JSON.parse(JSON.stringify(transaction.value));
-        console.log(testTx);
+
         const signedTrn = await signTrn(testTx, localSk, 'buy_in_amc');
 
         const resp = await store.dispatch('sendTransaction', signedTrn);

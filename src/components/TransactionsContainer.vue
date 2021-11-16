@@ -29,10 +29,9 @@
       >
         <Tr>Transfer</Tr>
       </button>
-      <button class="button" @click="openRequestModal">
+      <!-- <button class="button" @click="openRequestModal">
         <Tr>Request</Tr>
-      </button>
-      <!-- <button @click="more">more</button> -->
+      </button> -->
     </div>
   </div>
 </template>
@@ -43,7 +42,6 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import Loader from '@/components/Loader.vue';
-
 import TransactionItem from '@/components/TransactionItem.vue';
 import EmptyState from '@/components/EmptyState.vue';
 

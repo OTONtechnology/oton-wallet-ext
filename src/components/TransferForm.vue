@@ -47,7 +47,7 @@
       <label for="" class="field__label">
         <Tr> Sum </Tr>
       </label>
-      <input type="text" class="field__input" v-model="sumModel" />
+      <input type="number" class="field__input" v-model="sumModel" />
     </div>
     <div class="field__errors">
       <div class="field__error" v-for="error in errors.sum" :key="error">
@@ -56,22 +56,8 @@
         </Tr>
       </div>
     </div>
-    <!-- <div class="transfer__sum field">
-      <label for="" class="field__label">
-        <Tr> Secret key </Tr>
-      </label>
-      <input
-        type="text"
-        class="field__input"
-        :class="{ field__input_error: skIsError }"
-        v-model="secretKeyModel"
-      />
-    </div> -->
     <div class="transfer__fee"><Tr>Fee</Tr>: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
-      <!-- <Tr :settings="{ transferSum, currency }">
-        Transfer {{ transferSum }} {{ currency }}
-      </Tr> -->
       <Tr :settings="{ transferSum, currency }"> Transfer </Tr>
       <span v-if="transferSum && currency">
         {{ transferSum }} {{ currency }}
@@ -150,7 +136,7 @@ export default defineComponent({
         return this.sum;
       },
       set(value) {
-        this.$emit('change-sum', value);
+        this.$emit('change-sum', value.toString().replace(',', '.'));
       },
     },
     secretKeyModel: {
@@ -202,6 +188,9 @@ export default defineComponent({
       }
       if (!Number(this.sum)) {
         this.errors.sum.push('Wrong sum');
+        // if (this.sum.search(',') !== -1) {
+        //   this.errors.sum.push('Use . for');
+        // }
         hasErrors = true;
       }
 

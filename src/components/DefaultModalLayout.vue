@@ -8,7 +8,7 @@
     @beforeOpen="setParams"
     @closed="handleClose"
   >
-    <svg class="modal__close" @click="handleClose" v-if="!resealable">
+    <svg class="modal__close" @click="handleClose" v-if="!unclosable">
       <use xlink:href="#ic_close--sprite" />
     </svg>
     <div class="title">

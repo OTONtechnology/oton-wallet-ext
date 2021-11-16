@@ -64,6 +64,7 @@ export default defineComponent({
 
     onMounted(async () => {
       store.dispatch('balances/fetchBalances', walletAddress.value);
+      store.dispatch('coins/fetchCoins');
       store.dispatch('rates/fetchRates');
     });
 

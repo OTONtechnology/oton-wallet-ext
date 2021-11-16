@@ -56,7 +56,6 @@ export default defineComponent({
         store.commit('SET_WALLET_ADDRESS', address);
 
         watch(() => route.query, () => {
-          console.log(route.query);
           const hasReason = route.query.reason;
           if (hasReason === 'customTx') {
             const payload = JSON.parse(route.query.payload);

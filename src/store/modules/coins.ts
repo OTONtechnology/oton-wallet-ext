@@ -1,25 +1,25 @@
 import { clone } from 'rambda';
 import { GetterTree, ActionTree, MutationTree } from 'vuex';
 import { INIT } from '@/utils/constants';
-import { webWalletInstance } from '@/utils/api';
+import api from '@/utils/api';
 
 interface InitState {
   fetchState: string;
-  rates: any;
+  coins: any;
   timeout: number;
 }
 
 const initState: InitState = {
   fetchState: INIT,
-  rates: {},
+  coins: {},
   timeout: 0,
 };
 
 const state = () => clone(initState);
 
 const getters = <GetterTree<InitState, any>>{
-  rates(state) {
-    return state.rates;
+  coinsList(state) {
+    return state.coins;
   },
 };
 
@@ -27,25 +27,18 @@ const mutations = <MutationTree<InitState>>{
   SET_STATE(state, fetchState) {
     state.fetchState = fetchState;
   },
-  SET_RATES(state, rates) {
-    state.rates = rates.data;
-  },
-  SET_TIMEOUT(state, timeoutId) {
-    state.timeout = timeoutId;
+  SET_COINS(state, rates) {
+    state.coins = rates.data;
   },
 };
 
 const actions = <ActionTree<InitState, any>>{
 
-  async fetchRates({ state, commit, dispatch }) {
+  async fetchCoins({ commit }) {
     try {
-      const response = await webWalletInstance.post('/index/getRates');
+      const response = await api.get('/coins');
 
-      commit('SET_RATES', response.data);
-      if (!state.timeout) {
-        const timeoutId = setInterval(() => dispatch('fetchRates'), 60000);
-        commit('SET_TIMEOUT', timeoutId);
-      }
+      commit('SET_COINS', response.data);
       return response.data.data;
     } catch (err) {
       console.error(err);
@@ -54,7 +47,7 @@ const actions = <ActionTree<InitState, any>>{
   },
 };
 
-const rates = {
+const coins = {
   namespaced: true,
   state: state(),
   getters,
@@ -62,4 +55,4 @@ const rates = {
   actions,
 };
 
-export default rates;
+export default coins;
