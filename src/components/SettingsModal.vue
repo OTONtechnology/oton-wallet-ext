@@ -4,7 +4,12 @@
       <label for="" class="field__label">
         <Tr>Language</Tr>
       </label>
-      <select type="text" class="field__selectbox" v-model="locale">
+      <select
+        type="text"
+        class="field__selectbox"
+        v-model="locale"
+        @change="saveLocale"
+      >
         <option :value="key" v-for="(label, key) in langs" :key="`lang-${key}`">
           {{ label }}
         </option>
@@ -25,10 +30,14 @@ export default defineComponent({
   setup() {
     const langs = reactive({ en: 'English', ru: 'Русский' });
     const { locale } = useI18n();
+    const saveLocale = () => {
+      console.log(123);
+    };
 
     return {
       langs,
       locale,
+      saveLocale,
     };
   },
 });

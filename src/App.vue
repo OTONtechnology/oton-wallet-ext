@@ -75,19 +75,17 @@ export default defineComponent({
       };
 
       const loaderWithoutAddress = () => {
-        watch(() => route.query, () => {
-          const hasReason = route.query.reason;
-          if (hasReason) {
-            if (hasReason === 'get_access') {
-              store.commit('SET_NEXT_AFTER_AUTH', {
-                tab: route.query.tab,
-                resource: route.query.resource,
-              });
-            }
+        const hasReason = route.query.reason;
+        if (hasReason) {
+          if (hasReason === 'get_access') {
+            store.commit('SET_NEXT_AFTER_AUTH', {
+              tab: route.query.tab,
+              resource: route.query.resource,
+            });
           }
+        }
 
-          router.push('/');
-        });
+        router.push('/');
       };
 
       if (address) {

@@ -34,7 +34,7 @@
         <p>
           <Tr> Copy the address and the key to a safe </Tr>
         </p>
-        <BaseCheckbox :name="'copy'" v-model="termsState">
+        <BaseCheckbox :name="'copy'" v-model="checks.copy">
           <label class="checkbox__label" for="copy">
             <Tr> I copied </Tr>
           </label>
@@ -51,14 +51,14 @@
         <p>
           <Tr> Take a picture of the address and the key </Tr>
         </p>
-        <BaseCheckbox :name="'copy'" v-model="termsState">
-          <label class="checkbox__label" for="copy">
+        <BaseCheckbox :name="'picture'" v-model="checks.picture">
+          <label class="checkbox__label" for="picture">
             <Tr> I took a picture </Tr>
           </label>
         </BaseCheckbox>
       </div>
     </div>
-    <div class="confirmation__block iconed">
+    <!-- <div class="confirmation__block iconed">
       <div class="confirmation__icon">
         <svg class="confirmation__img">
           <use xlink:href="#ic_print--sprite" />
@@ -74,12 +74,9 @@
           </label>
         </BaseCheckbox>
       </div>
-    </div>
+    </div> -->
     <div class="buttons">
-      <button
-        class="confirmation__button button primary"
-        @click="$emit('confirm')"
-      >
+      <button class="confirmation__button button primary" @click="confirm">
         <Tr> Go </Tr>
       </button>
     </div>
@@ -87,7 +84,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import '@/assets/svg/ic_copy.svg?sprite';
 import '@/assets/svg/ic_print.svg?sprite';
 
@@ -101,6 +98,23 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+  },
+  emits: ['confirm'],
+  setup(props, { emit }) {
+    const checks = reactive({
+      copy: false,
+      picture: false,
+    });
+    const confirm = () => {
+      if (checks.copy && checks.picture) {
+        emit('confirm');
+      }
+    };
+
+    return {
+      checks,
+      confirm,
+    };
   },
 });
 </script>

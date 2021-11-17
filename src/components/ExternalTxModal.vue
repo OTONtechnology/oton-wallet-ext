@@ -68,7 +68,7 @@ import { useStore } from 'vuex';
 import extension from 'extensionizer';
 import { useToast } from 'vue-toastification';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
-import { sumInputsUnsignedTx } from '@/utils/sumInputs';
+import { sumInputsUnsignedTx, sumInputsByAddress } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
 import { getLocalSecret } from '@/utils/auth';
 import maskCoinsAmount from '@/utils/maskCoinsAmount';
@@ -84,6 +84,7 @@ export default defineComponent({
     const toast = useToast();
     const store = useStore();
     const showJSON = ref(false);
+    const walletAddress = computed(() => store.state.walletAddress);
     const resource = ref('');
     const tabId = ref('');
     const transaction = reactive({});
@@ -93,7 +94,7 @@ export default defineComponent({
         ? '0'
         : maskCoinsAmount(
           coins.value,
-          sumInputsUnsignedTx(transaction.value.inputs),
+          sumInputsByAddress(transaction.value.inputs, walletAddress.value, false),
           'bitboneCoin',
         )));
     const address = computed(() => (isEmpty(transaction.value.fee) ? '' : `${transaction.value.inputs.length} recepients`));
@@ -111,6 +112,7 @@ export default defineComponent({
 
     const setParams = (params) => {
       transaction.value = params.value.transaction;
+      console.log(params.value.transaction);
       resource.value = params.value.resource;
       tabId.value = params.value.tabId;
     };
