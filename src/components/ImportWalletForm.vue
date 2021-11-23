@@ -146,10 +146,16 @@ export default defineComponent({
         this.errors.terms.push('You must agree with Terms of Use');
       }
       if (this.password1.length < 6 || this.password2.length < 6) {
-        this.errors.password.push('Password cannot be less than 6 characters');
-      } else if (this.password1 !== this.password2) {
-        this.errors.password.push('Passwords do not match');
+        this.errors.password = ['Password cannot be less than 6 characters'];
       }
+      if (this.password1 !== this.password2) {
+        this.errors.password = ['Passwords do not match'];
+      }
+      // if (this.password1.length < 6 || this.password2.length < 6) {
+      //   this.errors.password.push('Password cannot be less than 6 characters');
+      // } else if (this.password1 !== this.password2) {
+      //   this.errors.password.push('Passwords do not match');
+      // }
 
       if (isRecoveryPhrase) {
         if (phrase.split(' ').length !== 24) {

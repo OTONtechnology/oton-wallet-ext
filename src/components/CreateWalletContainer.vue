@@ -55,9 +55,9 @@ export default defineComponent({
         store.commit('SET_WALLET_ADDRESS', address);
 
         if (store.state.nextAfterAuth.tab && store.state.nextAfterAuth.resource) {
-          this.$router.push({ name: 'Permission' });
+          router.push('/permission');
         } else {
-          router.push({ name: 'Home' });
+          router.push('/home');
         }
       }
     };

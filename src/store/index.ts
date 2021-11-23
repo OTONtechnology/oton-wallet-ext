@@ -33,8 +33,6 @@ export default createStore({
   mutations: {
     CLEAR(state) {
       // Object.values(state.quizzes).forEach(clearTimeout);
-      console.log(this.modules);
-
       Object.assign(state, initState);
     },
     SET_STATE(state, fetchState) {

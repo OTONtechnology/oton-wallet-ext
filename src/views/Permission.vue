@@ -5,12 +5,17 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import ConnectModal from '@/components/ConnectModal.vue';
 
 export default defineComponent({
   components: {
     ConnectModal,
+  },
+  setup() {
+    onMounted(() => {
+      console.log('permission page mounted');
+    });
   },
 });
 </script>

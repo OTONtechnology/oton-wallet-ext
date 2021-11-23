@@ -6,6 +6,7 @@ import { SendCoins, Raw, BuyInAmc } from './protobufTypes';
 import { Transaction, TransactionMainData } from '../types/transactions.d';
 import { bytesToHex, hexToBytes } from './crypto';
 import { getKeysFromSK } from './cryptoKeys';
+import generateDecimalNumber from './generateDecimalNumber';
 
 const stringOrBytes = (payload: string | Uint8Array) => (typeof payload === 'string' ? hexToBytes(payload) : payload);
 
@@ -29,12 +30,13 @@ export const getLastSequence = async (addr: string): Promise<number> => {
 export const getTrnFromData = async (
   out:TransactionMainData,
   address:string,
+  decimal: number,
 ): Promise<Transaction> => {
-  const getRealSum = (sum: number | string) => Decimal.mul(sum, 10000);
+  const getRealSum = (sum: number | string) => Decimal.div(sum, generateDecimalNumber(decimal));
   let sequence = await getLastSequence(address);
   sequence = (sequence || 0) + 1;
 
-  const fee = getRealSum(out.fee || 0.0001).toNumber();
+  const fee = getRealSum(out.fee || generateDecimalNumber(decimal)).toNumber();
 
   const realSum = getRealSum(out.sum);
 

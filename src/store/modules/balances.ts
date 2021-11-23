@@ -1,4 +1,4 @@
-import { clone } from 'rambda';
+import { clone, isEmpty } from 'rambda';
 import { GetterTree, ActionTree, MutationTree } from 'vuex';
 import {
   FULFILLED, INIT, PENDING, REJECTED,
@@ -22,6 +22,12 @@ const getters = <GetterTree<InitState, any>>{
   balances(state) {
     return state.balances;
   },
+  pending(state) {
+    return state.fetchState === PENDING;
+  },
+  balancesIsEmpty(state) {
+    return state.fetchState === FULFILLED ? isEmpty(state.balances) : false;
+  },
 };
 
 const mutations = <MutationTree<InitState>>{
@@ -42,9 +48,9 @@ const actions = <ActionTree<InitState, any>>{
       commit('SET_STATE', REJECTED);
     }
 
-    // if (state.fetchState === PENDING) {
-    //   return;
-    // }
+    if (state.fetchState === PENDING) {
+      return;
+    }
 
     commit('SET_STATE', PENDING);
 
@@ -55,11 +61,20 @@ const actions = <ActionTree<InitState, any>>{
       commit('SET_STATE', FULFILLED);
 
       if (!state.timeout) {
-        const timeoutId = setInterval(() => dispatch('fetchBalances', address), 60000);
+        const timeoutId = setInterval(() => dispatch('fetchBalancesOnBackground', address), 60000);
         commit('SET_TIMEOUT', timeoutId);
       }
     } catch (err) {
       commit('SET_STATE', REJECTED);
+      console.error(err);
+    }
+  },
+
+  async fetchBalancesOnBackground({ state, commit, dispatch }, address) {
+    try {
+      const response = await api.get(`/address/${address}/balance`);
+      commit('UPDATE_BALANCES', response.data);
+    } catch (err) {
       console.error(err);
     }
   },

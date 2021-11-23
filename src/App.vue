@@ -15,11 +15,13 @@
 </template>
 <script>
 import {
-  defineComponent, onBeforeMount, computed, onMounted, watch,
+  defineComponent, onBeforeMount, computed, watch, ref,
 } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { $vfm } from 'vue-final-modal';
+import { useI18n } from 'vue-i18n';
+import { useToast } from 'vue-toastification';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
@@ -30,6 +32,7 @@ import CreateWalletModal from '@/components/CreateWalletModal.vue';
 import RequestModal from '@/components/RequestModal.vue';
 import ExternalTxModal from '@/components/ExternalTxModal.vue';
 import 'vue-toastification/dist/index.css';
+import { getStorageItem } from '@/utils/extension';
 
 export default defineComponent({
   components: {
@@ -45,15 +48,23 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+    const toast = useToast();
+    const i18n = useI18n();
     const walletAddress = computed(() => store.state.walletAddress);
-    const router = useRouter();
     const route = useRoute();
 
     onBeforeMount(async () => {
+      const lang = await getStorageItem('lang', 'sync');
+
+      if (lang !== 'en') {
+        i18n.locale.value = lang;
+      }
+
       const address = await getAddressFromStorage();
 
       const loaderWithAddress = () => {
-        store.commit('SET_WALLET_ADDRESS', address);
+        // store.commit('SET_WALLET_ADDRESS', address);
+        // console.log(address);
 
         watch(() => route.query, () => {
           const hasReason = route.query.reason;
@@ -68,6 +79,7 @@ export default defineComponent({
                 tabId: route.query.tab,
               });
             } else {
+              toast.error('Your addresses do not match');
               console.error('addresses do not match');
             }
           }
@@ -75,17 +87,17 @@ export default defineComponent({
       };
 
       const loaderWithoutAddress = () => {
-        const hasReason = route.query.reason;
-        if (hasReason) {
-          if (hasReason === 'get_access') {
-            store.commit('SET_NEXT_AFTER_AUTH', {
-              tab: route.query.tab,
-              resource: route.query.resource,
-            });
+        watch(() => route.query, () => {
+          const hasReason = route.query.reason;
+          if (hasReason) {
+            if (hasReason === 'get_access') {
+              store.commit('SET_NEXT_AFTER_AUTH', {
+                tab: route.query.tab,
+                resource: route.query.resource,
+              });
+            }
           }
-        }
-
-        router.push('/');
+        });
       };
 
       if (address) {
@@ -93,17 +105,6 @@ export default defineComponent({
       } else {
         loaderWithoutAddress();
       }
-    });
-
-    onMounted(async () => {
-      const address = await getAddressFromStorage();
-
-      // if (address) {
-      //   console.log(route.query);
-      //   if (hasReason && hasReason === 'customTx') {
-      //     $vfm.show('ExternalTxModal');
-      //   }
-      // }
     });
 
     return {
@@ -132,6 +133,11 @@ body {
   *, *::before, &::after {
     box-sizing: border-box;
   }
+}
+
+html {
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 svg {

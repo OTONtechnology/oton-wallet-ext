@@ -34,12 +34,16 @@
 import { defineComponent } from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import { $vfm } from 'vue-final-modal';
-import { toast } from 'vue-toastification';
+import { useToast } from 'vue-toastification';
+import Decimal from 'decimal.js';
+import { find, propEq } from 'rambda';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
 import { getTrnFromData, signTrn } from '@/utils/transactionSign';
 import { getLocalSecret } from '@/utils/auth';
+import nodeErrorHandler from '@/utils/nodeErrorHandler';
+import generateDecimalNumber from '@/utils/generateDecimalNumber';
 
 export default defineComponent({
   components: {
@@ -55,7 +59,7 @@ export default defineComponent({
         currency: '',
         address: '',
         sum: '',
-        fee: 0.0001,
+        fee: 0,
         sk: '',
       },
     };
@@ -65,17 +69,33 @@ export default defineComponent({
   },
   computed: {
     ...mapState(['walletAddress']),
-    ...mapGetters({ balances: 'balances/balances' }),
+    ...mapGetters({ balances: 'balances/balances', coinsList: 'coins/coinsList' }),
   },
   methods: {
     changeCurrency(value) {
       this.form.currency = value;
+
+      if (this.form.sum) {
+        this.changeFee(this.form.sum);
+      }
     },
     changeAddress(value) {
       this.form.address = value;
     },
     changeSum(value) {
       this.form.sum = value;
+      this.changeFee(value);
+    },
+    changeFee(value) {
+      const coin = find(propEq('name', this.form.currency))(this.coinsList);
+
+      if (coin) {
+        const fromSum = Decimal.mul(value, 0.01).toFixed();
+        const min = generateDecimalNumber(coin.decimal);
+        this.form.fee = fromSum > min ? fromSum : min;
+      } else {
+        this.form.fee = 0;
+      }
     },
     changeSk(value) {
       this.form.sk = value;
@@ -87,9 +107,11 @@ export default defineComponent({
       this.submitForm = false;
     },
     async submitTransfer() {
+      const coin = find(propEq('name', this.form.currency))(this.coinsList);
       const localSk = await getLocalSecret();
 
-      const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress);
+      const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress, coin.decimal);
+
       const signedTrn = await signTrn(preparedTrn, localSk);
 
       const resp = await this.$store.dispatch('sendTransaction', signedTrn);
@@ -102,7 +124,9 @@ export default defineComponent({
         $vfm.hide('TransferModal');
         $vfm.show('TransferDoneModal');
       } else {
-        toast.error('Error! Something went wrong');
+        const toast = useToast();
+        const errorText = nodeErrorHandler(resp.result);
+        toast.error(errorText || 'Error! Something went wrong');
       }
     },
     handleClose() {

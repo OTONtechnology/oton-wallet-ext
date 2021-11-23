@@ -22,6 +22,7 @@
 import { defineComponent, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
+import { setStorageItem } from '@/utils/extension';
 
 export default defineComponent({
   components: {
@@ -30,8 +31,9 @@ export default defineComponent({
   setup() {
     const langs = reactive({ en: 'English', ru: 'Русский' });
     const { locale } = useI18n();
-    const saveLocale = () => {
-      console.log(123);
+    const saveLocale = (e) => {
+      console.log(e.target.value);
+      setStorageItem('lang', e.target.value, 'sync');
     };
 
     return {

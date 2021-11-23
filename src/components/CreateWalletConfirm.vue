@@ -76,7 +76,11 @@
       </div>
     </div> -->
     <div class="buttons">
-      <button class="confirmation__button button primary" @click="confirm">
+      <button
+        class="confirmation__button button primary"
+        @click="confirm"
+        :disabled="!checks.copy || !checks.picture"
+      >
         <Tr> Go </Tr>
       </button>
     </div>
@@ -155,6 +159,11 @@ export default defineComponent({
     width: 100%;
     display: block;
     margin-top: 24px;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
   }
 
   p {
