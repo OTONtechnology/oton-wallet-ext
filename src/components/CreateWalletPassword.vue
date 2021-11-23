@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive } from 'vue';
 
 export default defineComponent({
   emits: ['create'],

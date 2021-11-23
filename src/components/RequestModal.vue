@@ -9,11 +9,12 @@
 
 <script>
 import {
-  defineComponent, computed, inject,
+  defineComponent, computed,
 } from 'vue';
 import { useStore } from 'vuex';
 import { copyText } from 'vue3-clipboard';
 import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 
 export default defineComponent({
@@ -24,19 +25,20 @@ export default defineComponent({
     name: String,
   },
   setup() {
+    const { t } = useI18n();
     const store = useStore();
     const toast = useToast();
     const walletAddress = computed(() => store.state.walletAddress);
 
     const doCopy = () => {
-      copyText(walletAddress.value, undefined, (error, event) => {
+      copyText(walletAddress.value, undefined, (error) => {
         if (error) {
           console.error('Copy error');
-          toast.error('Error!', {
+          toast.error(t('Error!'), {
             timeout: 2000,
           });
         } else {
-          toast.success('Copied!', {
+          toast.success(t('Copied!'), {
             timeout: 2000,
           });
         }

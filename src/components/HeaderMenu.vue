@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import '@/assets/svg/ic_menu.svg?sprite';
 import { useStore } from 'vuex';

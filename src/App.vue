@@ -15,7 +15,7 @@
 </template>
 <script>
 import {
-  defineComponent, onBeforeMount, computed, watch, ref,
+  defineComponent, onBeforeMount, computed, watch,
 } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';

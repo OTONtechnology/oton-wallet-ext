@@ -83,7 +83,10 @@ const generateFiles = async (messages) => {
     rows.forEach((row) => {
       langs.forEach((lang) => {
         const value = row[lang];
-        messages[lang][row.key] = normalizeText(value)
+        const result = normalizeText(value);
+        if (result) {
+          messages[lang][row.key] = normalizeText(value)
+        }
       });
     });
 

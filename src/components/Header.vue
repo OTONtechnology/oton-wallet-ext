@@ -5,7 +5,7 @@
         <use xlink:href="#ic_logo--sprite" />
       </svg>
     </router-link>
-    <div class="header__text" @click="$vfm.show('RequestModal')">
+    <div class="header__text" @click="vfm.show('RequestModal')">
       <Tr> Your address </Tr>
     </div>
     <div
@@ -35,7 +35,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const $vfm = inject('$vfm');
+    const vfm = inject('$vfm');
     const walletAddress = computed(() => store.state.walletAddress);
     const walletParts = computed(() => [
       walletAddress.value.substring(0, 11),
@@ -46,8 +46,8 @@ export default defineComponent({
 
     return {
       stripedAddr,
-      $vfm,
-
+      vfm,
+      walletAddress,
     };
   },
 });

@@ -36,11 +36,11 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
 import { $vfm } from 'vue-final-modal';
-import { sumByAddressGrouped, sumInputsGrouped } from '@/utils/sumInputs';
+import { sumByAddressGrouped } from '@/utils/sumInputs';
 import { getActionType } from '@/utils/transactions';
 
 export default defineComponent({

@@ -4,12 +4,7 @@
       <label for="" class="field__label">
         <Tr>Language</Tr>
       </label>
-      <select
-        type="text"
-        class="field__selectbox"
-        v-model="locale"
-        @change="saveLocale"
-      >
+      <select class="field__selectbox" v-model="locale" @change="saveLocale">
         <option :value="key" v-for="(label, key) in langs" :key="`lang-${key}`">
           {{ label }}
         </option>
@@ -27,6 +22,12 @@ import { setStorageItem } from '@/utils/extension';
 export default defineComponent({
   components: {
     DefaultModalLayout,
+  },
+  props: {
+    name: {
+      required: true,
+      type: String,
+    },
   },
   setup() {
     const langs = reactive({ en: 'English', ru: 'Русский', de: 'Deutsch' });

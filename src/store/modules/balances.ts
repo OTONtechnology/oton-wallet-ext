@@ -70,7 +70,7 @@ const actions = <ActionTree<InitState, any>>{
     }
   },
 
-  async fetchBalancesOnBackground({ state, commit, dispatch }, address) {
+  async fetchBalancesOnBackground({ commit }, address) {
     try {
       const response = await api.get(`/address/${address}/balance`);
       commit('UPDATE_BALANCES', response.data);
