@@ -1,5 +1,4 @@
 import extension from 'extensionizer';
-import { toString } from 'rambda';
 import { ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } from './constants';
 
 function checkForError() {
@@ -49,7 +48,7 @@ export const clearStorage = (type = 'local') => new Promise((res, rej) => {
   }
 });
 
-export const getStorageItem = (name: string, type = 'local'): any => new Promise((res, rej) => {
+export const getStorageItem = (name: string, type = 'local'): any => new Promise((res) => {
   const envType = getEnvironmentType();
 
   if (envType === ENVIRONMENT_TYPE_POPUP) {
@@ -105,7 +104,7 @@ export const openExtensionInBrowser = (route = null, queryString = null) => {
   // }
 };
 
-export const sendMessageToTab = () => new Promise((res, rej) => {
+export const sendMessageToTab = () => new Promise(() => {
   extension.tabs.sendMessage({ payload: { address: 'some address' } });
   // extension.runtime.sendMessage(extId, { openUrlInEditor: url },
   //   (response: any) => {

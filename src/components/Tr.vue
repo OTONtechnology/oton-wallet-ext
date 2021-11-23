@@ -17,7 +17,12 @@ export default defineComponent({
   },
   setup(props, context) {
     const { t } = useI18n();
-    const phrase = computed(() => t(context.slots.default()[0].children, props.settings));
+    const phrase = computed(() => t(
+      (context.slots.default()[0].children || '')
+        .replace(/\n/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim(), props.settings,
+    ));
     const randomKey = computed(() => Math.random()
       .toString(36)
       .substring(7));

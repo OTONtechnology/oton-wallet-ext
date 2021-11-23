@@ -96,7 +96,7 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      const address = await getAddressFromStorage();
+      await getAddressFromStorage();
 
       // if (address) {
       //   console.log(route.query);

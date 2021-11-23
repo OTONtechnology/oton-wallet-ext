@@ -58,10 +58,14 @@
     </div>
     <div class="transfer__fee"><Tr>Fee</Tr>: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
-      <Tr :settings="{ transferSum, currency }"> Transfer </Tr>
-      <span v-if="transferSum && currency">
-        {{ transferSum }} {{ currency }}
-      </span>
+      <Tr
+        :settings="{
+          transferSum,
+          currency,
+        }"
+      >
+        Transfer {transferSum} {currency}
+      </Tr>
     </button>
   </div>
 </template>
@@ -152,7 +156,7 @@ export default defineComponent({
       if (this.sk === '') {
         return false;
       }
-      console.info(address, this.walletAddress);
+
       return address !== this.walletAddress;
     },
     transferSum() {

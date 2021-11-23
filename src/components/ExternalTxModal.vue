@@ -68,7 +68,7 @@ import { useStore } from 'vuex';
 import extension from 'extensionizer';
 import { useToast } from 'vue-toastification';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
-import { sumInputsUnsignedTx, sumInputsByAddress } from '@/utils/sumInputs';
+import { sumInputsByAddress } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
 import { getLocalSecret } from '@/utils/auth';
 import maskCoinsAmount from '@/utils/maskCoinsAmount';

@@ -41,13 +41,8 @@ export const getLocalSecret = async () => {
   return '';
 };
 
-export const importWalletFunc = (sk: string, password: string) => new Promise((res, rej) => {
+export const importWalletFunc = (sk: string, password: string) => new Promise((res) => {
   const encrypted = encryptSK(sk, password).toString();
 
-  Promise.all([setSyncKey(encrypted), setLocalKey(sk)]).then((resp) => {
-    if (resp[0] && resp[1]) {
-      return res(true);
-    }
-    return res(false);
-  });
+  Promise.all([setSyncKey(encrypted), setLocalKey(sk)]).then((resp) => res(!!(resp[0] && resp[1])));
 });

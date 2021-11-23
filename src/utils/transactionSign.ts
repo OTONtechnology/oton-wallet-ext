@@ -149,7 +149,7 @@ export const signTrn = async (
   const signedTrn = addSignToTrn(normalizedTrn, pair.address, signature);
   const encodedSignedTrn = methodType.encode(signedTrn).finish();
 
-  console.info(type, bytesToHex(signBytes));
+  // console.info(type, bytesToHex(signBytes));
 
   return createRaw(encodedSignedTrn, type);
 };

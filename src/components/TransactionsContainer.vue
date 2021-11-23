@@ -71,7 +71,7 @@ export default defineComponent({
       store.dispatch('transactions/fetchTransactions', walletAddress.value);
     };
 
-    const handleScroll = (e) => {
+    const handleScroll = () => {
       const { height } = scrollInner.value.getBoundingClientRect();
       const scrolled = scrollLoader.value.scrollTop;
 

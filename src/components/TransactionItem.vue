@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useStore } from 'vuex';
 import * as dayjs from 'dayjs';
 import { $vfm } from 'vue-final-modal';

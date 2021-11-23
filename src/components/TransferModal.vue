@@ -34,7 +34,7 @@
 import { defineComponent } from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import { $vfm } from 'vue-final-modal';
-import { toast } from 'vue-toastification';
+import { useToast } from 'vue-toastification';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
@@ -87,6 +87,8 @@ export default defineComponent({
       this.submitForm = false;
     },
     async submitTransfer() {
+      const toast = useToast();
+
       const localSk = await getLocalSecret();
 
       const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress);

@@ -64,7 +64,7 @@ export default defineComponent({
       const uncrypt = await getKeysFromHexSK(secret);
       const pk = bytesToHex(uncrypt.pk);
 
-      extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+      extension.tabs.query({ currentWindow: true, active: true }, () => {
         extension.tabs.sendMessage(Number(tabId),
           { type: 'toContent:authData', payload: { ad: address.value, pk } });
 
