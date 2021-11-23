@@ -112,7 +112,6 @@ export default defineComponent({
         }));
 
     const setParams = (params) => {
-      console.log(params);
       transaction.value = params.value.transaction;
       resource.value = params.value.resource;
       tabId.value = params.value.tabId;
@@ -136,14 +135,16 @@ export default defineComponent({
         if (status) {
           $vfm.hide('ExternalTxModal');
           $vfm.show('TransferDoneModal');
-          // extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-          //   extension.tabs.sendMessage(Number(tabId.value),
-          //     { type: 'toContent:customTx', payload: { status, response: resp } });
+          setTimeout(() => {
+            extension.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+              extension.tabs.sendMessage(Number(tabId.value),
+                { type: 'toContent:customTx', payload: { status, response: resp } });
 
-          //   extension.tabs.getCurrent((tab) => {
-          //     extension.tabs.remove(tab.id);
-          //   });
-          // });
+              extension.tabs.getCurrent((tab) => {
+                extension.tabs.remove(tab.id);
+              });
+            });
+          }, 2000);
         } else {
           const errorText = nodeErrorHandler(resp.result);
           toast.error(errorText || 'Error! Something went wrong');

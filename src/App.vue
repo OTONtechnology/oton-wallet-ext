@@ -63,27 +63,22 @@ export default defineComponent({
       const address = await getAddressFromStorage();
 
       const loaderWithAddress = () => {
-        // store.commit('SET_WALLET_ADDRESS', address);
-        // console.log(address);
+        const hasReason = route.query.reason;
+        if (hasReason === 'customTx') {
+          const payload = JSON.parse(route.query.payload);
+          const resourceAddress = payload.address;
 
-        watch(() => route.query, () => {
-          const hasReason = route.query.reason;
-          if (hasReason === 'customTx') {
-            const payload = JSON.parse(route.query.payload);
-            const resourceAddress = payload.address;
-
-            if (resourceAddress === address) {
-              $vfm.show('ExternalTxModal', {
-                transaction: payload.transaction,
-                resource: route.query.resource,
-                tabId: route.query.tab,
-              });
-            } else {
-              toast.error('Your addresses do not match');
-              console.error('addresses do not match');
-            }
+          if (resourceAddress === address) {
+            $vfm.show('ExternalTxModal', {
+              transaction: payload.transaction,
+              resource: route.query.resource,
+              tabId: route.query.tab,
+            });
+          } else {
+            toast.error('Your addresses do not match');
+            console.error('addresses do not match');
           }
-        });
+        }
       };
 
       const loaderWithoutAddress = () => {
