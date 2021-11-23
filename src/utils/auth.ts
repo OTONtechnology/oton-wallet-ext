@@ -12,37 +12,37 @@ export const decryptCSK = (encryptedSK: string, password: string): any => {
   return enc.Utf8.stringify(dec);
 };
 
-export const setSyncKey = async (encryptedKey: string) => {
-  const result = await setStorageItem('encKey', encryptedKey, 'sync');
-  return result;
-};
-
-export const setLocalKey = async (decryptedKey: string) => {
+const setLocalKey = async (decryptedKey: string) => {
   const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 259200 };
   return setStorageItem('sk', localKey, 'local');
 };
 
 export const getLocalSecret = async () => {
-  const sk = await getStorageItem('sk', 'local');
-  if (sk) {
-    if (typeof sk === 'object') {
-      if (isExpired(sk.expired)) {
-        return '';
-      }
-      return sk.value;
-    }
+  let sk = await getStorageItem('sk', 'local');
 
-    const parsed = JSON.parse(sk);
-    if (!parsed || isExpired(parsed.expired)) {
-      return '';
-    }
-    return parsed.value;
+  if (!sk) {
+    return '';
   }
-  return '';
+
+  if (typeof sk !== 'object') {
+    sk = JSON.parse(sk);
+  }
+
+  if (!sk || isExpired(sk.expired)) {
+    return '';
+  }
+
+  return sk.value;
 };
 
 export const importWalletFunc = (sk: string, password: string) => new Promise((res) => {
   const encrypted = encryptSK(sk, password).toString();
 
-  Promise.all([setSyncKey(encrypted), setLocalKey(sk)]).then((resp) => res(!!(resp[0] && resp[1])));
+  Promise.all(
+    [
+      setStorageItem('encKey', encrypted, 'sync'),
+      setLocalKey(sk),
+    ],
+  )
+    .then((resp) => res(!!(resp[0] && resp[1])));
 });
