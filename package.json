@@ -1,6 +1,6 @@
 {
   "name": "oton-wallet-ext",
-  "version": "0.1.0",
+  "version": "0.3.4",
   "private": true,
   "scripts": {
     "generate:messages": "node translationsGenerator/index.js",

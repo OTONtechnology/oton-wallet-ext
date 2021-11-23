@@ -29,7 +29,7 @@ const writeLangFile = async (key, value) => {
   }
 };
 
-const normalizeText = (t) => t
+const normalizeText = (t = '') => t
   .trim()
   .replace(/\n/gi, ' ')
   .replace(/\s+/g, ' ')

@@ -28,7 +28,7 @@ export default defineComponent({
     DefaultModalLayout,
   },
   setup() {
-    const langs = reactive({ en: 'English', ru: 'Русский' });
+    const langs = reactive({ en: 'English', ru: 'Русский', de: 'Deutsch' });
     const { locale } = useI18n();
     const saveLocale = () => {
       console.log(123);
