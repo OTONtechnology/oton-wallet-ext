@@ -22,7 +22,10 @@
           </label>
         </div>
       </div>
-      <div class="field__errors">
+      <EmptyState v-if="noBalances">
+        <Tr>No currencies</Tr>
+      </EmptyState>
+      <div class="field__errors" v-if="!noBalances">
         <div class="field__error" v-for="error in errors.currency" :key="error">
           <Tr>
             {{ error }}
@@ -73,10 +76,16 @@
 <script>
 import Decimal from 'decimal.js';
 import { defineComponent } from 'vue';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
+import { find, propEq } from 'rambda';
 import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
+import EmptyState from '@/components/EmptyState.vue';
+import generateDecimalNumber from '@/utils/generateDecimalNumber';
 
 export default defineComponent({
+  components: {
+    EmptyState,
+  },
   props: {
     currency: {
       type: String,
@@ -105,10 +114,6 @@ export default defineComponent({
   },
   data() {
     return {
-      currencies: [
-        { id: 'OTON' },
-        { id: 'USDT' },
-      ],
       errors: {
         currency: [],
         address: [],
@@ -119,6 +124,12 @@ export default defineComponent({
   },
   computed: {
     ...mapState(['walletAddress']),
+    ...mapGetters({
+      pending: 'balances/pending',
+      noBalances: 'balances/balancesIsEmpty',
+      coinsList: 'coins/coinsList',
+    }),
+
     currencyModel: {
       get() {
         return this.currency;
@@ -140,7 +151,7 @@ export default defineComponent({
         return this.sum;
       },
       set(value) {
-        this.$emit('change-sum', value.toString().replace(',', '.'));
+        this.$emit('change-sum', Number(value.toString().replace(',', '.')));
       },
     },
     secretKeyModel: {
@@ -186,7 +197,7 @@ export default defineComponent({
         this.errors.currency.push('Select currency');
         hasErrors = true;
       }
-      if (!this.address || this.address.length !== 40) {
+      if (!this.address || this.address.length !== 40 || this.address === this.walletAddress) {
         this.errors.address.push('Wrong address');
         hasErrors = true;
       }
@@ -196,14 +207,17 @@ export default defineComponent({
         //   this.errors.sum.push('Use . for');
         // }
         hasErrors = true;
+      } else {
+        const coin = find(propEq('name', this.currency))(this.coinsList);
+        const min = generateDecimalNumber(coin.decimal);
+
+        if (Number(this.sumModel) < min) {
+          this.errors.sum.push(`Minimum amount for this currency: ${min}`);
+          hasErrors = true;
+        }
       }
 
       return !hasErrors;
-
-      // if (!this.sk) {
-      //   this.errors.address.push('Wrong secret key');
-      //   return false;
-      // }
     },
   },
 });
@@ -242,5 +256,15 @@ export default defineComponent({
     width: 100%;
     margin-top: 24px;
   }
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>

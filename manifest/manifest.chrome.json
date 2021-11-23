@@ -1,6 +1,6 @@
 {
-  "name": "oton-wallet-chrome",
-  "description": "OTON wallet Chrome extension",
+  "name": "OTON Wallet",
+  "description": "OTON Wallet",
   "version": "0.3.4",
   "manifest_version": 2,
   "permissions": [

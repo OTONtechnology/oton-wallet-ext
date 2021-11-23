@@ -67,7 +67,7 @@ export default defineComponent({
     });
     const sumByTickers = actionType === 'sent'
       ? sumByAddressGrouped(props.transaction.inputs, walletAddress.value)
-      : sumInputsGrouped(props.transaction.inputs);
+      : sumByAddressGrouped(props.transaction.outputs, walletAddress.value);
 
     const openTransaction = () => {
       $vfm.show('TransactionModal', {

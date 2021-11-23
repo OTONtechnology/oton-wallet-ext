@@ -4,8 +4,7 @@ import StartView from '../views/StartView.vue';
 import Home from '../views/Home.vue';
 import Permission from '../views/Permission.vue';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
-
-// import { getStorageItem } from '@/utils/extension';
+import store from '../store';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -32,23 +31,19 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+  const address = await getAddressFromStorage();
+  store.commit('SET_WALLET_ADDRESS', address);
+
   if (to.name === 'StartView') {
-    const address = await getAddressFromStorage();
     if (address) {
       return next('/home');
     }
     return next();
   } else {
-    const address = await getAddressFromStorage();
     if (!address) {
-      return next('/');
+      return next({ path: '/', query: to.query });
     }
     return next();
-    // const address = await getAddressFromStorage();
-    // console.log(address);
-    // if (address) {
-    //   return next();
-    // }
   }
 });
 

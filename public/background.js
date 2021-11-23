@@ -1,51 +1,34 @@
-// function isWindows() {
-//   return navigator.appVersion.indexOf('Win') !== -1;
-// }
+function isWindows() {
+  return navigator.appVersion.indexOf('Win') !== -1;
+}
 
 const openWindow = (url) => {
+  const width = isWindows() ? 360 + 13 : 360;
+  const height = 600;
   let top = window.screen.height - 600;
   top = top > 0 ? top / 2 : 0;
 
-  let left = window.screen.width - 360;
+  let left = window.screen.width - 350;
   left = left > 0 ? left / 2 : 0;
-
+  console.log(url);
   window.open(
     url,
     'targetWindow',
     `toolbar=no,
       location=no,
       status=no,
-      menubar=no,
+      menubar=yes,
       scrollbars=yes,
-      resizable=yes,
-      width=360,
-      height=600,
+      resizable=no,
+      width=${width},
+      height=${height},
       top=${top},
       left=${left}`,
   );
-
-  // if (isWindows()) {
-  //   chrome.tabs.create({ url });
-  // } else {
-  //   window.open(
-  //     url,
-  //     'targetWindow',
-  //     `toolbar=no,
-  //       location=no,
-  //       status=no,
-  //       menubar=no,
-  //       scrollbars=yes,
-  //       resizable=yes,
-  //       width=360,
-  //       height=600,
-  //       top=${top},
-  //       left=${left}`,
-  //   );
-  // }
 };
 
 const auth = (data, sender) => openWindow(
-  `index.html#/permission?tab=${sender.tab.id}&resource=${sender.origin}&reason=get_access`,
+  `index.html#/permission?tab=${sender.tab.id}&reason=get_access&resource=${sender.origin}`,
 );
 
 const createTx = (data, sender) => openWindow(

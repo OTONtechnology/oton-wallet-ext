@@ -72,6 +72,7 @@ import { sumInputsByAddress } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
 import { getLocalSecret } from '@/utils/auth';
 import maskCoinsAmount from '@/utils/maskCoinsAmount';
+import nodeErrorHandler from '@/utils/nodeErrorHandler';
 
 export default defineComponent({
   components: {
@@ -111,8 +112,8 @@ export default defineComponent({
         }));
 
     const setParams = (params) => {
+      console.log(params);
       transaction.value = params.value.transaction;
-      console.log(params.value.transaction);
       resource.value = params.value.resource;
       tabId.value = params.value.tabId;
     };
@@ -144,8 +145,8 @@ export default defineComponent({
           //   });
           // });
         } else {
-          console.info(resp.result);
-          toast.error('Error! Something went wrong');
+          const errorText = nodeErrorHandler(resp.result);
+          toast.error(errorText || 'Error! Something went wrong');
         }
       }
     };
