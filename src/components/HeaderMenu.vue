@@ -13,7 +13,7 @@
         <div class="menu__item" @click="openSettings"><Tr>Settings</Tr></div>
         <div class="menu__item" @click="openInTab"><Tr>Open in tab</Tr></div>
         <div class="menu__divider"></div>
-        <div class="menu__item" @click="logout"><Tr>Log out</Tr></div>
+        <div class="menu__item" @click="logout"><Tr>Lock</Tr></div>
       </div>
     </div>
   </div>

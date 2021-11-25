@@ -10,7 +10,7 @@ const openWindow = (url) => {
 
   let left = window.screen.width - 350;
   left = left > 0 ? left / 2 : 0;
-  console.log(url);
+
   window.open(
     url,
     'targetWindow',

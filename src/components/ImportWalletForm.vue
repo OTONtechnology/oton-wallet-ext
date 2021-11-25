@@ -90,7 +90,6 @@ export default defineComponent({
   },
   methods: {
     changeTerms(val) {
-      console.log(val);
       this.terms = val;
     },
     async login() {

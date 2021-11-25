@@ -33,7 +33,6 @@ export default defineComponent({
     const langs = reactive({ en: 'English', ru: 'Русский', de: 'Deutsch' });
     const { locale } = useI18n();
     const saveLocale = (e) => {
-      console.log(e.target.value);
       setStorageItem('lang', e.target.value, 'sync');
     };
 

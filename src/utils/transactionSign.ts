@@ -4,7 +4,9 @@ import { pathOr } from 'rambda';
 import { blcInstance } from './api';
 import { SendCoins, Raw, BuyInAmc } from './protobufTypes';
 import { Transaction, TransactionMainData } from '../types/transactions.d';
-import { bytesToHex, hexToBytes } from './crypto';
+import {
+  bytesToHex, hexToBytes, stringToASCIIArray, stringToHex,
+} from './crypto';
 import { getKeysFromSK } from './cryptoKeys';
 import generateDecimalNumber from './generateDecimalNumber';
 
@@ -25,6 +27,17 @@ export const getLastSequence = async (addr: string): Promise<number> => {
   }
 
   return sequence;
+};
+
+export const getChainId = async () => {
+  const infoUrl = '/block?height=80';
+  const response = await blcInstance.get(infoUrl);
+  if (response.statusText === 'OK') {
+    const chainId = pathOr('', ['data', 'result', 'block', 'header', 'chain_id'], response) as string;
+
+    return chainId;
+  }
+  return '';
 };
 
 export const getTrnFromData = async (
@@ -147,11 +160,17 @@ export const signTrn = async (
   const normalizedTrn = normalizeTrn(trn, pair.pk);
   const stripedTrn = stripeTrn(normalizedTrn);
   const signBytes = methodType.encode(stripedTrn).finish();
-  const signature = await ed.sign(signBytes, pair.sk);
+
+  const chainId = await getChainId();
+
+  const chainIdASCI = stringToASCIIArray(chainId);
+
+  const concated = new Uint8Array([...chainIdASCI, ...signBytes]);
+
+  const signature = await ed.sign(concated, pair.sk);
+
   const signedTrn = addSignToTrn(normalizedTrn, pair.address, signature);
   const encodedSignedTrn = methodType.encode(signedTrn).finish();
-
-  // console.info(type, bytesToHex(signBytes));
 
   return createRaw(encodedSignedTrn, type);
 };
