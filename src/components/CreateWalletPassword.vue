@@ -22,7 +22,7 @@
     <div class="create__block field terms">
       <BaseCheckbox :name="'terms'" v-model="form.terms">
         <label class="checkbox__label" for="terms">
-          I agree to the Terms of Use
+          <Tr> I agree to the Terms of Use </Tr>
         </label>
       </BaseCheckbox>
       <div class="field__errors">

@@ -4,6 +4,7 @@ import ru from './i18n/ru';
 import en from './i18n/en';
 import de from './i18n/de';
 import tr from './i18n/tr';
+import { customPlureRule } from '@/hooks/tc';
 
 export const allowedLangs = [
   'ru',
@@ -63,6 +64,9 @@ const i18n = createI18n({
   fallbackLocale: 'en',
   messages, // установка сообщений локализаций
   // mode: 'composition',
+  pluralRules: {
+    ru: customPlureRule,
+  },
 });
 
 export const getLocale = (): string => {

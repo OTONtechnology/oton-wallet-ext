@@ -1,10 +1,7 @@
 import Decimal from 'decimal.js';
-import { groupBy, mapObjIndexed } from 'rambda';
+import { groupBy, mapObjIndexed, propEq } from 'rambda';
 
-const filterByAddress = (inputs: any[], addrs: string) => {
-  const filtered = inputs.filter(({ address }) => address === addrs);
-  return filtered;
-};
+const filterByAddress = (inputs: any[], addrs: string) => inputs.filter(propEq('address', addrs));
 
 export const sumInputs = (inputs: any[]): number => inputs
   .reduce((prev, { amount }) => prev.plus(amount), new Decimal(0))

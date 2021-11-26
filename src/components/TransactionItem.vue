@@ -42,6 +42,7 @@ import * as dayjs from 'dayjs';
 import { $vfm } from 'vue-final-modal';
 import { sumByAddressGrouped } from '@/utils/sumInputs';
 import { getActionType } from '@/utils/transactions';
+import tc from '@/hooks/tc';
 
 export default defineComponent({
   props: {
@@ -52,6 +53,7 @@ export default defineComponent({
   },
 
   setup(props) {
+    const t = tc();
     const store = useStore();
     const walletAddress = computed(() => store.state.walletAddress);
     const actionType = getActionType(props.transaction, walletAddress.value);
@@ -60,9 +62,12 @@ export default defineComponent({
     const recepient = computed(() => {
       if (props.transaction.outputs.length === 0) {
         return 'n/a';
-      } if (props.transaction.outputs.length > 1) {
-        return `${props.transaction.outputs.length} addresses`;
       }
+
+      if (props.transaction.outputs.length > 1) {
+        return t('{N} address', { n: props.transaction.outputs.length });
+      }
+
       return props.transaction.outputs[0].address;
     });
     const sumByTickers = actionType === 'sent'
