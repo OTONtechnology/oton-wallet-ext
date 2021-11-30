@@ -61,6 +61,7 @@ export default defineComponent({
       }
 
       const address = await getAddressFromStorage();
+      console.log(address);
 
       const loaderWithAddress = () => {
         const hasReason = route.query.reason;
@@ -95,7 +96,9 @@ export default defineComponent({
         });
       };
 
-      if (address) {
+      if (address === 'expired') {
+        loaderWithoutAddress();
+      } else if (address) {
         loaderWithAddress();
       } else {
         loaderWithoutAddress();
@@ -210,6 +213,16 @@ svg {
 
     &_error {
       border: 2px solid $danger-color;
+    }
+  }
+
+  &__link {
+    color: $main-color;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 

@@ -4,6 +4,9 @@ import dayjs from 'dayjs';
 import { getStorageItem, setStorageItem } from '@/utils/extension';
 
 const isExpired = (timestamp: string | number) => dayjs().unix() > timestamp;
+const millesecondsLeft = (timestamp: string | number) => (
+  Number(timestamp) - dayjs().unix()
+) * 1000;
 
 export const encryptSK = (sk: string, password: string): any => AES.encrypt(sk, password);
 
@@ -19,7 +22,7 @@ export const decryptCSK = (encryptedSK: string, password: string): any => {
 
 export const setLocalKey = async (decryptedKey: string) => {
   // const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 259200 };
-  const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 259200 };
+  const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 120 };
   return setStorageItem('sk', localKey, 'local');
 };
 
@@ -42,7 +45,22 @@ export const getLocalSecret = async () => {
     return 'expired';
   }
 
+  (window as any).lockTimer = setTimeout(() => {
+    window.location.reload();
+    (window as any).lockTimer = undefined;
+  }, millesecondsLeft(sk.expire));
+
   return sk.value;
+};
+
+export const dropLocalKeyDate = async () => {
+  const currentKey = await getLocalSecret();
+
+  if (currentKey === 'expired') {
+    return false;
+  }
+  const localKey = { value: currentKey, expire: Math.floor(Date.now() / 1000) - 1 };
+  return setStorageItem('sk', localKey, 'local');
 };
 
 export const getEncryptedSyncKey = async () => {

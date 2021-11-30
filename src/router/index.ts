@@ -45,13 +45,11 @@ router.beforeEach(async (to, from, next) => {
   store.commit('SET_WALLET_ADDRESS', address);
 
   if (to.name === 'StartView') {
-    // return next({ path: '/lock', query: to.query });
     if (address) {
       return next('/home');
     }
     return next();
   } else {
-    // return next({ path: '/lock', query: to.query });
     if (!address) {
       return next({ path: '/', query: to.query });
     }

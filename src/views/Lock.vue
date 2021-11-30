@@ -24,10 +24,10 @@
         </button>
       </div>
       <div class="card__links">
-        <div class="card__link">
+        <div class="card__link" @click="handleImport">
           <Tr>Import a wallet</Tr>
         </div>
-        <div class="card__link">
+        <div class="card__link" @click="logout">
           <Tr>Logout</Tr>
         </div>
       </div>
@@ -36,10 +36,13 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { $vfm } from 'vue-final-modal';
+import { useStore } from 'vuex';
 import StartLayout from '@/layouts/StartLayout.vue';
 import { getEncryptedSyncKey, decryptCSK, setLocalKey } from '@/utils/auth';
+import { clearStorage } from '@/utils/extension';
 
 export default defineComponent({
   components: {
@@ -49,21 +52,51 @@ export default defineComponent({
     const password = ref('');
     const errors = ref([]);
     const router = useRouter();
+    const store = useStore();
+    const nextAfterAuth = computed(
+      () => !!(store.state.nextAfterAuth.tab && store.state.nextAfterAuth.resource),
+    );
     const unlock = async () => {
+      errors.value = [];
       const encryptedKey = await getEncryptedSyncKey();
       const decrypted = decryptCSK(encryptedKey, password.value);
       if (decrypted) {
         const setToStorage = await setLocalKey(decrypted);
 
         if (setToStorage) {
+          console.log(123);
           router.push('/home');
+
+          console.log(nextAfterAuth.value);
+
+          if (nextAfterAuth.value) {
+            router.push('/permission');
+          } else {
+            router.push('/home');
+          }
         }
+      } else {
+        errors.value.push('Wrong password');
+      }
+    };
+    const handleImport = () => {
+      $vfm.show('ImportWalletModal');
+    };
+
+    const logout = async () => {
+      const clear = await clearStorage('local');
+
+      if (clear === true) {
+        store.commit('CLEAR');
+        router.push('/');
       }
     };
     return {
       password,
       errors,
       unlock,
+      handleImport,
+      logout,
     };
   },
 
@@ -104,6 +137,7 @@ export default defineComponent({
   &__link {
     text-decoration: underline;
     color: $main-color;
+    cursor: pointer;
   }
 }
 </style>

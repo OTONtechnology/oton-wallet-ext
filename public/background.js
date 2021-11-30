@@ -4,7 +4,7 @@ function isWindows() {
 
 const openWindow = (url) => {
   const width = isWindows() ? 360 + 13 : 360;
-  const height = 600;
+  const height = isWindows() ? 600 + 30 : 600;
   let top = window.screen.height - 600;
   top = top > 0 ? top / 2 : 0;
 
