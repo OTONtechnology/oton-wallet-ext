@@ -33,6 +33,7 @@ import RequestModal from '@/components/RequestModal.vue';
 import ExternalTxModal from '@/components/ExternalTxModal.vue';
 import 'vue-toastification/dist/index.css';
 import { getStorageItem } from '@/utils/extension';
+import { updateLocalKeyDate } from '@/utils/auth';
 
 export default defineComponent({
   components: {
@@ -61,7 +62,6 @@ export default defineComponent({
       }
 
       const address = await getAddressFromStorage();
-      console.log(address);
 
       const loaderWithAddress = () => {
         const hasReason = route.query.reason;
@@ -99,6 +99,7 @@ export default defineComponent({
       if (address === 'expired') {
         loaderWithoutAddress();
       } else if (address) {
+        updateLocalKeyDate();
         loaderWithAddress();
       } else {
         loaderWithoutAddress();

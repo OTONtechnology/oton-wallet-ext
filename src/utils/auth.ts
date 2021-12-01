@@ -3,6 +3,8 @@ import { AES, enc } from 'crypto-js';
 import dayjs from 'dayjs';
 import { getStorageItem, setStorageItem } from '@/utils/extension';
 
+const LOCK_AFTER = 120;
+
 const isExpired = (timestamp: string | number) => dayjs().unix() > timestamp;
 const millesecondsLeft = (timestamp: string | number) => (
   Number(timestamp) - dayjs().unix()
@@ -22,7 +24,7 @@ export const decryptCSK = (encryptedSK: string, password: string): any => {
 
 export const setLocalKey = async (decryptedKey: string) => {
   // const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 259200 };
-  const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 120 };
+  const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + LOCK_AFTER };
   return setStorageItem('sk', localKey, 'local');
 };
 
@@ -60,6 +62,16 @@ export const dropLocalKeyDate = async () => {
     return false;
   }
   const localKey = { value: currentKey, expire: Math.floor(Date.now() / 1000) - 1 };
+  return setStorageItem('sk', localKey, 'local');
+};
+
+export const updateLocalKeyDate = async () => {
+  const currentKey = await getLocalSecret();
+
+  if (currentKey === 'expired') {
+    return false;
+  }
+  const localKey = { value: currentKey, expire: Math.floor(Date.now() / 1000) + LOCK_AFTER };
   return setStorageItem('sk', localKey, 'local');
 };
 

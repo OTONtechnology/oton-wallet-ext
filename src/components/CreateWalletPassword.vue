@@ -21,9 +21,7 @@
     </div>
     <div class="create__block field terms">
       <BaseCheckbox :name="'terms'" v-model="form.terms">
-        <label class="checkbox__label" for="terms">
-          I agree to the Terms of Use
-        </label>
+        <label class="checkbox__label" for="terms"> I agree to the </label>
         {{ " " }}
         <a class="field__link" target="_blank" :href="termsLink">
           Terms of Use
