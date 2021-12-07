@@ -5,6 +5,7 @@
   "scripts": {
     "generate:messages": "node translationsGenerator/index.js",
     "serve": "vue-cli-service serve",
+    "build:prod": "vue-cli-service build --mode production --no-clean",
     "build": "vue-cli-service build --mode development --no-clean --watch",
     "build:cordova": "cross-env APP_ENV=cordova vue-cli-service build --mode development --no-clean --watch",
     "build-content": "vue-cli-service build --target lib --name content --filename content.js ",
