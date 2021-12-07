@@ -1,7 +1,32 @@
 import Decimal from 'decimal.js';
+import { groupBy, mapObjIndexed, propEq } from 'rambda';
 
-const sumInputs = (inputs: any[]): number => inputs
+const filterByAddress = (inputs: any[], addrs: string) => inputs.filter(propEq('address', addrs));
+
+export const sumInputs = (inputs: any[]): number => inputs
   .reduce((prev, { amount }) => prev.plus(amount), new Decimal(0))
   .toNumber();
 
-export default sumInputs;
+export const sumInputsUnsignedTx = (inputs: any[]): number => inputs
+  .reduce((prev, cur) => prev.plus(cur.coins[0].amount), new Decimal(0))
+  .toNumber();
+
+export const sumInputsGrouped = (inputs: any[]): any => {
+  const grouped = groupBy(
+    (input) => input.ticker,
+    inputs,
+  );
+
+  return mapObjIndexed((val) => sumInputs(val), grouped);
+};
+
+export const sumInputsByAddress = (inputs: any[], addrs: string, signed = true): any => {
+  const filtered = filterByAddress(inputs, addrs);
+  console.log(filtered);
+  return signed ? sumInputs(filtered) : sumInputsUnsignedTx(filtered);
+};
+
+export const sumByAddressGrouped = (inputs: any[], addrs: string): any => {
+  const filtered = filterByAddress(inputs, addrs);
+  return sumInputsGrouped(filtered);
+};

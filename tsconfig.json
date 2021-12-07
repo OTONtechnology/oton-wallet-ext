@@ -12,7 +12,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env", "chrome"
     ],
     "paths": {
       "@/*": [
@@ -32,8 +32,8 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/store/modules/balance.js"  ],
+  ],
   "exclude": [
-    "node_modules", "./src/store"
+    "node_modules", "src/store/**", "webpackPlugins"
   ]
 }

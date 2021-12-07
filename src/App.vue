@@ -6,31 +6,99 @@
     <ImportWalletModal :name="'ImportWalletModal'" />
     <TransferModal :name="'TransferModal'" />
     <TransferDoneModal :name="'TransferDoneModal'" />
+    <TransactionModal :name="'TransactionModal'" />
+    <SettingsModal :name="'SettingsModal'" />
+    <CreateWalletModal :name="'CreateWalletModal'" />
+    <RequestModal :name="'RequestModal'" />
+    <ExternalTxModal :name="'ExternalTxModal'" />
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, computed } from 'vue';
+import {
+  defineComponent, onBeforeMount, computed, watch,
+} from 'vue';
 import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { $vfm } from 'vue-final-modal';
+import { useI18n } from 'vue-i18n';
+import { useToast } from 'vue-toastification';
+import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
 import TransferDoneModal from '@/components/TransferDoneModal.vue';
-import getAddress from '@/utils/getAddress';
+import TransactionModal from '@/components/TransactionModal.vue';
+import SettingsModal from '@/components/SettingsModal.vue';
+import CreateWalletModal from '@/components/CreateWalletModal.vue';
+import RequestModal from '@/components/RequestModal.vue';
+import ExternalTxModal from '@/components/ExternalTxModal.vue';
+import 'vue-toastification/dist/index.css';
+import { getStorageItem } from '@/utils/extension';
 
 export default defineComponent({
   components: {
     ImportWalletModal,
     TransferModal,
     TransferDoneModal,
+    TransactionModal,
+    SettingsModal,
+    CreateWalletModal,
+    RequestModal,
+    ExternalTxModal,
   },
 
   setup() {
     const store = useStore();
+    const toast = useToast();
+    const i18n = useI18n();
     const walletAddress = computed(() => store.state.walletAddress);
+    const route = useRoute();
 
-    onMounted(async () => {
-      const res = await getAddress();
-      if (res) {
-        store.commit('SET_WALLET_ADDRESS', res);
+    onBeforeMount(async () => {
+      const lang = await getStorageItem('lang', 'sync');
+
+      if (lang !== 'en') {
+        i18n.locale.value = lang;
+      }
+
+      const address = await getAddressFromStorage();
+
+      const loaderWithAddress = () => {
+        const hasReason = route.query.reason;
+        if (hasReason === 'customTx') {
+          const payload = JSON.parse(route.query.payload);
+          const resourceAddress = payload.address;
+
+          if (resourceAddress === address) {
+            $vfm.show('ExternalTxModal', {
+              transaction: payload.transaction,
+              resource: route.query.resource,
+              tabId: route.query.tab,
+            });
+          } else {
+            toast.error('Your addresses do not match');
+            console.error('addresses do not match');
+          }
+        }
+      };
+
+      const loaderWithoutAddress = () => {
+        watch(() => route.query, () => {
+          const hasReason = route.query.reason;
+          if (hasReason) {
+            if (hasReason === 'get_access') {
+              store.commit('SET_NEXT_AFTER_AUTH', {
+                tab: route.query.tab,
+                resource: route.query.resource,
+              });
+            }
+          }
+        });
+      };
+
+      if (address) {
+        loaderWithAddress();
+      } else {
+        loaderWithoutAddress();
       }
     });
 
@@ -62,6 +130,11 @@ body {
   }
 }
 
+html {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 svg {
   font-family: 'PT Root UI', Arial, sans-serif;
 }
@@ -71,7 +144,10 @@ svg {
   min-width: 360px;
   height: 600px;
   margin: 0 auto;
-  max-width: 800px;
+  max-width: 360px;
+  // box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  // border-radius: 4px;
+  background-color: $extra-color;
 }
 
 .button {
@@ -84,6 +160,7 @@ svg {
   cursor: pointer;
   letter-spacing: normal;
   line-height: normal;
+  text-align: center;
 
   &.primary {
     background: $main-color;
@@ -119,6 +196,26 @@ svg {
     &_error {
       border: 2px solid $danger-color;
     }
+  }
+
+  &__selectbox {
+    display: block;
+    width: 100%;
+    border-radius: 4px;
+    border: 2px solid $fade-color;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px 5px;
+    background: $extra-color;
+
+    &_error {
+      border: 2px solid $danger-color;
+    }
+  }
+
+  &__error {
+    color: $danger-color;
+    font-size: 12px;
   }
 }
 
@@ -166,5 +263,9 @@ svg {
 .wrapper {
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.uppercase {
+  text-transform: uppercase;
 }
 </style>

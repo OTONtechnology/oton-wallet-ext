@@ -1,5 +1,6 @@
+import { entropyToMnemonic } from 'bip39';
 import * as ed from 'noble-ed25519';
-import { getSha256, hexToBytes } from './crypto';
+import { getSha256, hexToBytes, bytesToHex } from './crypto';
 
 type gafp = (pubKey: Uint8Array) => string
 export const getAddressFromPubKey: gafp = (pubKey) => getSha256(pubKey).hex().substring(0, 40);
@@ -22,6 +23,7 @@ export interface IKeys {
   sk: Uint8Array; // secretKey
   address: string;
   secret: Uint8Array;
+  mnemonic: string;
   [key: string]: any
 }
 
@@ -33,11 +35,14 @@ export const getKeysFromSK = async (sk: Uint8Array): Promise<IKeys> => {
 
   const pk = await ed.getPublicKey(secret);
 
+  const mnemonic = entropyToMnemonic(bytesToHex(secret));
+
   const result: IKeys = {
     pk,
     sk: secret,
     address: getAddressFromPubKey(pk),
     secret: new Uint8Array([...Array.from(secret), ...Array.from(pk)]),
+    mnemonic,
   };
 
   return result;

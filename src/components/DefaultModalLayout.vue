@@ -1,30 +1,32 @@
 <template>
   <vue-final-modal
     v-model="showModal"
-    :name="name"
     content-class="modal-content"
     classes="modal-container"
-    @closed="closeHandler"
+    :name="name"
+    :click-to-close="!unclosable"
+    @beforeOpen="setParams"
+    @closed="handleClose"
   >
-    <svg class="modal__close" @click="showModal = false">
+    <svg class="modal__close" @click="handleClose" v-if="!unclosable">
       <use xlink:href="#ic_close--sprite" />
     </svg>
-    <div class="title">{{ title }}</div>
+    <div class="title">
+      <Tr>
+        {{ title }}
+      </Tr>
+    </div>
     <div class="modal__content">
-      <slot />
+      <slot v-if="showModal" :key="`modal-name-${name}`" />
     </div>
   </vue-final-modal>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { $vfm } from 'vue-final-modal';
+import { defineComponent, ref } from 'vue';
 import '@/assets/svg/ic_close.svg?sprite';
 
 export default defineComponent({
-  data: () => ({
-    showModal: false,
-  }),
   props: {
     name: {
       required: true,
@@ -34,12 +36,39 @@ export default defineComponent({
       required: true,
       type: String,
     },
-  },
-  methods: {
-    closeHandler() {
-      $vfm.hide(this.name);
-      this.$emit('close-modal');
+    show: {
+      required: false,
+      type: Boolean,
     },
+    resealable: {
+      required: false,
+      type: Boolean,
+      default: true,
+    },
+    unclosable: {
+      required: false,
+      type: Boolean,
+    },
+  },
+  emits: ['set-params', 'close-modal'],
+
+  setup(props, { emit }) {
+    const showModal = ref(props.show ? props.show : false);
+
+    const setParams = (event) => {
+      emit('set-params', event.ref.params);
+    };
+    const handleClose = () => {
+      showModal.value = false;
+      emit('close-modal');
+    };
+
+    return {
+      showModal,
+      setParams,
+
+      handleClose,
+    };
   },
 });
 </script>

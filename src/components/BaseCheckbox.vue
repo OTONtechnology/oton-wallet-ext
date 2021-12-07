@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   props: {
@@ -24,21 +24,25 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
   },
-
-  computed: {
-    inputModel: {
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const inputModel = computed({
       get() {
-        return this.val;
+        return props.modelValue;
       },
-      set(value) {
-        this.$emit('change-value', value);
+      set(e) {
+        emit('update:modelValue', e);
       },
-    },
+    });
+
+    return {
+      inputModel,
+    };
   },
 });
 </script>

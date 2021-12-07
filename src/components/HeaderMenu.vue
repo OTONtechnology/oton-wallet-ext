@@ -9,10 +9,11 @@
     <div class="menu__container" v-show="opened">
       <div class="menu__layer" @click="opened = false"></div>
       <div class="menu__list">
-        <div class="menu__item">Custom transaction</div>
-        <div class="menu__item">Settings</div>
+        <!-- <div class="menu__item">{{ t("Custom transaction") }}</div> -->
+        <div class="menu__item" @click="openSettings"><Tr>Settings</Tr></div>
+        <div class="menu__item" @click="openInTab"><Tr>Open in tab</Tr></div>
         <div class="menu__divider"></div>
-        <div class="menu__item" @click="logout">Log out</div>
+        <div class="menu__item" @click="logout"><Tr>Log out</Tr></div>
       </div>
     </div>
   </div>
@@ -22,28 +23,45 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import '@/assets/svg/ic_menu.svg?sprite';
-import extension from 'extensionizer';
 import { useStore } from 'vuex';
+import { $vfm } from 'vue-final-modal';
+import { useI18n } from 'vue-i18n';
+import { clearStorage, openExtensionInBrowser } from '@/utils/extension';
 
 export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore();
     const opened = ref(false);
+    const { t } = useI18n();
     const toggleMenu = () => {
       opened.value = !opened.value;
     };
-    const logout = () => {
-      extension.storage.local.clear(() => {
+
+    const logout = async () => {
+      const clear = await clearStorage('local');
+
+      if (clear === true) {
         store.commit('CLEAR');
         router.push('/');
-      });
+      }
+    };
+
+    const openSettings = () => {
+      $vfm.show('SettingsModal');
+    };
+
+    const openInTab = () => {
+      openExtensionInBrowser('/');
     };
 
     return {
       opened,
       toggleMenu,
       logout,
+      openInTab,
+      openSettings,
+      t,
     };
   },
 });

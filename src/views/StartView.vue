@@ -1,14 +1,16 @@
 <template>
   <StartLayout>
     <div class="card">
-      <p class="card__text">Create a new wallet or import an existing one.</p>
+      <p class="card__text">
+        <Tr> Create a new wallet or import an existing one. </Tr>
+      </p>
 
       <div class="card__buttons">
         <button class="card__button button" @click="openImportModal">
-          Import a wallet
+          <Tr> Import a wallet </Tr>
         </button>
-        <button @click="createKeys" class="card__button button primary">
-          Create new wallet
+        <button @click="openCreateModal" class="card__button button primary">
+          <Tr> Create new wallet </Tr>
         </button>
       </div>
     </div>
@@ -18,8 +20,8 @@
 <script>
 import { defineComponent } from 'vue';
 import { $vfm } from 'vue-final-modal';
+import { sendMessageToTab } from '@/utils/extension';
 import StartLayout from '@/layouts/StartLayout.vue';
-import { createKeys } from '../utils/cryptoKeys';
 
 export default defineComponent({
   data: () => ({}),
@@ -30,11 +32,13 @@ export default defineComponent({
     openImportModal() {
       $vfm.show('ImportWalletModal');
     },
-    async createKeys() {
-      const newKeys = await createKeys();
-      // TODO: shoud be write to user store, and user should save his secret key
-      console.info(newKeys);
+    openCreateModal() {
+      $vfm.show('CreateWalletModal');
     },
+    test() {
+      sendMessageToTab();
+    },
+
   },
 });
 

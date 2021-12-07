@@ -28,6 +28,8 @@ export interface TrnOutput {
 }
 export interface Transaction {
   gas?: number,
+  address?: string | Uint8Array,
+  referal?: string | Uint8Array,
   fee:{
     name: string,
     amount: number

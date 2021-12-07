@@ -1,7 +1,9 @@
 <template>
   <div class="transfer">
     <div class="transfer__currency">
-      <div class="transfer__currency-title">Currency</div>
+      <div class="transfer__currency-title">
+        <Tr> Currency </Tr>
+      </div>
       <div class="transfer__currencies-list">
         <div
           class="transfer__radio radio"
@@ -16,31 +18,57 @@
             v-model="currencyModel"
           />
           <label class="radio__label" :for="key">
-            {{ key }} <span class="max">(max: {{ cur.balance }})</span>
+            {{ key }} <span class="max">(<Tr>max</Tr>: {{ cur.balance }})</span>
           </label>
+        </div>
+      </div>
+      <EmptyState v-if="noBalances">
+        <Tr>No currencies</Tr>
+      </EmptyState>
+      <div class="field__errors" v-if="!noBalances">
+        <div class="field__error" v-for="error in errors.currency" :key="error">
+          <Tr>
+            {{ error }}
+          </Tr>
         </div>
       </div>
     </div>
     <div class="transfer__address field">
-      <label for="" class="field__label">Address</label>
+      <label for="" class="field__label">
+        <Tr> Address </Tr>
+      </label>
       <input type="text" class="field__input" v-model="addressModel" />
     </div>
-    <div class="transfer__sum field">
-      <label for="" class="field__label">Sum</label>
-      <input type="text" class="field__input" v-model="sumModel" />
+    <div class="field__errors">
+      <div class="field__error" v-for="error in errors.address" :key="error">
+        <Tr>
+          {{ error }}
+        </Tr>
+      </div>
     </div>
     <div class="transfer__sum field">
-      <label for="" class="field__label">Secret key</label>
-      <input
-        type="text"
-        class="field__input"
-        :class="{ field__input_error: skIsError }"
-        v-model="secretKeyModel"
-      />
+      <label for="" class="field__label">
+        <Tr> Sum </Tr>
+      </label>
+      <input type="number" class="field__input" v-model="sumModel" />
     </div>
-    <div class="transfer__fee">Fee: {{ fee }}</div>
+    <div class="field__errors">
+      <div class="field__error" v-for="error in errors.sum" :key="error">
+        <Tr>
+          {{ error }}
+        </Tr>
+      </div>
+    </div>
+    <div class="transfer__fee"><Tr>Fee</Tr>: {{ fee }}</div>
     <button class="transfer__button button primary" @click="transfer">
-      Transfer {{ transferSum }} {{ currency }}
+      <Tr
+        :settings="{
+          transferSum,
+          currency,
+        }"
+      >
+        Transfer {transferSum} {currency}
+      </Tr>
     </button>
   </div>
 </template>
@@ -48,11 +76,15 @@
 <script>
 import Decimal from 'decimal.js';
 import { defineComponent } from 'vue';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
+import { find, propEq } from 'rambda';
 import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
+import EmptyState from '@/components/EmptyState.vue';
+import generateDecimalNumber from '@/utils/generateDecimalNumber';
 
 export default defineComponent({
   components: {
+    EmptyState,
   },
   props: {
     currency: {
@@ -64,11 +96,11 @@ export default defineComponent({
       required: true,
     },
     sum: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     fee: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     sk: {
@@ -82,14 +114,22 @@ export default defineComponent({
   },
   data() {
     return {
-      currencies: [
-        { id: 'OTON' },
-        { id: 'USDT' },
-      ],
+      errors: {
+        currency: [],
+        address: [],
+        sum: [],
+        sk: [],
+      },
     };
   },
   computed: {
     ...mapState(['walletAddress']),
+    ...mapGetters({
+      pending: 'balances/pending',
+      noBalances: 'balances/balancesIsEmpty',
+      coinsList: 'coins/coinsList',
+    }),
+
     currencyModel: {
       get() {
         return this.currency;
@@ -111,7 +151,7 @@ export default defineComponent({
         return this.sum;
       },
       set(value) {
-        this.$emit('change-sum', value);
+        this.$emit('change-sum', Number(value.toString().replace(',', '.')));
       },
     },
     secretKeyModel: {
@@ -127,7 +167,7 @@ export default defineComponent({
       if (this.sk === '') {
         return false;
       }
-      console.info(address, this.walletAddress);
+
       return address !== this.walletAddress;
     },
     transferSum() {
@@ -139,8 +179,45 @@ export default defineComponent({
   },
 
   methods: {
-    transfer() {
-      this.$emit('transfer');
+    async transfer() {
+      if (this.validate()) {
+        this.$emit('transfer');
+      }
+    },
+    validate() {
+      this.errors = {
+        currency: [],
+        address: [],
+        sum: [],
+        sk: [],
+      };
+      let hasErrors = false;
+
+      if (!this.currency) {
+        this.errors.currency.push('Select currency');
+        hasErrors = true;
+      }
+      if (!this.address || this.address.length !== 40 || this.address === this.walletAddress) {
+        this.errors.address.push('Wrong address');
+        hasErrors = true;
+      }
+      if (!Number(this.sum)) {
+        this.errors.sum.push('Wrong sum');
+        // if (this.sum.search(',') !== -1) {
+        //   this.errors.sum.push('Use . for');
+        // }
+        hasErrors = true;
+      } else {
+        const coin = find(propEq('name', this.currency))(this.coinsList);
+        const min = generateDecimalNumber(coin.decimal);
+
+        if (Number(this.sumModel) < min) {
+          this.errors.sum.push(`Minimum amount for this currency: ${min}`);
+          hasErrors = true;
+        }
+      }
+
+      return !hasErrors;
     },
   },
 });
@@ -179,5 +256,15 @@ export default defineComponent({
     width: 100%;
     margin-top: 24px;
   }
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>

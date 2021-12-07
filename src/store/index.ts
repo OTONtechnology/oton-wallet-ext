@@ -1,46 +1,38 @@
 import { createStore } from 'vuex';
-import { clone, sort } from 'rambda';
-import api, { blcInstance } from '@/utils/api';
+import { clone } from 'rambda';
+import { blcInstance } from '@/utils/api';
 import {
   FULFILLED, INIT, PENDING, REJECTED,
 } from '@/utils/constants';
+import transactions from './modules/transactions';
+import balances from './modules/balances';
+import rates from './modules/rates';
+import coins from './modules/coins';
 
 interface InitState {
   fetchState: string;
-  balances: any;
-  transactions: any[];
+  lang: 'en',
   walletAddress: string;
-  quizzes: {
-    fetchTransactions: number;
-    fetchBalances: number;
-  };
+  nextAfterAuth: {
+    tab: string | number | null;
+    resource: string | null;
+  }
 }
 const initState: InitState = {
   fetchState: INIT,
-  balances: {},
-  transactions: [],
+  lang: 'en',
   walletAddress: '',
-  quizzes: {
-    fetchTransactions: 0,
-    fetchBalances: 0,
+  nextAfterAuth: {
+    tab: null,
+    resource: null,
   },
 };
 
 export default createStore({
   state: clone(initState),
   mutations: {
-    UPDATE_BALANCES(state, balance) {
-      state.balances = balance.data;
-    },
-    UPDATE_TRANSACTIONS(state, transactions) {
-      const sorted = sort(
-        (a: any, b: any) => b.block.timestamp - a.block.timestamp, transactions.data,
-      );
-      state.transactions = sorted;
-    },
     CLEAR(state) {
-      Object.values(state.quizzes).forEach(clearTimeout);
-
+      // Object.values(state.quizzes).forEach(clearTimeout);
       Object.assign(state, initState);
     },
     SET_STATE(state, fetchState) {
@@ -49,70 +41,20 @@ export default createStore({
     SET_WALLET_ADDRESS(state, address) {
       state.walletAddress = address;
     },
-    SET_QUIZ_IDS(state, quiz) {
-      state.quizzes = {
-        ...state.quizzes,
-        ...quiz,
-      };
+    CHANGE_LANG(state, value) {
+      state.lang = value;
+    },
+    SET_NEXT_AFTER_AUTH(state, data) {
+      state.nextAfterAuth = data;
     },
   },
   actions: {
-    async fetchTransactions({ commit, dispatch }, address) {
-      if (typeof address !== 'string' || address.length !== 40) {
-        commit('SET_STATE', REJECTED);
-      }
-
-      // if (state.fetchState === PENDING) {
-      //   return;
-      // }
-
-      commit('SET_STATE', PENDING);
-
-      try {
-        const response = await api.get(`/address/${address}/transactions`);
-        commit('UPDATE_TRANSACTIONS', response.data);
-        commit('SET_STATE', FULFILLED);
-
-        const timeoutId = setTimeout(() => dispatch('fetchTransactions', address), 60000);
-        commit('SET_QUIZ_IDS', { fetchTransactions: timeoutId });
-      } catch (err) {
-        commit('SET_STATE', REJECTED);
-        console.error(err);
-      }
-    },
-
-    async fetchBalances({ commit, dispatch }, address) {
-      if (typeof address !== 'string' || address.length !== 40) {
-        commit('SET_STATE', REJECTED);
-      }
-
-      // if (state.fetchState === PENDING) {
-      //   return;
-      // }
-
-      commit('SET_STATE', PENDING);
-
-      try {
-        const response = await api.get(`/address/${address}/balance`);
-
-        commit('UPDATE_BALANCES', response.data);
-        commit('SET_STATE', FULFILLED);
-
-        const timeoutId = setTimeout(() => dispatch('fetchBalances', address), 60000);
-        commit('SET_QUIZ_IDS', { fetchBalances: timeoutId });
-      } catch (err) {
-        commit('SET_STATE', REJECTED);
-        console.error(err);
-      }
-    },
-
     async sendTransaction({ commit, state }, transaction) {
       if (state.fetchState === PENDING) {
         return false;
       }
 
       commit('SET_STATE', PENDING);
-      console.log('send');
 
       try {
         const response = await blcInstance.get(`/broadcast_tx_commit?tx=0x${transaction}`);
@@ -125,7 +67,12 @@ export default createStore({
         return false;
       }
     },
+
   },
   modules: {
+    transactions,
+    balances,
+    rates,
+    coins,
   },
 });

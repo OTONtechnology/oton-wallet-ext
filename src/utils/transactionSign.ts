@@ -2,10 +2,13 @@ import { Decimal } from 'decimal.js';
 import * as ed from 'noble-ed25519';
 import { pathOr } from 'rambda';
 import { blcInstance } from './api';
-import { SendCoins, Raw } from './protobufTypes';
+import { SendCoins, Raw, BuyInAmc } from './protobufTypes';
 import { Transaction, TransactionMainData } from '../types/transactions.d';
 import { bytesToHex, hexToBytes } from './crypto';
 import { getKeysFromSK } from './cryptoKeys';
+import generateDecimalNumber from './generateDecimalNumber';
+
+const stringOrBytes = (payload: string | Uint8Array) => (typeof payload === 'string' ? hexToBytes(payload) : payload);
 
 export const getLastSequence = async (addr: string): Promise<number> => {
   let sequence = 0;
@@ -27,12 +30,13 @@ export const getLastSequence = async (addr: string): Promise<number> => {
 export const getTrnFromData = async (
   out: TransactionMainData,
   address: string,
+  decimal: number,
 ): Promise<Transaction> => {
-  const getRealSum = (sum: number | string) => Decimal.mul(sum, 10000);
+  const getRealSum = (sum: number | string) => Decimal.div(sum, generateDecimalNumber(decimal));
   let sequence = await getLastSequence(address);
   sequence = (sequence || 0) + 1;
 
-  const fee = getRealSum(out.fee || 0.0001).toNumber();
+  const fee = getRealSum(out.fee || generateDecimalNumber(decimal)).toNumber();
 
   const realSum = getRealSum(out.sum);
 
@@ -63,7 +67,28 @@ export const getTrnFromData = async (
   };
 };
 
-export const stripeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
+export const normalizeTrn = (trn: Transaction, pk: Uint8Array):Transaction => ({
+  ...trn,
+  ...(trn.address ? { address: stringOrBytes(trn.address) } : {}),
+  ...(trn.referal ? { referal: stringOrBytes(trn.referal) } : {}),
+  inputs: trn.inputs.map((input) => {
+    const newInput = {
+      ...input,
+      ...(input.pub_key ? { pub_key: stringOrBytes(input.pub_key) } : {}),
+      ...(input.signature ? { signature: stringOrBytes(input.signature) } : {}),
+      address: stringOrBytes(input.address),
+    };
+
+    // TODO: remove from here
+    if (+input.sequence === 1) {
+      newInput.pub_key = pk;
+    }
+
+    return newInput;
+  }),
+});
+
+export const stripeTrn = (trn: Transaction): Transaction => ({
   ...trn,
   inputs: trn.inputs.map((input) => {
     const newInput = {
@@ -72,11 +97,6 @@ export const stripeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
 
     if (newInput.signature) {
       delete newInput.signature;
-    }
-
-    // TODO: remove from here
-    if (+input.sequence === 1) {
-      newInput.pub_key = pk;
     }
 
     return newInput;
@@ -115,21 +135,23 @@ const addSignToTrn = (
 export const signTrn = async (
   trn: Transaction,
   sk: string | Uint8Array,
-  type?: string,
+  type?: 'buy_in_amc' | 'send_coins',
 ): Promise<string> => {
+  const methods = {
+    buy_in_amc: BuyInAmc,
+    send_coins: SendCoins,
+  };
+  const methodType = methods[type || 'send_coins'];
   const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
-
   const pair = await getKeysFromSK(secret);
-  const stripedTrn = stripeTrn(trn, pair.pk);
-
-  const signBytes = SendCoins.encode(stripedTrn).finish();
-
+  const normalizedTrn = normalizeTrn(trn, pair.pk);
+  const stripedTrn = stripeTrn(normalizedTrn);
+  const signBytes = methodType.encode(stripedTrn).finish();
   const signature = await ed.sign(signBytes, pair.sk);
-  const signedTrn = addSignToTrn(trn, pair.address, signature);
-  console.info({ signedTrn });
-  const encodedSignedTrn = SendCoins.encode(signedTrn).finish();
+  const signedTrn = addSignToTrn(normalizedTrn, pair.address, signature);
+  const encodedSignedTrn = methodType.encode(signedTrn).finish();
 
-  console.info('SignBytes: ', bytesToHex(signBytes));
+  // console.info(type, bytesToHex(signBytes));
 
   return createRaw(encodedSignedTrn, type);
 };
