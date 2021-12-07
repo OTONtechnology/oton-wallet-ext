@@ -6,6 +6,7 @@
     "generate:messages": "node translationsGenerator/index.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --mode development --no-clean --watch",
+    "build:cordova": "cross-env APP_ENV=cordova vue-cli-service build --mode development --no-clean --watch",
     "build-content": "vue-cli-service build --target lib --name content --filename content.js ",
     "postbuild": "npm-run-all copy:* copy:*:*",
     "prebuild": "npm-run-all copy:* copy:*:*",
@@ -48,6 +49,7 @@
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/eslint-config-typescript": "^7.0.0",
+    "cross-env": "^7.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^7.0.0",
@@ -58,6 +60,7 @@
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "typescript": "~4.1.5",
+    "vue-cli-plugin-html-replace": "~1.3.0",
     "vue-cli-plugin-style-resources-loader": "~0.1.5",
     "vue-cli-plugin-svg": "~0.2.1"
   }

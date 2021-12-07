@@ -1,6 +1,7 @@
 // eslint-disable-next-line
 const path = require('path');
 // const BackgroundScriptsPlugin = require('./webpackPlugins/BackgroundScriptsPlugin.js');
+const isCordova = process.env.APP_ENV === 'cordova';
 
 module.exports = {
   // pages: {
@@ -13,6 +14,10 @@ module.exports = {
   //     filename: 'content.js',
   //   },
   // },
+
+  publicPath: isCordova ? '' : '/',
+
+  outputDir: isCordova ? '../cordova-test/www' : 'dist',
 
   configureWebpack: {
     devtool: 'cheap-module-source-map',
@@ -32,6 +37,23 @@ module.exports = {
     'style-resources-loader': {
       preProcessor: 'stylus',
       patterns: [path.resolve(__dirname, './src/assets/styles/variables.styl')],
+    },
+    htmlReplace: {
+      enable: isCordova,
+      patterns: [
+        {
+          match: '<!-- cordova-replace-script -->',
+          replacement: '<script src="cordova.js"></script><script src="js/index.js"></script>',
+        },
+        {
+          match: '<!-- cordova-replace-meta -->',
+          replacement: `
+            <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+            <meta name="format-detection" content="telephone=no">
+            <meta name="msapplication-tap-highlight" content="no">
+          `,
+        },
+      ],
     },
   },
   chainWebpack: (config) => {
