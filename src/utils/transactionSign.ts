@@ -28,8 +28,8 @@ export const getLastSequence = async (addr: string): Promise<number> => {
 };
 
 export const getTrnFromData = async (
-  out:TransactionMainData,
-  address:string,
+  out: TransactionMainData,
+  address: string,
   decimal: number,
 ): Promise<Transaction> => {
   const getRealSum = (sum: number | string) => Decimal.div(sum, generateDecimalNumber(decimal));
