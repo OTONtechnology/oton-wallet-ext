@@ -113,6 +113,7 @@ export default defineComponent({
   flex-grow: 2;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   &__title {
     opacity: 0.4;
