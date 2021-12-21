@@ -21,12 +21,28 @@
     </div>
     <div class="create__block field terms">
       <BaseCheckbox :name="'terms'" v-model="form.terms">
-        <label class="checkbox__label" for="terms">
-          <Tr> I agree to the Terms of Use </Tr>
-        </label>
+        <label class="checkbox__label" for="terms"> I agree to the </label>
+        {{ " " }}
+        <a class="field__link" target="_blank" :href="termsLink">
+          Terms of Use
+        </a>
       </BaseCheckbox>
       <div class="field__errors">
         <div class="field__error" v-for="error in errors.terms" :key="error">
+          {{ error }}
+        </div>
+      </div>
+    </div>
+    <div class="create__block field terms">
+      <BaseCheckbox :name="'privacy'" v-model="form.privacy">
+        <label class="checkbox__label" for="privacy"> I agree to the </label>
+        {{ " " }}
+        <a class="field__link" target="_blank" :href="privacyLink">
+          Privacy Policy
+        </a>
+      </BaseCheckbox>
+      <div class="field__errors">
+        <div class="field__error" v-for="error in errors.privacy" :key="error">
           {{ error }}
         </div>
       </div>
@@ -41,7 +57,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, computed } from 'vue';
 
 export default defineComponent({
   emits: ['create'],
@@ -51,15 +67,29 @@ export default defineComponent({
       password: '',
       password1: '',
       terms: false,
+      privacy: false,
+    });
+    const termsLink = computed(() => {
+      const domain = process.env.VUE_APP_LEGALS_URL;
+      return `${domain}/OTONWallet_TermsOfUse.pdf`;
+    });
+    const privacyLink = computed(() => {
+      const domain = process.env.VUE_APP_LEGALS_URL;
+      return `${domain}/OTONWallet_PrivacyPolicy.pdf`;
     });
     const validate = () => {
       errors.terms = [];
+      errors.privacy = [];
       errors.password = [];
 
       let isValid = true;
 
       if (!form.terms) {
         errors.terms = ['You must agree with Terms of Use'];
+        isValid = false;
+      }
+      if (!form.privacy) {
+        errors.privacy = ['You must agree with Privacy Policy'];
         isValid = false;
       }
       if (form.password.length < 6 || form.password1.length < 6) {
@@ -79,6 +109,8 @@ export default defineComponent({
     return {
       form,
       errors,
+      termsLink,
+      privacyLink,
       create,
     };
   },
@@ -91,7 +123,9 @@ export default defineComponent({
     margin-bottom: 12px;
 
     &.terms {
-      margin-top: 24px;
+      &:first-of-type {
+        margin-top: 24px;
+      }
     }
   }
 }

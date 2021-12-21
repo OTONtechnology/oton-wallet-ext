@@ -11,7 +11,7 @@
     "build-content": "vue-cli-service build --target lib --name content --filename content.js ",
     "postbuild": "npm-run-all copy:* copy:*:*",
     "prebuild": "npm-run-all copy:* copy:*:*",
-    "copy:manifest:chrome": "cp -r manifest/manifest.chrome.json dist/manifest.json",
+    "copy:manifest:chrome": "cp -r manifest/manifest.chrome.json dist/manifest.json && cp -r manifest/_locales dist",
     "copy:icons": "cp -r manifest/icons dist/icons",
     "lint": "vue-cli-service lint"
   },

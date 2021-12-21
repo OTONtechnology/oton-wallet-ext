@@ -16,7 +16,7 @@ interface InitState {
   nextAfterAuth: {
     tab: string | number | null;
     resource: string | null;
-  }
+  },
 }
 const initState: InitState = {
   fetchState: INIT,

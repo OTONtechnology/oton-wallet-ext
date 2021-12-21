@@ -33,6 +33,7 @@ import RequestModal from '@/components/RequestModal.vue';
 import ExternalTxModal from '@/components/ExternalTxModal.vue';
 import 'vue-toastification/dist/index.css';
 import { getStorageItem } from '@/utils/extension';
+import { updateLocalKeyDate } from '@/utils/auth';
 
 export default defineComponent({
   components: {
@@ -95,7 +96,10 @@ export default defineComponent({
         });
       };
 
-      if (address) {
+      if (address === 'expired') {
+        loaderWithoutAddress();
+      } else if (address) {
+        updateLocalKeyDate();
         loaderWithAddress();
       } else {
         loaderWithoutAddress();
@@ -210,6 +214,16 @@ svg {
 
     &_error {
       border: 2px solid $danger-color;
+    }
+  }
+
+  &__link {
+    color: $main-color;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 

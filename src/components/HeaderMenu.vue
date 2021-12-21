@@ -13,7 +13,7 @@
         <div class="menu__item" @click="openSettings"><Tr>Settings</Tr></div>
         <div class="menu__item" @click="openInTab"><Tr>Open in tab</Tr></div>
         <div class="menu__divider"></div>
-        <div class="menu__item" @click="logout"><Tr>Log out</Tr></div>
+        <div class="menu__item" @click="lock"><Tr>Lock</Tr></div>
       </div>
     </div>
   </div>
@@ -27,6 +27,7 @@ import { useStore } from 'vuex';
 import { $vfm } from 'vue-final-modal';
 import { useI18n } from 'vue-i18n';
 import { clearStorage, openExtensionInBrowser } from '@/utils/extension';
+import { dropLocalKeyDate } from '@/utils/auth';
 
 export default defineComponent({
   setup() {
@@ -47,6 +48,14 @@ export default defineComponent({
       }
     };
 
+    const lock = async () => {
+      const dropDate = await dropLocalKeyDate();
+
+      if (dropDate) {
+        window.location.reload();
+      }
+    };
+
     const openSettings = () => {
       $vfm.show('SettingsModal');
     };
@@ -61,6 +70,7 @@ export default defineComponent({
       logout,
       openInTab,
       openSettings,
+      lock,
       t,
     };
   },

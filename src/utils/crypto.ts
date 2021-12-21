@@ -36,6 +36,17 @@ export const stringToHex = (s:string): string => {
   return result;
 };
 
+export const stringToASCIIArray = (s: string) => {
+  const charCodeArr: any = [];
+
+  for (let i = 0; i < s.length; i += 1) {
+    const code = s.charCodeAt(i);
+    charCodeArr.push(code);
+  }
+
+  return charCodeArr;
+};
+
 export const hexToString = (s:string): string => {
   let j = 0;
   const hexes = s.match(/.{1,4}/g) || [];

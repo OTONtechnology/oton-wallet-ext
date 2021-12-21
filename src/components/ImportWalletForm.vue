@@ -41,11 +41,33 @@
     <div class="field">
       <BaseCheckbox :name="'terms'" v-model="terms">
         <label class="checkbox__label" for="terms">
-          <Tr> I agree to the Terms of Use </Tr>
+          <Tr> I agree to the </Tr>
         </label>
+        {{ " " }}
+        <a class="field__link" target="_blank" :href="termsLink">
+          Terms of Use
+        </a>
       </BaseCheckbox>
       <div class="field__errors">
         <div class="field__error" v-for="error in errors.terms" :key="error">
+          <Tr>
+            {{ error }}
+          </Tr>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <BaseCheckbox :name="'privacy'" v-model="privacy">
+        <label class="checkbox__label" for="privacy">
+          <Tr> I agree to the </Tr>
+        </label>
+        {{ " " }}
+        <a class="field__link" target="_blank" :href="privacyLink">
+          Privacy Policy
+        </a>
+      </BaseCheckbox>
+      <div class="field__errors">
+        <div class="field__error" v-for="error in errors.privacy" :key="error">
           <Tr>
             {{ error }}
           </Tr>
@@ -79,7 +101,7 @@ export default defineComponent({
       password1: '',
       password2: '',
       terms: false,
-
+      privacy: false,
       errors: {},
     };
   },
@@ -87,10 +109,17 @@ export default defineComponent({
     nextAfterAuth() {
       return !!(this.$store.state.nextAfterAuth.tab && this.$store.state.nextAfterAuth.resource);
     },
+    termsLink() {
+      const domain = process.env.VUE_APP_LEGALS_URL;
+      return `${domain}/OTONWallet_TermsOfUse.pdf`;
+    },
+    privacyLink() {
+      const domain = process.env.VUE_APP_LEGALS_URL;
+      return `${domain}/OTONWallet_PrivacyPolicy.pdf`;
+    },
   },
   methods: {
     changeTerms(val) {
-      console.log(val);
       this.terms = val;
     },
     async login() {
@@ -130,6 +159,7 @@ export default defineComponent({
     validate() {
       this.errors = {
         terms: [],
+        privacy: [],
         password: [],
         phrase: [],
       };
@@ -145,17 +175,15 @@ export default defineComponent({
       if (!this.terms) {
         this.errors.terms.push('You must agree with Terms of Use');
       }
+      if (!this.privacy) {
+        this.errors.privacy.push('You must agree with Privacy Policy');
+      }
       if (this.password1.length < 6 || this.password2.length < 6) {
         this.errors.password = ['Password cannot be less than 6 characters'];
       }
       if (this.password1 !== this.password2) {
         this.errors.password = ['Passwords do not match'];
       }
-      // if (this.password1.length < 6 || this.password2.length < 6) {
-      //   this.errors.password.push('Password cannot be less than 6 characters');
-      // } else if (this.password1 !== this.password2) {
-      //   this.errors.password.push('Passwords do not match');
-      // }
 
       if (isRecoveryPhrase) {
         if (phrase.split(' ').length !== 24) {
@@ -173,11 +201,12 @@ export default defineComponent({
 
       const {
         terms,
+        privacy,
         password,
         phrase: errorPhrase,
       } = this.errors;
 
-      return (terms.length + password.length + errorPhrase.length) === 0;
+      return (terms.length + privacy.length + password.length + errorPhrase.length) === 0;
     },
   },
 });

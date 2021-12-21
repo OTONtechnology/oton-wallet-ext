@@ -22,7 +22,6 @@ export const sumInputsGrouped = (inputs: any[]): any => {
 
 export const sumInputsByAddress = (inputs: any[], addrs: string, signed = true): any => {
   const filtered = filterByAddress(inputs, addrs);
-  console.log(filtered);
   return signed ? sumInputs(filtered) : sumInputsUnsignedTx(filtered);
 };
 

@@ -3,17 +3,28 @@ import { AES, enc } from 'crypto-js';
 import dayjs from 'dayjs';
 import { getStorageItem, setStorageItem } from '@/utils/extension';
 
+const LOCK_AFTER = 120;
+
 const isExpired = (timestamp: string | number) => dayjs().unix() > timestamp;
+const millesecondsLeft = (timestamp: string | number) => (
+  Number(timestamp) - dayjs().unix()
+) * 1000;
 
 export const encryptSK = (sk: string, password: string): any => AES.encrypt(sk, password);
 
 export const decryptCSK = (encryptedSK: string, password: string): any => {
   const dec: CryptoJS.lib.WordArray = AES.decrypt(encryptedSK, password);
-  return enc.Utf8.stringify(dec);
+
+  if (dec.sigBytes === 128) {
+    return enc.Utf8.stringify(dec);
+  }
+
+  return undefined;
 };
 
-const setLocalKey = async (decryptedKey: string) => {
-  const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 259200 };
+export const setLocalKey = async (decryptedKey: string) => {
+  // const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 259200 };
+  const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + LOCK_AFTER };
   return setStorageItem('sk', localKey, 'local');
 };
 
@@ -28,11 +39,48 @@ export const getLocalSecret = async () => {
     sk = JSON.parse(sk);
   }
 
-  if (!sk || isExpired(sk.expired)) {
+  if (!sk) {
     return '';
   }
 
+  if (isExpired(sk.expire)) {
+    return 'expired';
+  }
+
+  (window as any).lockTimer = setTimeout(() => {
+    window.location.reload();
+    (window as any).lockTimer = undefined;
+  }, millesecondsLeft(sk.expire));
+
   return sk.value;
+};
+
+export const dropLocalKeyDate = async () => {
+  const currentKey = await getLocalSecret();
+
+  if (currentKey === 'expired') {
+    return false;
+  }
+  const localKey = { value: currentKey, expire: Math.floor(Date.now() / 1000) - 1 };
+  return setStorageItem('sk', localKey, 'local');
+};
+
+export const updateLocalKeyDate = async () => {
+  const currentKey = await getLocalSecret();
+
+  if (currentKey === 'expired') {
+    return false;
+  }
+  const localKey = { value: currentKey, expire: Math.floor(Date.now() / 1000) + LOCK_AFTER };
+  return setStorageItem('sk', localKey, 'local');
+};
+
+export const getEncryptedSyncKey = async () => {
+  const key = await getStorageItem('encKey', 'sync');
+  if (key) {
+    return key;
+  }
+  return '';
 };
 
 export const importWalletFunc = (sk: string, password: string) => new Promise((res) => {
