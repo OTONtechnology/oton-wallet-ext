@@ -14,7 +14,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://localhost/*", "*://bitbon.108dex.space/*"],
+      "matches": ["*://localhost/*", "*://bitbon.108dex.space/*", "*://bitbon.tasq.pro/*"],
       "js": ["content.js"]
     }
   ],
