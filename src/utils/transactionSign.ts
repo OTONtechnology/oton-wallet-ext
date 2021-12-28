@@ -32,7 +32,9 @@ export const getLastSequence = async (addr: string): Promise<number> => {
 export const getChainId = async () => {
   const infoUrl = '/block?height';
   const response = await blcInstance.get(infoUrl);
-  if (response.statusText === 'OK') {
+
+  console.log(response);
+  if (response.statusText === 'OK' || response.status === 200) {
     const chainId = pathOr('', ['data', 'result', 'block', 'header', 'chain_id'], response) as string;
 
     return chainId;
@@ -161,6 +163,7 @@ export const signTrn = async (
   const stripedTrn = stripeTrn(normalizedTrn);
   const signBytes = methodType.encode(stripedTrn).finish();
   const chainId = await getChainId();
+  console.log(chainId);
   const chainIdASCI = stringToASCIIArray(chainId);
   const concated = new Uint8Array([...chainIdASCI, ...signBytes]);
   const signature = await ed.sign(concated, pair.sk);

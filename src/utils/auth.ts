@@ -3,7 +3,7 @@ import { AES, enc } from 'crypto-js';
 import dayjs from 'dayjs';
 import { getStorageItem, setStorageItem } from '@/utils/extension';
 
-const LOCK_AFTER = 120;
+const LOCK_AFTER = 20; // seconds
 
 const isExpired = (timestamp: string | number) => dayjs().unix() > timestamp;
 const millesecondsLeft = (timestamp: string | number) => (
