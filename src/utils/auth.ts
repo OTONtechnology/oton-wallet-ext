@@ -3,12 +3,13 @@ import { AES, enc } from 'crypto-js';
 import dayjs from 'dayjs';
 import { getStorageItem, setStorageItem } from '@/utils/extension';
 
-const LOCK_AFTER = 1220; // seconds
+const LOCK_AFTER = 120; // seconds
 
 const isExpired = (timestamp: string | number) => dayjs().unix() >= timestamp;
-const millesecondsLeft = (timestamp: string | number) => (
-  Number(timestamp) - dayjs().unix()
-) * 1000;
+const millesecondsLeft = (timestamp: string | number) => {
+  const now = dayjs().unix();
+  return (Number(timestamp) - now) * 1000;
+};
 
 export const encryptSK = (sk: string, password: string): any => AES.encrypt(sk, password);
 
@@ -91,11 +92,5 @@ export const getEncryptedSyncKey = async () => {
 export const importWalletFunc = (sk: string, password: string) => new Promise((res) => {
   const encrypted = encryptSK(sk, password).toString();
 
-  Promise.all(
-    [
-      setStorageItem('encKey', encrypted, 'sync'),
-      setLocalKey(sk),
-    ],
-  )
-    .then((resp) => res(!!(resp[0] && resp[1])));
+  Promise.all([setStorageItem('encKey', encrypted, 'sync'), setLocalKey(sk)]).then((resp) => res(!!(resp[0] && resp[1])));
 });
