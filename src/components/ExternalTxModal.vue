@@ -90,14 +90,13 @@ export default defineComponent({
     const tabId = ref('');
     const transaction = reactive({});
     const coins = computed(() => store.getters['coins/coinsList']);
-    console.log(coins.value);
     const sum = computed(() => (
       isEmpty(transaction.value.fee)
         ? '0'
         : maskCoinsAmount(
           coins.value,
           sumInputsByAddress(transaction.value.inputs, walletAddress.value, false),
-          'BBCoin',
+          process.env.VUE_APP_BLC_NODE_BASE_URL === 'http://82.196.1.93:26657' ? 'bitboneCoin' : 'BBCoin',
         )));
     const address = computed(() => (isEmpty(transaction.value.fee) ? '' : `${transaction.value.inputs.length} recepients`));
     const fee = computed(() => (

@@ -22,7 +22,7 @@ export const hexToBytes = function hexToBytes(hex: string): Uint8Array {
   return array;
 };
 
-export const stringToHex = (s:string): string => {
+export const stringToHex = (s: string): string => {
   let hex = '';
   let i = 0;
 
@@ -30,7 +30,7 @@ export const stringToHex = (s:string): string => {
 
   for (i; i < s.length; i += 1) {
     hex = s.charCodeAt(i).toString(16);
-    result += (`000${hex}`).slice(-4);
+    result += `000${hex}`.slice(-4);
   }
 
   return result;
@@ -47,7 +47,7 @@ export const stringToASCIIArray = (s: string) => {
   return charCodeArr;
 };
 
-export const hexToString = (s:string): string => {
+export const hexToString = (s: string): string => {
   let j = 0;
   const hexes = s.match(/.{1,4}/g) || [];
   let result = '';
@@ -59,6 +59,4 @@ export const hexToString = (s:string): string => {
   return result;
 };
 
-export const getSha256: Hasher['update'] = (key) => sha256
-  .create()
-  .update(key);
+export const getSha256: Hasher['update'] = (key) => sha256.create().update(key);

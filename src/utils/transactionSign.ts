@@ -5,7 +5,7 @@ import { blcInstance } from './api';
 import { SendCoins, Raw, BuyInAmc } from './protobufTypes';
 import { Transaction, TransactionMainData } from '../types/transactions.d';
 import {
-  bytesToHex, hexToBytes, stringToASCIIArray, stringToHex,
+  bytesToHex, getSha256, hexToBytes, stringToASCIIArray, stringToHex,
 } from './crypto';
 import { getKeysFromSK } from './cryptoKeys';
 import generateDecimalNumber from './generateDecimalNumber';
@@ -18,7 +18,7 @@ export const getLastSequence = async (addr: string): Promise<number> => {
   const infoUrl = `/abci_query?path=%22account%22&data=0x${addr}`;
   const addressInfoResp = await blcInstance.get(infoUrl);
 
-  if (addressInfoResp.statusText === 'OK') {
+  if (addressInfoResp.statusText === 'OK' || addressInfoResp.status === 200) {
     const data = pathOr('{"sequence": 0}', 'data.result.response.info', addressInfoResp) as string;
 
     const info = JSON.parse(data);
@@ -33,13 +33,28 @@ export const getChainId = async () => {
   const infoUrl = '/block?height';
   const response = await blcInstance.get(infoUrl);
 
-  console.log(response);
   if (response.statusText === 'OK' || response.status === 200) {
-    const chainId = pathOr('', ['data', 'result', 'block', 'header', 'chain_id'], response) as string;
+    const chainId = pathOr(
+      '',
+      ['data', 'result', 'block', 'header', 'chain_id'],
+      response,
+    ) as string;
 
     return chainId;
   }
   return '';
+};
+
+export const getChainIdASCII = async () => {
+  const chainId = await getChainId();
+  if (!chainId) {
+    return [];
+  }
+  if (process.env.VUE_APP_BLC_NODE_BASE_URL === 'http://82.196.1.93:26657') {
+    return [];
+  }
+  const chainIdASCI = stringToASCIIArray(chainId);
+  return chainIdASCI;
 };
 
 export const getTrnFromData = async (
@@ -63,26 +78,30 @@ export const getTrnFromData = async (
     inputs: [
       {
         address: hexToBytes(address),
-        coins: [{
-          name: out.currency,
-          amount: realSum.add(fee).toNumber(),
-        }],
+        coins: [
+          {
+            name: out.currency,
+            amount: realSum.add(fee).toNumber(),
+          },
+        ],
         sequence,
       },
     ],
     outputs: [
       {
         address: hexToBytes(out.address),
-        coins: [{
-          name: out.currency,
-          amount: realSum.toNumber(),
-        }],
+        coins: [
+          {
+            name: out.currency,
+            amount: realSum.toNumber(),
+          },
+        ],
       },
     ],
   };
 };
 
-export const normalizeTrn = (trn: Transaction, pk: Uint8Array):Transaction => ({
+export const normalizeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({
   ...trn,
   ...(trn.address ? { address: stringOrBytes(trn.address) } : {}),
   ...(trn.referal ? { referal: stringOrBytes(trn.referal) } : {}),
@@ -156,16 +175,15 @@ export const signTrn = async (
     buy_in_amc: BuyInAmc,
     send_coins: SendCoins,
   };
+
   const methodType = methods[type || 'send_coins'];
   const secret = typeof sk === 'string' ? hexToBytes(sk) : sk;
   const pair = await getKeysFromSK(secret);
   const normalizedTrn = normalizeTrn(trn, pair.pk);
   const stripedTrn = stripeTrn(normalizedTrn);
   const signBytes = methodType.encode(stripedTrn).finish();
-  const chainId = await getChainId();
-  console.log(chainId);
-  const chainIdASCI = stringToASCIIArray(chainId);
-  const concated = new Uint8Array([...chainIdASCI, ...signBytes]);
+  const chainId = await getChainIdASCII();
+  const concated = new Uint8Array([...chainId, ...signBytes]);
   const signature = await ed.sign(concated, pair.sk);
   const signedTrn = addSignToTrn(normalizedTrn, pair.address, signature);
   const encodedSignedTrn = methodType.encode(signedTrn).finish();

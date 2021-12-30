@@ -64,10 +64,7 @@ export default defineComponent({
         const setToStorage = await setLocalKey(decrypted);
 
         if (setToStorage) {
-          console.log(123);
           router.push('/home');
-
-          console.log(nextAfterAuth.value);
 
           if (nextAfterAuth.value) {
             router.push('/permission');

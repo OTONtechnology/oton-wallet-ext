@@ -3,7 +3,7 @@
     <Header />
     <Balances />
     <TransactionsContainer />
-    <!-- <div class="version">v{{ version }}</div> -->
+    <div class="version">v{{ version }}</div>
   </div>
 </template>
 

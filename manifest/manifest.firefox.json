@@ -2,7 +2,7 @@
   "name": "oton-wallet-ff",
   "description": "OTON wallet Firefox extension",
   "version": "0.4.1",
-  "manifest_version": 3,
+  "manifest_version": 2,
   "permissions": ["storage"],
   "action": {
     "default_popup": "index.html",
