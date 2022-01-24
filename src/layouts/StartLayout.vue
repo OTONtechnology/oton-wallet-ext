@@ -28,7 +28,8 @@ export default defineComponent({
     // OtonLogo,
   },
   setup() {
-    const manifest = extension.runtime.id ? extension.runtime.getManifest() : {};
+    const manifest = extension.runtime && extension.runtime.id
+      ? extension.runtime.getManifest() : {};
     const version = ref(manifest.version);
 
     return {

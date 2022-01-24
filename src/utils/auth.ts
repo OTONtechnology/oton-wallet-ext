@@ -26,7 +26,7 @@ export const decryptCSK = (encryptedSK: string, password: string): any => {
 export const setLocalKey = async (decryptedKey: string) => {
   // const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + 259200 };
   const localKey = { value: decryptedKey, expire: Math.floor(Date.now() / 1000) + LOCK_AFTER - 1 };
-  return setStorageItem('sk', localKey, 'local');
+  return setStorageItem('sk', localKey);
 };
 
 export const getLocalSecret = async () => {
@@ -68,7 +68,7 @@ export const dropLocalKeyDate = async () => {
     return false;
   }
   const localKey = { value: currentKey, expire: Math.floor(Date.now() / 1000) - 1 };
-  return setStorageItem('sk', localKey, 'local');
+  return setStorageItem('sk', localKey);
 };
 
 export const updateLocalKeyDate = async () => {
@@ -78,11 +78,11 @@ export const updateLocalKeyDate = async () => {
     return false;
   }
   const localKey = { value: currentKey, expire: Math.floor(Date.now() / 1000) + LOCK_AFTER };
-  return setStorageItem('sk', localKey, 'local');
+  return setStorageItem('sk', localKey);
 };
 
 export const getEncryptedSyncKey = async () => {
-  const key = await getStorageItem('encKey', 'sync');
+  const key = await getStorageItem('encKey', 'local');
   if (key) {
     return key;
   }
@@ -92,5 +92,5 @@ export const getEncryptedSyncKey = async () => {
 export const importWalletFunc = (sk: string, password: string) => new Promise((res) => {
   const encrypted = encryptSK(sk, password).toString();
 
-  Promise.all([setStorageItem('encKey', encrypted, 'sync'), setLocalKey(sk)]).then((resp) => res(!!(resp[0] && resp[1])));
+  Promise.all([setStorageItem('encKey', encrypted), setLocalKey(sk)]).then((resp) => res(!!(resp[0] && resp[1])));
 });

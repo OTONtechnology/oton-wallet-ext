@@ -63,11 +63,12 @@ export const getStorageItem = (name: string, type = 'local'): any => new Promise
   }
 });
 
-export const setStorageItem = (name: string, value: string | Record<string, unknown>, type = 'local'): any => new Promise((res, rej) => {
+// eslint-disable-next-line
+export const setStorageItem = (name: string, value: string | Record<string, unknown>): any => new Promise((res, rej) => {
   const envType = getEnvironmentType();
 
   if (envType === ENVIRONMENT_TYPE_POPUP) {
-    extension.storage[type].set({ [name]: value }, () => {
+    extension.storage.local.set({ [name]: value }, () => {
       const error = checkForError();
 
       if (error) {

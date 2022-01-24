@@ -6,6 +6,7 @@ import Lock from '../views/Lock.vue';
 import Permission from '../views/Permission.vue';
 import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import store from '../store';
+import vault from '@/utils/vault';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,22 +38,29 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const address = await getAddressFromStorage();
-  if (address === 'expired' && to.name !== 'Lock') {
+  const vaultStatus = await vault.getStatus();
+
+  if (vaultStatus === 'LOCK' && to.name !== 'Lock') {
     return next({ path: '/lock', query: to.query });
   }
+  if (vaultStatus === 'EMPTY' && to.name !== 'StartView') {
+    return next({ path: '/', query: to.query });
+  }
+  let address = await vault.getAddress();
+
+  if (!address) {
+    await vault.init();
+  }
+
+  address = await vault.getAddress();
+
+  console.log(address);
 
   store.commit('SET_WALLET_ADDRESS', address);
 
-  if (to.name === 'StartView') {
-    if (address) {
-      return next('/home');
-    }
-    return next();
+  if (to.name === 'StartView' && address) {
+    return next('/home');
   } else {
-    if (!address) {
-      return next({ path: '/', query: to.query });
-    }
     return next();
   }
 });

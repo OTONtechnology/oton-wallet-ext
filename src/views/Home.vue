@@ -18,7 +18,8 @@ import TransactionsContainer from '@/components/TransactionsContainer.vue';
 export default defineComponent({
   components: { Header, Balances, TransactionsContainer },
   setup() {
-    const manifest = extension.runtime.id ? extension.runtime.getManifest() : {};
+    const manifest = extension.runtime && extension.runtime.id
+      ? extension.runtime.getManifest() : {};
     const version = ref(manifest.version);
 
     return {
