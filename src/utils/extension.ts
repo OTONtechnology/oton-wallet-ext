@@ -31,11 +31,11 @@ export const openTab = (options: any) => new Promise((resolve, reject) => {
   });
 });
 
-export const clearStorage = (type = 'local') => new Promise((res, rej) => {
+export const clearStorage = () => new Promise((res, rej) => {
   const envType = getEnvironmentType();
 
   if (envType === ENVIRONMENT_TYPE_POPUP) {
-    extension.storage[type].clear(() => {
+    extension.storage.local.clear(() => {
       const error = checkForError();
       if (error) {
         return rej(error);
@@ -48,11 +48,11 @@ export const clearStorage = (type = 'local') => new Promise((res, rej) => {
   }
 });
 
-export const getStorageItem = (name: string, type = 'local'): any => new Promise((res) => {
+export const getStorageItem = (name: string): any => new Promise((res) => {
   const envType = getEnvironmentType();
 
   if (envType === ENVIRONMENT_TYPE_POPUP) {
-    extension.storage[type].get(name, (response: any) => {
+    extension.storage.local.get(name, (response: any) => {
       if (response && response[name]) {
         return res(response[name]);
       }
@@ -100,19 +100,8 @@ export const openExtensionInBrowser = (route = null, queryString = null) => {
   }
   openTab({ url: extensionURL });
   window.close();
-  // if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
-  //   window.close();
-  // }
 };
 
 export const sendMessageToTab = () => new Promise(() => {
   extension.tabs.sendMessage({ payload: { address: 'some address' } });
-  // extension.runtime.sendMessage(extId, { openUrlInEditor: url },
-  //   (response: any) => {
-  //     if (!response.success) {
-  //       rej();
-  //     } else {
-  //       res(response);
-  //     }
-  //   });
 });

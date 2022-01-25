@@ -41,9 +41,9 @@ import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
 import { getTrnFromData, signTrn } from '@/utils/transactionSign';
-import { getLocalSecret } from '@/utils/auth';
 import nodeErrorHandler from '@/utils/nodeErrorHandler';
 import generateDecimalNumber from '@/utils/generateDecimalNumber';
+import vault from '@/utils/vault';
 
 export default defineComponent({
   components: {
@@ -107,8 +107,14 @@ export default defineComponent({
       this.submitForm = false;
     },
     async submitTransfer() {
+      const toast = useToast();
+
       const coin = find(propEq('name', this.form.currency))(this.coinsList);
-      const localSk = await getLocalSecret();
+      const localSk = await vault.getDataFromStorage();
+
+      if (!localSk) {
+        toast.error('Error! Whe fetching sk');
+      }
 
       const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress, coin.decimal);
 
@@ -124,7 +130,6 @@ export default defineComponent({
         $vfm.hide('TransferModal');
         $vfm.show('TransferDoneModal');
       } else {
-        const toast = useToast();
         const errorText = nodeErrorHandler(resp.result);
         toast.error(errorText || 'Error! Something went wrong');
       }

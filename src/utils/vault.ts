@@ -1,6 +1,6 @@
 import { AES, enc } from 'crypto-js';
 import { getAddressFromHexSecret } from './cryptoKeys';
-import { setStorageItem, getStorageItem } from './extension';
+import { setStorageItem, getStorageItem, clearStorage } from './extension';
 
 const vault = (function () {
   let publicAddress = '';
@@ -20,6 +20,8 @@ const vault = (function () {
     });
   }
 
+  // Get password hash from background vault
+
   async function getHash() {
     const response: any = await backroundMessage('get_hash');
 
@@ -29,19 +31,27 @@ const vault = (function () {
     return null;
   }
 
+  // Set password hash in background vault
+
   async function setHash(hash: string) {
     const response = await backroundMessage('set_hash', { hash });
     return response;
   }
+
+  // Drop background vault data
 
   async function dropHash() {
     const response = await backroundMessage('drop_hash');
     return response;
   }
 
+  //  Wallet public address (not required for encryption)
+
   function setAddress(address: string) {
     publicAddress = address;
   }
+
+  // Encrypting data before save in local storage
 
   function encryptData(data: any, hash: string) {
     const stringified = JSON.stringify(data);
@@ -49,6 +59,8 @@ const vault = (function () {
 
     return encryptedData;
   }
+
+  // Decrypting data after fetching from storage
 
   function decryptData(dataString: string, hash: string) {
     const dec: CryptoJS.lib.WordArray = AES.decrypt(dataString, hash);
@@ -60,6 +72,8 @@ const vault = (function () {
 
     return undefined;
   }
+
+  // Initing connection with background script
 
   (function initVault() {
     console.log('init');
@@ -75,6 +89,9 @@ const vault = (function () {
   }());
 
   return {
+
+    // Get the status of vault data and checking data availability in storage
+
     async getStatus() {
       const hash: any = await getHash();
 
@@ -89,6 +106,8 @@ const vault = (function () {
 
       return 'EMPTY';
     },
+
+    // Vault initing
 
     async init() {
       try {
@@ -110,9 +129,14 @@ const vault = (function () {
         };
       }
     },
+
+    // Get public address
+
     async getAddress() {
       return publicAddress;
     },
+
+    // Set storage data
 
     async putDataInStorage(data: any, hash: string) {
       try {
@@ -134,6 +158,8 @@ const vault = (function () {
       }
     },
 
+    // Get and decrypt sk from storage
+
     async getDataFromStorage() {
       try {
         const hash: any = await getHash();
@@ -144,19 +170,14 @@ const vault = (function () {
           const address = getAddressFromHexSecret(decryptedStorage.sk);
           setAddress(address);
 
-          return {
-            data: {
-              address,
-            },
-            status: 'OK',
-          };
+          return decryptedStorage.sk;
         }
       } catch (e) {
-        return {
-          status: 'ERROR',
-        };
+        return undefined;
       }
     },
+
+    // Unlocking background vault by password hash
 
     async unlockStorage(hash: string) {
       try {
@@ -179,9 +200,21 @@ const vault = (function () {
       }
     },
 
+    // Locking background vault by hash deleting
+
     async lockStorage() {
       const hashDropped: any = await dropHash();
       if (hashDropped.status === 'OK') {
+        return {
+          status: 'OK',
+        };
+      }
+    },
+
+    async deleteAllData() {
+      const hashDropped: any = await dropHash();
+      const storageCleared: any = await clearStorage();
+      if (hashDropped.status === 'OK' && storageCleared) {
         return {
           status: 'OK',
         };

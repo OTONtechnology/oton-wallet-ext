@@ -4,7 +4,6 @@ import StartView from '../views/StartView.vue';
 import Home from '../views/Home.vue';
 import Lock from '../views/Lock.vue';
 import Permission from '../views/Permission.vue';
-import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import store from '../store';
 import vault from '@/utils/vault';
 

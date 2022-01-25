@@ -45,9 +45,7 @@ import { useStore } from 'vuex';
 import vault from '@/utils/vault';
 // import extension from 'extensionizer';
 import StartLayout from '@/layouts/StartLayout.vue';
-import { getEncryptedSyncKey, decryptCSK, setLocalKey } from '@/utils/auth';
 import { stringToHex } from '@/utils/crypto';
-import { clearStorage } from '@/utils/extension';
 
 export default defineComponent({
   components: {
@@ -76,60 +74,20 @@ export default defineComponent({
         errors.value.push('Wrong password');
       }
     };
-    // const unlock = async () => {
-    //   errors.value = [];
-    //   const encryptedKey = await getEncryptedSyncKey();
-    //   const decrypted = decryptCSK(encryptedKey, password.value);
-    //   if (decrypted) {
-    //     const setToStorage = await setLocalKey(decrypted);
 
-    //     if (setToStorage) {
-    //       router.push('/home');
-
-    //       if (nextAfterAuth.value) {
-    //         router.push('/permission');
-    //       } else {
-    //         router.push('/home');
-    //       }
-    //     }
-    //   } else {
-    //     errors.value.push('Wrong password');
-    //   }
-    // };
     const handleImport = () => {
       $vfm.show('ImportWalletModal');
     };
 
     const logout = async () => {
-      const clear = await clearStorage('local');
+      const clear = await vault.deleteAllData();
 
-      if (clear === true) {
+      if (clear.status === 'OK') {
         store.commit('CLEAR');
         router.push('/');
       }
     };
 
-    // const getHash = async () => {
-    //   const hash = await vault.getHash();
-    //   console.log(hash);
-    // };
-
-    onMounted(() => {
-      // getHash();
-      // store.commit('bus/INIT');
-      // chrome.runtime.getBackgroundPage((backPage) => console.log(backPage.vault));
-      // extension.runtime.sendMessage({ type: 'get_password' }, (response) => {
-      //   console.log(response);
-      // });
-
-      // const port = chrome.extension.connect({
-      //   name: 'Sample Communication',
-      // });
-      // port.postMessage('Hi BackGround');
-      // port.onMessage.addListener((msg) => {
-      //   console.log(`message recieved${msg}`);
-      // });
-    });
     return {
       password,
       errors,

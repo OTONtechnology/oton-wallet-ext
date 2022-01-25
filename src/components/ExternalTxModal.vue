@@ -70,9 +70,9 @@ import { useToast } from 'vue-toastification';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { sumInputsByAddress } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
-import { getLocalSecret } from '@/utils/auth';
 import maskCoinsAmount from '@/utils/maskCoinsAmount';
 import nodeErrorHandler from '@/utils/nodeErrorHandler';
+import vault from '@/utils/vault';
 
 export default defineComponent({
   components: {
@@ -119,7 +119,11 @@ export default defineComponent({
 
     const submitTransfer = async () => {
       if (!isEmpty(transaction.value)) {
-        const localSk = await getLocalSecret();
+        const localSk = await vault.getDataFromStorage();
+
+        if (!localSk) {
+          toast.error('Error! Whe fetching sk');
+        }
         const testTx = JSON.parse(JSON.stringify(transaction.value));
 
         const signedTrn = await signTrn(testTx, localSk, 'buy_in_amc');

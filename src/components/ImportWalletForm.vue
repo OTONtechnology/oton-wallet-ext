@@ -87,10 +87,6 @@ import { $vfm } from 'vue-final-modal';
 import { mnemonicToEntropy } from 'bip39';
 import { stringToHex, bytesToHex } from '@/utils/crypto';
 import vault from '@/utils/vault';
-import {
-// importWalletFunc,
-// getLocalSecret
-} from '@/utils/auth';
 import { getKeysFromHexSK } from '@/utils/cryptoKeys';
 
 export default defineComponent({
@@ -145,19 +141,6 @@ export default defineComponent({
             this.$router.push('/home');
           }
         }
-        // const dataFromStorage = await vault.getDataFromStorage();
-        // const addressInStorage = await importWalletFunc(hexSecretKey, this.password1);
-        // this.$store.commit('SET_WALLET_ADDRESS', vault.getAddress());
-
-        // if (addressInStorage === true) {
-        //   $vfm.hide('ImportWalletModal');
-
-        //   if (this.nextAfterAuth) {
-        //     this.$router.push('/permission');
-        //   } else {
-        //     this.$router.push('/home');
-        //   }
-        // }
       }
     },
 
