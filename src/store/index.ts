@@ -8,6 +8,7 @@ import transactions from './modules/transactions';
 import balances from './modules/balances';
 import rates from './modules/rates';
 import coins from './modules/coins';
+import bus from './modules/bus';
 
 interface InitState {
   fetchState: string;
@@ -16,7 +17,7 @@ interface InitState {
   nextAfterAuth: {
     tab: string | number | null;
     resource: string | null;
-  }
+  },
 }
 const initState: InitState = {
   fetchState: INIT,
@@ -74,5 +75,6 @@ export default createStore({
     balances,
     rates,
     coins,
+    bus,
   },
 });

@@ -3,7 +3,7 @@ const { promises, existsSync, mkdirSync } = require('fs');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const path = require('path');
 
-require('dotenv').config({ path: path.join(process.cwd(), '.env.local') });
+require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
 const distDir = path.join(process.cwd(), 'src', 'i18n');
 

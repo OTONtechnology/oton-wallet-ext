@@ -147,6 +147,9 @@ export default defineComponent({
     width: 40px;
     display: flex;
     justify-content: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 40px;
   }
 
   &__img {

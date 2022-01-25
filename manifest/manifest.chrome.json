@@ -1,7 +1,8 @@
 {
   "name": "OTON Wallet",
   "description": "OTON Wallet",
-  "version": "0.4.1",
+  "default_locale": "en",
+  "version": "0.4.5",
   "manifest_version": 2,
   "permissions": [
     "storage",
@@ -13,7 +14,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://localhost/*", "*://bitbon.108dex.space/*"],
+      "matches": ["*://localhost/*", "*://bitbon.108dex.space/*", "*://bitbon.tasq.pro/*"],
       "js": ["content.js"]
     }
   ],

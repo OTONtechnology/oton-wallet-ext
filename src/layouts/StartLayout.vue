@@ -1,7 +1,11 @@
 <template>
   <div class="layout">
+    <img
+      src="@/assets/img/oton_wallet_background.png"
+      alt=""
+      class="layout__background"
+    />
     <div class="layout__fader"></div>
-    <!-- <OtonLogo class="layout__image" /> -->
     <svg class="layout__image">
       <use xlink:href="#logo--sprite" />
     </svg>
@@ -9,17 +13,28 @@
     <div class="layout__content">
       <slot />
     </div>
+    <div class="layout__version">v{{ version }}</div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import '@/assets/svg/logo.svg?sprite';
+import extension from 'extensionizer';
 // import OtonLogo from '@/assets/svg/logo.svg?sprite';
 
 export default defineComponent({
   components: {
     // OtonLogo,
+  },
+  setup() {
+    const manifest = extension.runtime && extension.runtime.id
+      ? extension.runtime.getManifest() : {};
+    const version = ref(manifest.version);
+
+    return {
+      version,
+    };
   },
 });
 </script>
@@ -33,6 +48,12 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  &__background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
 
   &__fader {
     position: absolute;
@@ -67,6 +88,15 @@ export default defineComponent({
     font-size: 40px;
     font-weight: 400;
     text-transform: uppercase;
+  }
+
+  &__version {
+    position: absolute;
+    bottom: 2px;
+    right: 20px;
+    color: #fff;
+    opacity: 0.4;
+    font-size: 12px;
   }
 }
 

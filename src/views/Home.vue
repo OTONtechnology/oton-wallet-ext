@@ -3,12 +3,13 @@
     <Header />
     <Balances />
     <TransactionsContainer />
-    <!-- <div class="version">v{{ version }}</div> -->
+    <div class="version">v{{ version }}</div>
   </div>
 </template>
 
 <script>
 import { defineComponent, ref } from 'vue';
+import extension from 'extensionizer';
 
 import Header from '@/components/Header.vue';
 import Balances from '@/components/Balances.vue';
@@ -17,7 +18,9 @@ import TransactionsContainer from '@/components/TransactionsContainer.vue';
 export default defineComponent({
   components: { Header, Balances, TransactionsContainer },
   setup() {
-    const version = ref(process.env.VUE_APP_VERSION);
+    const manifest = extension.runtime && extension.runtime.id
+      ? extension.runtime.getManifest() : {};
+    const version = ref(manifest.version);
 
     return {
       version,

@@ -9,14 +9,14 @@
         <span class="balance__balance">{{ balance.balance }}</span>
         <span class="balance__currency">{{ currency }}</span>
       </div>
-      <div class="balance__footer" v-if="currency !== 'bitboneCoin'">
+      <!-- <div class="balance__footer" v-if="currency !== 'bitboneCoin'">
         <span class="balance__eur">
           {{ toFixedDown(getEur("oton", balance.balance), 4) }} €
         </span>
         <span class="balance__course">
           1 {{ currency }} = {{ toFixedDown(getRate("oton"), 4) }} €
         </span>
-      </div>
+      </div> -->
     </div>
     <EmptyState v-if="balancesIsEmpty">
       <Tr>No currencies</Tr>
