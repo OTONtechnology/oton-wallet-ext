@@ -22,7 +22,6 @@ import { useRoute } from 'vue-router';
 import { $vfm } from 'vue-final-modal';
 import { useI18n } from 'vue-i18n';
 import { useToast } from 'vue-toastification';
-import getAddressFromStorage from '@/utils/getAddressFromStorage';
 import ImportWalletModal from '@/components/ImportWalletModal.vue';
 import TransferModal from '@/components/TransferModal.vue';
 import TransferDoneModal from '@/components/TransferDoneModal.vue';
@@ -33,7 +32,7 @@ import RequestModal from '@/components/RequestModal.vue';
 import ExternalTxModal from '@/components/ExternalTxModal.vue';
 import 'vue-toastification/dist/index.css';
 import { getStorageItem } from '@/utils/extension';
-import { updateLocalKeyDate } from '@/utils/auth';
+import vault from '@/utils/vault';
 
 export default defineComponent({
   components: {
@@ -55,13 +54,15 @@ export default defineComponent({
     const route = useRoute();
 
     onBeforeMount(async () => {
-      const lang = await getStorageItem('lang', 'sync');
+      const initVault = await vault.init();
+      const lang = await getStorageItem('lang', 'local');
 
       if (lang !== 'en') {
         i18n.locale.value = lang;
       }
 
-      const address = await getAddressFromStorage();
+      const address = await vault.getAddress();
+      console.log(address);
 
       const loaderWithAddress = () => {
         const hasReason = route.query.reason;
@@ -99,7 +100,6 @@ export default defineComponent({
       if (address === 'expired') {
         loaderWithoutAddress();
       } else if (address) {
-        updateLocalKeyDate();
         loaderWithAddress();
       } else {
         loaderWithoutAddress();

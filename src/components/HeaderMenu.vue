@@ -27,7 +27,7 @@ import { useStore } from 'vuex';
 import { $vfm } from 'vue-final-modal';
 import { useI18n } from 'vue-i18n';
 import { clearStorage, openExtensionInBrowser } from '@/utils/extension';
-import { dropLocalKeyDate } from '@/utils/auth';
+import vault from '@/utils/vault';
 
 export default defineComponent({
   setup() {
@@ -49,9 +49,9 @@ export default defineComponent({
     };
 
     const lock = async () => {
-      const dropDate = await dropLocalKeyDate();
+      const hashDDropped = await vault.lockStorage();
 
-      if (dropDate) {
+      if (hashDDropped.status === 'OK') {
         window.location.reload();
       }
     };

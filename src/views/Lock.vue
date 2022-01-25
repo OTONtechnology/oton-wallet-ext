@@ -36,13 +36,16 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import {
+  defineComponent, ref, computed, onMounted,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { $vfm } from 'vue-final-modal';
 import { useStore } from 'vuex';
+import vault from '@/utils/vault';
+// import extension from 'extensionizer';
 import StartLayout from '@/layouts/StartLayout.vue';
-import { getEncryptedSyncKey, decryptCSK, setLocalKey } from '@/utils/auth';
-import { clearStorage } from '@/utils/extension';
+import { stringToHex } from '@/utils/crypto';
 
 export default defineComponent({
   components: {
@@ -58,36 +61,33 @@ export default defineComponent({
     );
     const unlock = async () => {
       errors.value = [];
-      const encryptedKey = await getEncryptedSyncKey();
-      const decrypted = decryptCSK(encryptedKey, password.value);
-      if (decrypted) {
-        const setToStorage = await setLocalKey(decrypted);
+      const passHash = stringToHex(password.value);
+      const isUnlock = await vault.unlockStorage(passHash);
 
-        if (setToStorage) {
+      if (isUnlock.status === 'OK') {
+        if (nextAfterAuth.value) {
+          router.push('/permission');
+        } else {
           router.push('/home');
-
-          if (nextAfterAuth.value) {
-            router.push('/permission');
-          } else {
-            router.push('/home');
-          }
         }
       } else {
         errors.value.push('Wrong password');
       }
     };
+
     const handleImport = () => {
       $vfm.show('ImportWalletModal');
     };
 
     const logout = async () => {
-      const clear = await clearStorage('local');
+      const clear = await vault.deleteAllData();
 
-      if (clear === true) {
+      if (clear.status === 'OK') {
         store.commit('CLEAR');
         router.push('/');
       }
     };
+
     return {
       password,
       errors,
