@@ -1,5 +1,3 @@
-// import extension from 'extensionizer';
-
 document.addEventListener('app:auth', (data) => {
   chrome.runtime.sendMessage(data.detail);
 });

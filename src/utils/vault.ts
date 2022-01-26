@@ -77,8 +77,8 @@ const vault = (function () {
 
   (function initVault() {
     console.log('init');
-    // @ts-expect-error: connect exist in chrome.extension but ts thinks differently
-    port = chrome.extension.connect({
+
+    port = chrome.runtime.connect({
       name: 'init',
     });
     port.onMessage.addListener((msg: any) => {

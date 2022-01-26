@@ -3,14 +3,13 @@
   "description": "OTON Wallet",
   "default_locale": "en",
   "version": "0.4.5",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "permissions": [
     "storage",
     "tabs"
   ],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -21,8 +20,10 @@
   "externally_connectable": {
     "matches": ["*://localhost/*"]
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "browser_action": {
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "action": {
     "default_popup": "index.html",
     "default_icon": {
       "16": "icons/oton16.png",

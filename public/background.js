@@ -1,3 +1,11 @@
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: 'sampleContextMenu',
+    title: 'Sample Context Menu',
+    contexts: ['selection'],
+  });
+});
+
 const generateMsg = (type, data, status = 'OK') => ({
   type,
   data,
@@ -86,7 +94,7 @@ const firstVault = (function () {
   };
 }());
 
-chrome.extension.onConnect.addListener((port) => {
+chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((msg) => {
     if (msg.type === 'get_hash') {
       const message = generateMsg('get_hash', { hash: firstVault.getHash() });
