@@ -57,7 +57,7 @@ module.exports = {
           match: '<title>oton-wallet-ext</title>',
           replacement: `
               <title>oton mobile wallet</title>
-            <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+            <meta http-equiv="Content-Security-Policy" content="default-src 'self' *.108dev.ru *.oton.org *.oton.technology oton.org data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
             <meta name="format-detection" content="telephone=no">
             <meta name="msapplication-tap-highlight" content="no">
           `,

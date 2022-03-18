@@ -11,7 +11,10 @@
       <div class="menu__list">
         <!-- <div class="menu__item">{{ t("Custom transaction") }}</div> -->
         <div class="menu__item" @click="openSettings"><Tr>Settings</Tr></div>
-        <div class="menu__item" @click="openInTab"><Tr>Open in tab</Tr></div>
+
+        <div v-if="!!chrome.extension" class="menu__item" @click="openInTab">
+          <Tr>Open in tab</Tr>
+        </div>
         <div class="menu__divider"></div>
         <div class="menu__item" @click="lock"><Tr>Lock</Tr></div>
       </div>
@@ -72,6 +75,7 @@ export default defineComponent({
       openSettings,
       lock,
       t,
+      chrome,
     };
   },
 });
