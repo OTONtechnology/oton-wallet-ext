@@ -16,6 +16,7 @@ module.exports = {
     camelcase: 'off',
     'no-else-return': 'off',
     'consistent-return': 'off',
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    '@typescript-eslint/no-var-requires': 0,
   },
 };

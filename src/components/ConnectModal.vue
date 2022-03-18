@@ -35,10 +35,11 @@ import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import extension from 'extensionizer';
-import { getLocalSecret } from '@/utils/auth';
+import { useToast } from 'vue-toastification';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { getKeysFromHexSK } from '@/utils/cryptoKeys';
 import { bytesToHex } from '@/utils/crypto';
+import vault from '@/utils/vault';
 
 export default defineComponent({
   components: {
@@ -48,6 +49,7 @@ export default defineComponent({
     name: String,
   },
   setup() {
+    const toast = useToast();
     const store = useStore();
     const route = useRoute();
     let resource = ref(route.query.resource);
@@ -60,7 +62,11 @@ export default defineComponent({
     }
 
     const submit = async () => {
-      const secret = await getLocalSecret();
+      const secret = await vault.getDataFromStorage();
+
+      if (!secret) {
+        toast.error('Error! Whe fetching sk');
+      }
       const uncrypt = await getKeysFromHexSK(secret);
       const pk = bytesToHex(uncrypt.pk);
 

@@ -8,6 +8,7 @@ import transactions from './modules/transactions';
 import balances from './modules/balances';
 import rates from './modules/rates';
 import coins from './modules/coins';
+import bus from './modules/bus';
 
 interface InitState {
   fetchState: string;
@@ -74,5 +75,6 @@ export default createStore({
     balances,
     rates,
     coins,
+    bus,
   },
 });
