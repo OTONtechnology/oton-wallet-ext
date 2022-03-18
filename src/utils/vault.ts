@@ -1,4 +1,5 @@
 import { AES, enc } from 'crypto-js';
+import { isChrome } from './constants';
 import { getAddressFromHexSecret } from './cryptoKeys';
 import { setStorageItem, getStorageItem, clearStorage } from './extension';
 
@@ -8,7 +9,7 @@ const generateMsg = (type: 'get_hash' | 'set_hash' | 'drop_hash', data = {}, sta
   status,
 });
 
-const vault = (function () {
+const vault = (() => {
   let publicAddress = '';
   let port: any;
 
@@ -105,20 +106,22 @@ const vault = (function () {
   // Initing connection with background script
 
   (function initVault() {
-    console.log('init');
-    if (chrome.extension) {
-      // @ts-expect-error: connect exist in chrome.extension but ts thinks differently
-      port = chrome.extension.connect({
-        name: 'init',
-      });
-      port.onMessage.addListener((msg: any) => {
-        if (msg.type === 'lock_app') {
-          window.location.reload();
-        }
-      });
-    } else {
+    console.info('init');
+
+    if (!isChrome) {
       port = undefined;
+      return;
     }
+
+    // @ts-expect-error: connect exist in chrome.extension but ts thinks differently
+    port = chrome.extension.connect({
+      name: 'init',
+    });
+    port.onMessage.addListener((msg: any) => {
+      if (msg.type === 'lock_app') {
+        window.location.reload();
+      }
+    });
   }());
 
   return {
@@ -254,6 +257,6 @@ const vault = (function () {
       }
     },
   };
-}());
+})();
 
 export default vault;
