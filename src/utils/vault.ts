@@ -106,15 +106,19 @@ const vault = (function () {
 
   (function initVault() {
     console.log('init');
-    // @ts-expect-error: connect exist in chrome.extension but ts thinks differently
-    port = chrome.extension.connect({
-      name: 'init',
-    });
-    port.onMessage.addListener((msg: any) => {
-      if (msg.type === 'lock_app') {
-        window.location.reload();
-      }
-    });
+    if (chrome.extension) {
+      // @ts-expect-error: connect exist in chrome.extension but ts thinks differently
+      port = chrome.extension.connect({
+        name: 'init',
+      });
+      port.onMessage.addListener((msg: any) => {
+        if (msg.type === 'lock_app') {
+          window.location.reload();
+        }
+      });
+    } else {
+      port = undefined;
+    }
   }());
 
   return {
