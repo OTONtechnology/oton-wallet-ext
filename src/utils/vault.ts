@@ -2,11 +2,40 @@ import { AES, enc } from 'crypto-js';
 import { getAddressFromHexSecret } from './cryptoKeys';
 import { setStorageItem, getStorageItem, clearStorage } from './extension';
 
+const generateMsg = (type: 'get_hash' | 'set_hash' | 'drop_hash', data = {}, status = 'OK') => ({
+  type,
+  data,
+  status,
+});
+
 const vault = (function () {
   let publicAddress = '';
   let port: any;
 
-  function backroundMessage(type: string, data?: any) {
+  function storageMessage(type: string, data?: any) {
+    return new Promise((resolve) => {
+      switch (type) {
+        case 'get_hash':
+          resolve(generateMsg('get_hash', { hash: localStorage.getItem('hash') }));
+          break;
+        case 'set_hash':
+          localStorage.setItem('hash', data.hash);
+          resolve(generateMsg('set_hash'));
+          break;
+        case 'drop_hash':
+          localStorage.removeItem('hash');
+          resolve(generateMsg('drop_hash'));
+          break;
+        default:
+          resolve(generateMsg('get_hash', { hash: localStorage.getItem('hash') }));
+      }
+    });
+  }
+
+  function backroundMessage(type: 'get_hash' | 'set_hash' | 'drop_hash', data?: any) {
+    if (typeof port === 'undefined') {
+      return storageMessage(type, data);
+    }
     return new Promise((response: any) => {
       port.postMessage({
         type,
