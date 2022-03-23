@@ -191,7 +191,7 @@ export default defineComponent({
             this.errors.phrase.push(e.message);
           }
         }
-      } else if (phrase.length !== 128) {
+      } else if (phrase.length !== 128 && phrase.length !== 64) {
         this.errors.phrase = ['Secret key length not valid'];
       }
 
