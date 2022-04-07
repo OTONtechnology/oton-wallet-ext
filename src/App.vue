@@ -54,7 +54,7 @@ export default defineComponent({
     const route = useRoute();
 
     onBeforeMount(async () => {
-      const initVault = await vault.init();
+      // const initVault = await vault.init();
       const lang = await getStorageItem('lang', 'local');
 
       if (lang !== 'en') {
@@ -155,7 +155,7 @@ svg {
 }
 
 .button {
-  padding: 11px;
+  padding: 11px 8px;
   border-radius: 4px;
   border: 2px solid $main-color;
   font-size: 14px;

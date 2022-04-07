@@ -99,6 +99,7 @@ export default defineComponent({
     background: none;
     border: none;
     cursor: pointer;
+    padding: 0;
   }
 
   &__icon {

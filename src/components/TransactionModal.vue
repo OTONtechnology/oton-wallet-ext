@@ -144,7 +144,6 @@ export default defineComponent({
 
   &__sum {
     position: relative;
-    overflow: hidden;
     font-weight: bold;
     display: flex;
     justify-content: flex-end;
@@ -180,6 +179,7 @@ export default defineComponent({
     text-transform: uppercase;
     opacity: 0.4;
     margin-left: 4px;
+    overflow: hidden;
   }
 
   &__put {

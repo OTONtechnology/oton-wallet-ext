@@ -2,7 +2,7 @@
   <vue-final-modal
     v-model="showModal"
     content-class="modal-content"
-    classes="modal-container"
+    :classes="['modal-container', { showModal }]"
     :name="name"
     :click-to-close="!unclosable"
     @beforeOpen="setParams"
@@ -93,8 +93,8 @@ export default defineComponent({
     position: absolute;
     width: 35px;
     height: 35px;
-    top: 10px;
-    right: 10px;
+    top: 2px;
+    right: 2px;
     background: none;
     margin: 0;
     padding: 0;
@@ -116,6 +116,11 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   background-color: rgba($main-color, 0.2);
+  opacity: 0;
+
+  &.showModal {
+    opacity: 1;
+  }
 }
 
 :deep(.modal-content) {
@@ -123,10 +128,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   max-width: 352px;
-  padding: 16px 24px 24px 24px;
+  padding: 16px 16px 24px 16px;
   border: none;
   border-radius: 8px;
   background: #fff;
-  min-width: 352px;
+  min-width: 320px;
 }
 </style>
