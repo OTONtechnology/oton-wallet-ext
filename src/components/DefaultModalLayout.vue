@@ -76,6 +76,7 @@ export default defineComponent({
 <style lang="stylus" scoped>
 .modal__content {
   margin-top: 10px;
+  overflow: auto;
 }
 
 .modal__title {
@@ -133,5 +134,7 @@ export default defineComponent({
   border-radius: 8px;
   background: #fff;
   min-width: 320px;
+  overflow: hidden;
+  max-height: 100%;
 }
 </style>
