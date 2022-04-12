@@ -51,5 +51,6 @@ export default defineComponent({
   color: #1C1B1B;
   opacity: 0.4;
   font-size: 12px;
+  z-index: 999;
 }
 </style>

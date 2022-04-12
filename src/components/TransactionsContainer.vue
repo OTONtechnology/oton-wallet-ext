@@ -3,24 +3,25 @@
     <div class="transactions__title wrapper">
       <Tr>Transactions</Tr>
     </div>
-    <div ref="scrollLoader" class="transactions__list">
-      <div
-        ref="scrollInner"
-        class="transactions__list-inner wrapper"
-        v-if="transactions.length"
-      >
-        <TransactionItem
-          v-for="transaction in transactions"
-          :key="transaction.id"
-          :transaction="transaction"
-        />
+    <div class="transactions__list">
+      <div class="transactions__list-box" ref="scrollLoader">
+        <div
+          v-if="transactions.length"
+          ref="scrollInner"
+          class="transactions__list-inner wrapper"
+        >
+          <TransactionItem
+            v-for="transaction in transactions"
+            :key="transaction.id"
+            :transaction="transaction"
+          />
+        </div>
+        <EmptyState v-else-if="!transactions.length && !isPending">
+          <Tr>No transactions</Tr>
+        </EmptyState>
+
+        <Loader v-if="isPending" />
       </div>
-
-      <EmptyState v-else-if="!transactions.length && !isPending">
-        <Tr>No transactions</Tr>
-      </EmptyState>
-
-      <Loader v-if="isPending" />
     </div>
     <div class="transactions__buttons wrapper">
       <button
@@ -125,10 +126,19 @@ export default defineComponent({
   }
 
   &__list {
-    padding-bottom: 10px;
-    max-height: 350px;
-    overflow-y: auto;
     flex: 3;
+    padding-bottom: 0;
+    position: relative;
+    max-height: auto;
+  }
+
+  &__list-box {
+    position: absolute;
+    overflow-y: auto;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
   }
 
   &__list-inner {

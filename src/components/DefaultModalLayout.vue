@@ -77,6 +77,9 @@ export default defineComponent({
 .modal__content {
   margin-top: 10px;
   overflow: auto;
+  margin-right: -16px;
+  margin-left: -16px;
+  padding: 0 16px;
 }
 
 .modal__title {
@@ -134,7 +137,7 @@ export default defineComponent({
   border-radius: 8px;
   background: #fff;
   min-width: 320px;
-  overflow: hidden;
+  // overflow: hidden;
   max-height: 100%;
 }
 </style>
