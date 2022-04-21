@@ -28,9 +28,13 @@ export default defineComponent({
     // OtonLogo,
   },
   setup() {
-    const manifest = extension.runtime && extension.runtime.id
-      ? extension.runtime.getManifest() : {};
-    const version = ref(manifest.version);
+    let version = process.env.VUE_APP_VERSION;
+
+    if (extension.runtime && extension.runtime.id) {
+      const manifest = extension.runtime.id ? extension.runtime.getManifest() : {};
+
+      version = ref(manifest.version);
+    }
 
     return {
       version,
@@ -48,6 +52,9 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: auto;
+  max-width: 600px;
+  padding-bottom: 15px;
 
   &__background {
     position: absolute;

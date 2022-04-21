@@ -15,3 +15,5 @@ export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
 export const TRANSACTION_TYPES = {
 };
+
+export const isChrome = Object.prototype.hasOwnProperty.call(globalThis, 'chrome');

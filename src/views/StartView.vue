@@ -7,10 +7,10 @@
 
       <div class="card__buttons">
         <button class="card__button button" @click="openImportModal">
-          <Tr> Import a wallet </Tr>
+          <Tr>Import a wallet</Tr>
         </button>
         <button @click="openCreateModal" class="card__button button primary">
-          <Tr> Create new wallet </Tr>
+          <Tr>Create new wallet</Tr>
         </button>
       </div>
     </div>
@@ -51,7 +51,7 @@ export default defineComponent({
   background-color: $extra-color;
   margin: 0 12px;
   padding: 16px 16px 24px 16px;
-  margin-top: 406px;
+  margin-top: 390px;
 
   &__text {
     color: var(--dark-color-2);
@@ -65,7 +65,9 @@ export default defineComponent({
   }
 
   &__button {
-    width: 144px;
+    // width: 144px;
+    padding: 11px 8px;
+    font-size: 13px;
   }
 }
 </style>

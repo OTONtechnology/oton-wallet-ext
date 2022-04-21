@@ -37,7 +37,7 @@
 
 <script>
 import {
-  defineComponent, ref, computed, onMounted,
+  defineComponent, ref, computed,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { $vfm } from 'vue-final-modal';
@@ -107,7 +107,7 @@ export default defineComponent({
   background-color: $extra-color;
   margin: 0 12px;
   padding: 16px 16px 24px 16px;
-  margin-top: 380px;
+  margin-top: 350px;
 
   &__text {
     color: var(--dark-color-2);

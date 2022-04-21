@@ -54,7 +54,7 @@ export default defineComponent({
     const route = useRoute();
 
     onBeforeMount(async () => {
-      const initVault = await vault.init();
+      // const initVault = await vault.init();
       const lang = await getStorageItem('lang', 'local');
 
       if (lang !== 'en') {
@@ -135,8 +135,8 @@ body {
 }
 
 html {
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 svg {
@@ -152,10 +152,13 @@ svg {
   // box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   // border-radius: 4px;
   background-color: $extra-color;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
 }
 
 .button {
-  padding: 11px;
+  padding: 11px 8px;
   border-radius: 4px;
   border: 2px solid $main-color;
   font-size: 14px;

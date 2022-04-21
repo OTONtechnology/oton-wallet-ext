@@ -11,7 +11,10 @@
       <div class="menu__list">
         <!-- <div class="menu__item">{{ t("Custom transaction") }}</div> -->
         <div class="menu__item" @click="openSettings"><Tr>Settings</Tr></div>
-        <div class="menu__item" @click="openInTab"><Tr>Open in tab</Tr></div>
+
+        <div v-if="isChrome" class="menu__item" @click="openInTab">
+          <Tr>Open in tab</Tr>
+        </div>
         <div class="menu__divider"></div>
         <div class="menu__item" @click="lock"><Tr>Lock</Tr></div>
       </div>
@@ -28,6 +31,7 @@ import { $vfm } from 'vue-final-modal';
 import { useI18n } from 'vue-i18n';
 import { clearStorage, openExtensionInBrowser } from '@/utils/extension';
 import vault from '@/utils/vault';
+import { isChrome } from '@/utils/constants';
 
 export default defineComponent({
   setup() {
@@ -72,6 +76,7 @@ export default defineComponent({
       openSettings,
       lock,
       t,
+      isChrome,
     };
   },
 });
@@ -94,6 +99,7 @@ export default defineComponent({
     background: none;
     border: none;
     cursor: pointer;
+    padding: 0;
   }
 
   &__icon {

@@ -5,6 +5,7 @@ const { version } = require('./package.json');
 // const BackgroundScriptsPlugin = require('./webpackPlugins/BackgroundScriptsPlugin.js');
 
 const isCordova = process.env.APP_ENV === 'cordova';
+// const isCordova = true;
 
 process.env.VUE_APP_VERSION = version;
 
@@ -56,8 +57,8 @@ module.exports = {
         {
           match: '<title>oton-wallet-ext</title>',
           replacement: `
-              <title>oton mobile wallet</title>
-            <meta http-equiv="Content-Security-Policy" content="default-src 'self' *.108dev.ru *.oton.org *.oton.technology oton.org data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+              <title>OTON Mobile Wallet</title>
+            <meta http-equiv="Content-Security-Policy" content="default-src 'self' * oton.org data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
             <meta name="format-detection" content="telephone=no">
             <meta name="msapplication-tap-highlight" content="no">
           `,
