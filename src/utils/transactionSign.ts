@@ -5,7 +5,7 @@ import { blcInstance } from './api';
 import { SendCoins, Raw, BuyInAmc } from './protobufTypes';
 import { Transaction, TransactionMainData } from '../types/transactions.d';
 import {
-  bytesToHex, getSha256, hexToBytes, stringToASCIIArray, stringToHex,
+  bytesToHex, hexToBytes, stringToASCIIArray,
 } from './crypto';
 import { getKeysFromSK } from './cryptoKeys';
 import generateDecimalNumber from './generateDecimalNumber';

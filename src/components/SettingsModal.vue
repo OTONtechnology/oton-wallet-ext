@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { setStorageItem } from '@/utils/extension';
@@ -32,16 +32,18 @@ export default defineComponent({
   },
   setup() {
     const langs = { en: 'English', ru: 'Русский', de: 'Deutsch' };
-    const { locale } = useI18n({ useScope: 'global' });
+    const { locale } = useI18n();
 
     const saveLocale = (e) => {
       locale.value = e.target.value;
       setStorageItem('lang', e.target.value, 'local');
     };
 
+    const currentLocale = computed(() => locale.value);
+
     return {
       langs,
-      locale: locale.value,
+      locale: currentLocale,
       saveLocale,
     };
   },
