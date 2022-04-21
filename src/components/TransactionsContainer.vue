@@ -115,6 +115,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: relative;
+  padding-bottom: 87px;
 
   &__title {
     opacity: 0.4;
@@ -129,7 +130,7 @@ export default defineComponent({
     flex: 3;
     padding-bottom: 0;
     position: relative;
-    max-height: auto;
+    max-height: none;
   }
 
   &__list-box {
@@ -154,6 +155,9 @@ export default defineComponent({
     border-top: 4px solid;
     border-color: $fade-color;
     padding-top: 12px;
+    padding-bottom: 0;
+    background-color: #fff;
+    z-index: 5;
   }
 
   &__transfer {

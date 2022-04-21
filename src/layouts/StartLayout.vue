@@ -52,6 +52,9 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: auto;
+  max-width: 600px;
+  padding-bottom: 15px;
 
   &__background {
     position: absolute;

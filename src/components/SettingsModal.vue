@@ -6,12 +6,7 @@
       </label>
 
       <select class="field__selectbox" v-model="locale" @change="saveLocale">
-        <option
-          :value="key"
-          v-for="(label, key) in langs"
-          :key="`lang-${key}`"
-          :selected="currentLocale === key"
-        >
+        <option :value="key" v-for="(label, key) in langs" :key="`lang-${key}`">
           {{ label }}
         </option>
       </select>
@@ -20,7 +15,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, reactive } from 'vue';
+import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { setStorageItem } from '@/utils/extension';
@@ -36,18 +31,16 @@ export default defineComponent({
     },
   },
   setup() {
-    const langs = reactive({ en: 'English', ru: 'Русский', de: 'Deutsch' });
-    const { locale, availableLocales } = useI18n();
+    const langs = { en: 'English', ru: 'Русский', de: 'Deutsch' };
+    const { locale } = useI18n({ useScope: 'global' });
+
     const saveLocale = (e) => {
       setStorageItem('lang', e.target.value, 'local');
     };
 
-    const currentLocale = computed(() => (availableLocales.includes(locale.value) ? locale.value : 'en'));
-
     return {
       langs,
-      locale,
-      currentLocale,
+      locale: locale.value,
       saveLocale,
     };
   },

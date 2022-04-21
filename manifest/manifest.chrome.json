@@ -1,25 +1,36 @@
 {
   "name": "OTON Wallet",
+  "short_name": "OTN",
   "description": "OTON Wallet",
   "default_locale": "en",
-  "version": "0.4.5",
+  "version": "1.1.2",
   "manifest_version": 2,
   "permissions": [
     "storage",
     "tabs"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "persistent": false
   },
   "content_scripts": [
     {
-      "matches": ["*://localhost/*", "*://bitbon.108dex.space/*", "*://bitbon.tasq.pro/*"],
-      "js": ["content.js"]
+      "matches": [
+        "*://localhost/*",
+        "*://bitbon.108dex.space/*",
+        "*://bitbon.tasq.pro/*"
+      ],
+      "js": [
+        "content.js"
+      ]
     }
   ],
   "externally_connectable": {
-    "matches": ["*://localhost/*"]
+    "matches": [
+      "*://localhost/*"
+    ]
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {

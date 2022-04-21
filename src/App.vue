@@ -135,8 +135,8 @@ body {
 }
 
 html {
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 svg {
@@ -152,6 +152,9 @@ svg {
   // box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   // border-radius: 4px;
   background-color: $extra-color;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
 }
 
 .button {
