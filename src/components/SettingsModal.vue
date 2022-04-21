@@ -5,7 +5,7 @@
         <Tr>Language</Tr>
       </label>
 
-      <select class="field__selectbox" v-model="locale" @change="saveLocale">
+      <select class="field__selectbox" :value="locale" @change="saveLocale">
         <option :value="key" v-for="(label, key) in langs" :key="`lang-${key}`">
           {{ label }}
         </option>
@@ -35,6 +35,7 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' });
 
     const saveLocale = (e) => {
+      locale.value = e.target.value;
       setStorageItem('lang', e.target.value, 'local');
     };
 
