@@ -5,7 +5,11 @@
         <Tr>Language</Tr>
       </label>
 
-      <select class="field__selectbox" :value="locale" @change="saveLocale">
+      <select
+        class="field__selectbox"
+        :value="locale || 'en'"
+        @change="saveLocale"
+      >
         <option :value="key" v-for="(label, key) in langs" :key="`lang-${key}`">
           {{ label }}
         </option>
@@ -32,7 +36,7 @@ export default defineComponent({
   },
   setup() {
     const langs = { en: 'English', ru: 'Русский', de: 'Deutsch' };
-    const { locale } = useI18n();
+    const { locale } = useI18n({ useScope: 'global' });
 
     const saveLocale = (e) => {
       locale.value = e.target.value;
@@ -41,6 +45,7 @@ export default defineComponent({
 
     const currentLocale = computed(() => locale.value);
 
+    console.info(currentLocale.value);
     return {
       langs,
       locale: currentLocale,
