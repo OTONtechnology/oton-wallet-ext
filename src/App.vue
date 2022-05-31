@@ -8,6 +8,7 @@
     <TransferDoneModal :name="'TransferDoneModal'" />
     <TransactionModal :name="'TransactionModal'" />
     <SettingsModal :name="'SettingsModal'" />
+    <PrivateKeyModal :name="'PrivateKeyModal'" />
     <CreateWalletModal :name="'CreateWalletModal'" />
     <RequestModal :name="'RequestModal'" />
     <ExternalTxModal :name="'ExternalTxModal'" />
@@ -27,6 +28,7 @@ import TransferModal from '@/components/TransferModal.vue';
 import TransferDoneModal from '@/components/TransferDoneModal.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
 import SettingsModal from '@/components/SettingsModal.vue';
+import PrivateKeyModal from '@/components/PrivateKeyModal.vue';
 import CreateWalletModal from '@/components/CreateWalletModal.vue';
 import RequestModal from '@/components/RequestModal.vue';
 import ExternalTxModal from '@/components/ExternalTxModal.vue';
@@ -41,6 +43,7 @@ export default defineComponent({
     TransferDoneModal,
     TransactionModal,
     SettingsModal,
+    PrivateKeyModal,
     CreateWalletModal,
     RequestModal,
     ExternalTxModal,

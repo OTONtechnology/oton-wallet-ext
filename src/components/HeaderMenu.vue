@@ -10,13 +10,20 @@
       <div class="menu__layer" @click="opened = false"></div>
       <div class="menu__list">
         <!-- <div class="menu__item">{{ t("Custom transaction") }}</div> -->
-        <div class="menu__item" @click="openSettings"><Tr>Settings</Tr></div>
+        <div class="menu__item" @click="openSettings">
+          <Tr>Settings</Tr>
+        </div>
+        <div class="menu__item" @click="openKey">
+          <Tr>Private key</Tr>
+        </div>
 
         <div v-if="isChrome" class="menu__item" @click="openInTab">
           <Tr>Open in tab</Tr>
         </div>
         <div class="menu__divider"></div>
-        <div class="menu__item" @click="lock"><Tr>Lock</Tr></div>
+        <div class="menu__item" @click="lock">
+          <Tr>Lock</Tr>
+        </div>
       </div>
     </div>
   </div>
@@ -53,6 +60,7 @@ export default defineComponent({
     };
 
     const lock = async () => {
+      toggleMenu();
       const hashDDropped = await vault.lockStorage();
 
       if (hashDDropped.status === 'OK') {
@@ -61,10 +69,16 @@ export default defineComponent({
     };
 
     const openSettings = () => {
+      toggleMenu();
       $vfm.show('SettingsModal');
+    };
+    const openKey = () => {
+      $vfm.show('PrivateKeyModal');
+      toggleMenu();
     };
 
     const openInTab = () => {
+      toggleMenu();
       openExtensionInBrowser('/');
     };
 
@@ -74,6 +88,7 @@ export default defineComponent({
       logout,
       openInTab,
       openSettings,
+      openKey,
       lock,
       t,
       isChrome,

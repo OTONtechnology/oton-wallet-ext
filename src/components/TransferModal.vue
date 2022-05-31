@@ -1,9 +1,8 @@
 <template>
-  <DefaultModalLayout
-    :name="name"
-    :title="'Transfer'"
-    @close-modal="handleClose"
-  >
+  <DefaultModalLayout :name="name" :title="'Transfer'" @close-modal="handleClose">
+    <div class="loaderBox" v-if="loading">
+      <Loader />
+    </div>
     <TransferSubmit
       v-if="submitForm"
       :currency="form.currency"
@@ -13,6 +12,7 @@
       @edit-transfer="showTransferForm"
       @submit-transfer="submitTransfer"
     />
+
     <TransferForm
       v-else
       :currency="form.currency"
@@ -40,6 +40,7 @@ import { find, propEq } from 'rambda';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
+import Loader from '@/components/Loader.vue';
 import { getTrnFromData, signTrn } from '@/utils/transactionSign';
 import nodeErrorHandler from '@/utils/nodeErrorHandler';
 import generateDecimalNumber from '@/utils/generateDecimalNumber';
@@ -50,10 +51,12 @@ export default defineComponent({
     DefaultModalLayout,
     TransferForm,
     TransferSubmit,
+    Loader,
   },
 
   data() {
     return {
+      loading: false,
       submitForm: false,
       form: {
         currency: '',
@@ -73,14 +76,20 @@ export default defineComponent({
   },
   methods: {
     changeCurrency(value) {
-      this.form.currency = value;
+      this.form = {
+        ...this.form,
+        currency: value,
+      };
 
       if (this.form.sum) {
         this.changeFee(this.form.sum);
       }
     },
     changeAddress(value) {
-      this.form.address = value;
+      this.form = {
+        ...this.form,
+        address: value,
+      };
     },
     changeSum(value) {
       this.form.sum = value;
@@ -89,16 +98,33 @@ export default defineComponent({
     changeFee(value) {
       const coin = find(propEq('name', this.form.currency))(this.coinsList);
 
+      if (value === 0) {
+        this.form = {
+          ...this.form,
+          fee: 0,
+        };
+        return;
+      }
+
       if (coin) {
         const fromSum = Decimal.mul(value, 0.01).toFixed();
         const min = generateDecimalNumber(coin.decimal);
-        this.form.fee = fromSum > min ? fromSum : min;
+        this.form = {
+          ...this.form,
+          fee: fromSum > min ? fromSum : min,
+        };
       } else {
-        this.form.fee = 0;
+        this.form = {
+          ...this.form,
+          fee: 0,
+        };
       }
     },
     changeSk(value) {
-      this.form.sk = value;
+      this.form = {
+        ...this.form,
+        sk: value,
+      };
     },
     showSubmitForm() {
       this.submitForm = true;
@@ -107,13 +133,16 @@ export default defineComponent({
       this.submitForm = false;
     },
     async submitTransfer() {
+      this.loading = true;
       const toast = useToast();
 
       const coin = find(propEq('name', this.form.currency))(this.coinsList);
       const localSk = await vault.getDataFromStorage();
 
       if (!localSk) {
-        toast.error('Error! Whe fetching sk');
+        toast.error('Error! When fetching sk');
+        this.loading = false;
+        return;
       }
 
       const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress, coin.decimal);
@@ -123,15 +152,19 @@ export default defineComponent({
       const resp = await this.$store.dispatch('sendTransaction', signedTrn);
 
       if (!resp) {
+        toast.error('Error! When sending transaction');
+        this.loading = false;
         return;
       }
 
       if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
         $vfm.hide('TransferModal');
         $vfm.show('TransferDoneModal');
+        this.loading = false;
       } else {
         const errorText = nodeErrorHandler(resp.result);
         toast.error(errorText || 'Error! Something went wrong');
+        this.loading = false;
       }
     },
     handleClose() {
@@ -141,10 +174,24 @@ export default defineComponent({
         currency: '',
         address: '',
         sum: '',
+        fee: 0,
       };
     },
   },
 });
 </script>
 
-<style lang="stylus"></style>
+<style lang="stylus">
+.loaderBox {
+  position absolute
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  background-color: rgba($main-color, 0.15);
+}
+</style>

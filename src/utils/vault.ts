@@ -236,6 +236,21 @@ const vault = (() => {
       }
     },
 
+    async checkPassword(hash: string) {
+      try {
+        const currentHash = await getHash();
+        const isValid = currentHash === hash;
+
+        return {
+          status: isValid ? 'OK' : 'ERROR',
+        };
+      } catch (e) {
+        return {
+          status: 'ERROR',
+        };
+      }
+    },
+
     // Locking background vault by hash deleting
 
     async lockStorage() {

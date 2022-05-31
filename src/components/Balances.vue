@@ -1,10 +1,6 @@
 <template>
   <div class="balances wrapper">
-    <div
-      class="balances__balance balance"
-      v-for="(balance, currency) in balances"
-      :key="currency"
-    >
+    <div class="balances__balance balance" v-for="(balance, currency) in balances" :key="currency">
       <div class="balance__head">
         <span class="balance__balance">{{ balance.balance }}</span>
         <span class="balance__currency">{{ currency }}</span>
@@ -80,6 +76,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style lang="stylus" scoped>
 .balances {
   padding-top: 5px;
@@ -94,6 +91,9 @@ export default defineComponent({
 
 .balance {
   margin: 16px 0;
+  &:not(:first-child) {
+    margin-top: 0;
+  }
 
   &__balance {
     color: $dark-color-2;
@@ -107,6 +107,7 @@ export default defineComponent({
     font-size: 20px;
     font-weight: 700;
     margin-left: 5px;
+    text-transform: uppercase;
   }
 
   &__eur {
