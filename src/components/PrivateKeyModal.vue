@@ -31,6 +31,12 @@
       <button class="button" @click="onCopy">
         <Tr>Copy</Tr>
       </button>
+      <div class="info">
+        <Tr>
+          Never disclose this key. Anyone who has your private key can steal any assets stored in
+          your wallet.
+        </Tr>
+      </div>
     </template>
   </DefaultModalLayout>
 </template>
@@ -133,5 +139,13 @@ export default defineComponent({
   word-wrap: break-word;
   color: #1C1B1B;
   font-weight 700;
+}
+.info {
+  padding: 8px 8px 12px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: $dark-color-2;
+  border-radius: 4px;
+  background-color: #FFDB4D;
 }
 </style>
