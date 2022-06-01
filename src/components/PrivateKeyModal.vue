@@ -31,13 +31,14 @@
       <button class="button" @click="onCopy">
         <Tr>Copy</Tr>
       </button>
-      <div class="info">
-        <Tr>
-          Never disclose this key. Anyone who has your private key can steal any assets stored in
-          your wallet.
-        </Tr>
-      </div>
     </template>
+
+    <div class="info">
+      <Tr>
+        Never disclose this key. Anyone who has your private key can steal any assets stored in your
+        wallet.
+      </Tr>
+    </div>
   </DefaultModalLayout>
 </template>
 
