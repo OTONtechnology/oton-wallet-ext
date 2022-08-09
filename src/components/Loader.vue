@@ -1,17 +1,20 @@
 <template>
   <div class="loader">
     <svg class="loader__spinner">
-      <use xlink:href="#ic_logo--sprite" />
+      <use :xlink:href="svgSmLogo" />
     </svg>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
-import '@/assets/svg/ic_logo.svg?sprite';
+import { currentAppConfig } from '@/utils/constants';
 
 export default defineComponent({
-
+  setup() {
+    const { svgSmLogo } = currentAppConfig;
+    return { svgSmLogo };
+  },
 });
 </script>
 

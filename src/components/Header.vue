@@ -2,7 +2,7 @@
   <div class="header">
     <router-link to="/home">
       <svg class="header__logo">
-        <use xlink:href="#ic_logo--sprite" />
+        <use :xlink:href="svgSmLogo" />
       </svg>
     </router-link>
     <div class="header__text" @click="vfm.show('RequestModal')">
@@ -21,18 +21,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, computed, inject } from 'vue';
 import { useStore } from 'vuex';
-import '@/assets/svg/ic_logo.svg?sprite';
 
 import HeaderMenu from '@/components/HeaderMenu.vue';
+import { currentAppConfig } from '@/utils/constants';
 
 export default defineComponent({
   components: {
     HeaderMenu,
   },
   setup() {
+    const { svgSmLogo } = currentAppConfig;
     const store = useStore();
 
     const vfm = inject('$vfm');
@@ -45,6 +46,7 @@ export default defineComponent({
     const stripedAddr = computed(() => `${walletParts.value[0]}...${walletParts.value[1]}`);
 
     return {
+      svgSmLogo,
       stripedAddr,
       vfm,
       walletAddress,

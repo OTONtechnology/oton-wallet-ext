@@ -23,7 +23,6 @@
 <script>
 import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
-import '@/assets/svg/ic_logo.svg?sprite';
 import Decimal from 'decimal.js';
 import { isEmpty } from 'rambda';
 import EmptyState from '@/components/EmptyState.vue';

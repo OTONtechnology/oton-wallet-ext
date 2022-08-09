@@ -36,6 +36,11 @@ import 'vue-toastification/dist/index.css';
 import { getStorageItem } from '@/utils/extension';
 import vault from '@/utils/vault';
 
+import '@/assets/svg/logo.svg?sprite';
+import '@/assets/svg/ic_logo.svg?sprite';
+import '@/assets/svg/fc-logo.svg?sprite';
+import '@/assets/svg/ic_fc-logo.svg?sprite';
+
 export default defineComponent({
   components: {
     ImportWalletModal,

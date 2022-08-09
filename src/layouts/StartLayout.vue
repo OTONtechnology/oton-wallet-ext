@@ -1,15 +1,15 @@
 <template>
   <div class="layout">
     <img
-      src="@/assets/img/oton_wallet_background.png"
+      :src="backPicUrl"
       alt=""
       class="layout__background"
     />
     <div class="layout__fader"></div>
     <svg class="layout__image">
-      <use xlink:href="#logo--sprite" />
+      <use :xlink:href="logoName" />
     </svg>
-    <div class="layout__company">OTON Wallet</div>
+    <div class="layout__company">{{appName}}</div>
     <div class="layout__content">
       <slot />
     </div>
@@ -17,11 +17,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue';
-import '@/assets/svg/logo.svg?sprite';
 import extension from 'extensionizer';
-// import OtonLogo from '@/assets/svg/logo.svg?sprite';
+import { currentAppConfig } from '../utils/constants';
 
 export default defineComponent({
   components: {
@@ -29,6 +28,7 @@ export default defineComponent({
   },
   setup() {
     let version = process.env.VUE_APP_VERSION;
+    const { backPicUrl, svgBigLogo, appName } = currentAppConfig;
 
     if (extension.runtime && extension.runtime.id) {
       const manifest = extension.runtime.id ? extension.runtime.getManifest() : {};
@@ -37,6 +37,9 @@ export default defineComponent({
     }
 
     return {
+      appName,
+      backPicUrl,
+      logoName: svgBigLogo,
       version,
     };
   },

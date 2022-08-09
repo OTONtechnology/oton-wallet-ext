@@ -1,5 +1,5 @@
 import { AES, enc } from 'crypto-js';
-import { isChrome } from './constants';
+import { isCordova, isChrome } from './constants';
 import { getAddressFromHexSecret } from './cryptoKeys';
 import { setStorageItem, getStorageItem, clearStorage } from './extension';
 
@@ -108,7 +108,7 @@ const vault = (() => {
   (function initVault() {
     console.info('init');
 
-    if (!isChrome) {
+    if (!isChrome || isCordova) {
       port = undefined;
       return;
     }
