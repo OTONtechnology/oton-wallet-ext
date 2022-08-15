@@ -38,36 +38,22 @@
       </div>
     </div>
 
-    <div class="field">
-      <BaseCheckbox :name="'terms'" v-model="terms">
-        <label class="checkbox__label" for="terms">
+    <div
+      class="field"
+      v-for="legal in legals"
+      :key="legal.name"
+    >
+      <BaseCheckbox :name="legal.name" v-model="legal.checked">
+        <label class="checkbox__label" :for="legal.name">
           <Tr> I agree to the </Tr>
         </label>
         {{ " " }}
-        <a class="field__link" target="_blank" :href="termsLink">
-          Terms of Use
+        <a class="field__link" target="_blank" :href="legal.link">
+          {{ legal.label }}
         </a>
       </BaseCheckbox>
       <div class="field__errors">
-        <div class="field__error" v-for="error in errors.terms" :key="error">
-          <Tr>
-            {{ error }}
-          </Tr>
-        </div>
-      </div>
-    </div>
-    <div class="field">
-      <BaseCheckbox :name="'privacy'" v-model="privacy">
-        <label class="checkbox__label" for="privacy">
-          <Tr> I agree to the </Tr>
-        </label>
-        {{ " " }}
-        <a class="field__link" target="_blank" :href="privacyLink">
-          Privacy Policy
-        </a>
-      </BaseCheckbox>
-      <div class="field__errors">
-        <div class="field__error" v-for="error in errors.privacy" :key="error">
+        <div class="field__error" v-for="error in errors[legal.name]" :key="error">
           <Tr>
             {{ error }}
           </Tr>
@@ -88,6 +74,7 @@ import { mnemonicToEntropy } from 'bip39';
 import { stringToHex, bytesToHex } from '@/utils/crypto';
 import vault from '@/utils/vault';
 import { getKeysFromHexSK } from '@/utils/cryptoKeys';
+import { currentAppConfig } from '@/utils/constants';
 
 export default defineComponent({
   data() {
@@ -95,28 +82,21 @@ export default defineComponent({
       phrase: '',
       password1: '',
       password2: '',
-      terms: false,
-      privacy: false,
+      legals: [
+        ...currentAppConfig.legals.map((item) => ({
+          ...item, checked: false,
+        })),
+      ],
       errors: {},
     };
   },
   computed: {
     nextAfterAuth() {
-      return !!(this.$store.state.nextAfterAuth.tab && this.$store.state.nextAfterAuth.resource);
-    },
-    termsLink() {
-      const domain = process.env.VUE_APP_LEGALS_URL;
-      return `${domain}/OTONWallet_TermsOfUse.pdf`;
-    },
-    privacyLink() {
-      const domain = process.env.VUE_APP_LEGALS_URL;
-      return `${domain}/OTONWallet_PrivacyPolicy.pdf`;
+      const { tab, resource } = this.$store.state.nextAfterAuth;
+      return !!(tab && resource);
     },
   },
   methods: {
-    changeTerms(val) {
-      this.terms = val;
-    },
     async login() {
       if (this.validate()) {
         let secret = this.getNormalizePhrase();
@@ -154,8 +134,6 @@ export default defineComponent({
 
     validate() {
       this.errors = {
-        terms: [],
-        privacy: [],
         password: [],
         phrase: [],
       };
@@ -168,12 +146,13 @@ export default defineComponent({
       const phrase = this.getNormalizePhrase();
       const isRecoveryPhrase = this.checkIsMnemonic();
 
-      if (!this.terms) {
-        this.errors.terms.push('You must agree with Terms of Use');
-      }
-      if (!this.privacy) {
-        this.errors.privacy.push('You must agree with Privacy Policy');
-      }
+      this.legals.forEach(({ label, checked, name }) => {
+        this.errors[name] = [];
+        if (!checked) {
+          this.errors[name] = [`You must agree with Terms of Use ${label}`];
+        }
+      });
+
       if (this.password1.length < 6 || this.password2.length < 6) {
         this.errors.password = ['Password cannot be less than 6 characters'];
       }
@@ -195,14 +174,15 @@ export default defineComponent({
         this.errors.phrase = ['Secret key length not valid'];
       }
 
-      const {
-        terms,
-        privacy,
-        password,
-        phrase: errorPhrase,
-      } = this.errors;
+      let result = 0;
 
-      return (terms.length + privacy.length + password.length + errorPhrase.length) === 0;
+      Object.values(this.errors).forEach((item) => {
+        if (Array.isArray(item)) {
+          result += item.length;
+        }
+      });
+
+      return result === 0;
     },
   },
 });

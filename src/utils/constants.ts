@@ -24,18 +24,49 @@ export const configByEnv = {
     svgBigLogo: '#logo--sprite',
     svgSmLogo: '#ic_logo--sprite',
     appName: 'OTON Wallet',
+    legals: [
+      {
+        name: 'terms',
+        link: 'https://contracts.oton.technology/OTONWallet_TermsOfUse.pdf',
+        label: 'Terms of Use',
+      },
+      {
+        name: 'privacy',
+        link: 'https://contracts.oton.technology/OTONWallet_PrivacyPolicy.pdf',
+        label: 'Privacy Policy',
+      },
+    ],
   },
   mobileOton: {
     backPicUrl: '/img/oton_wallet_background.png',
     svgBigLogo: '#logo--sprite',
     svgSmLogo: '#ic_logo--sprite',
     appName: 'OTON Wallet',
+    legals: [
+      {
+        name: 'terms',
+        link: 'https://contracts.oton.technology/OTONWallet_TermsOfUse.pdf',
+        label: 'Terms of Use',
+      },
+      {
+        name: 'privacy',
+        link: 'https://contracts.oton.technology/OTONWallet_PrivacyPolicy.pdf',
+        label: 'Privacy Policy',
+      },
+    ],
   },
   mobileFC: {
     backPicUrl: '/img/FC_wallet_background.png',
     svgBigLogo: '#fc-logo--sprite',
     svgSmLogo: '#ic_fc-logo--sprite',
     appName: 'Flight Clup',
+    legals: [
+      {
+        name: 'terms',
+        link: '/docs/Terms_and_conditions.pdf',
+        label: 'Terms and conditions',
+      },
+    ],
   },
 };
 
