@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "generate:messages": "node translationsGenerator/index.js",
-    "serve": "cross-env APP_ENV=cordova MOBILE_ENV=mobileFC vue-cli-service serve",
+    "serve": "cross-env APP_ENV=cordova vue-cli-service serve",
     "build:prod": "vue-cli-service build --mode production --no-clean",
     "build": "vue-cli-service build --mode development --no-clean --watch",
     "build:cordova:watch": "cross-env APP_ENV=cordova MOBILE_ENV=mobileOton vue-cli-service build --mode production --no-clean --watch",
