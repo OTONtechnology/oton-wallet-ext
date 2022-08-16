@@ -63,7 +63,7 @@ export const configByEnv = {
     legals: [
       {
         name: 'terms',
-        link: '/docs/Terms_and_conditions.pdf',
+        link: 'https://dev.flight-clup-front.pages.dev/docs/Terms%20and%20conditions.pdf',
         label: 'Terms and conditions',
       },
     ],
