@@ -149,7 +149,7 @@ export default defineComponent({
       this.legals.forEach(({ label, checked, name }) => {
         this.errors[name] = [];
         if (!checked) {
-          this.errors[name] = [`You must agree with Terms of Use ${label}`];
+          this.errors[name] = [`You must agree with ${label}`];
         }
       });
 
