@@ -35,7 +35,7 @@ import { defineComponent } from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import { $vfm } from 'vue-final-modal';
 import { useToast } from 'vue-toastification';
-import Decimal from 'decimal.js';
+
 import { find, propEq } from 'rambda';
 import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import TransferForm from '@/components/TransferForm.vue';
@@ -43,7 +43,7 @@ import TransferSubmit from '@/components/TransferSubmit.vue';
 import Loader from '@/components/Loader.vue';
 import { getTrnFromData, signTrn } from '@/utils/transactionSign';
 import nodeErrorHandler from '@/utils/nodeErrorHandler';
-import generateDecimalNumber from '@/utils/generateDecimalNumber';
+
 import vault from '@/utils/vault';
 
 export default defineComponent({
@@ -62,7 +62,7 @@ export default defineComponent({
         currency: '',
         address: '',
         sum: '',
-        fee: 0,
+        fee: 10,
         sk: '',
       },
     };
@@ -80,10 +80,6 @@ export default defineComponent({
         ...this.form,
         currency: value,
       };
-
-      if (this.form.sum) {
-        this.changeFee(this.form.sum);
-      }
     },
     changeAddress(value) {
       this.form = {
@@ -92,33 +88,10 @@ export default defineComponent({
       };
     },
     changeSum(value) {
-      this.form.sum = value;
-      this.changeFee(value);
-    },
-    changeFee(value) {
-      const coin = find(propEq('name', this.form.currency))(this.coinsList);
-
-      if (value === 0) {
-        this.form = {
-          ...this.form,
-          fee: 0,
-        };
-        return;
-      }
-
-      if (coin) {
-        const fromSum = Decimal.mul(value, 0.01).toFixed();
-        const min = generateDecimalNumber(coin.decimal);
-        this.form = {
-          ...this.form,
-          fee: fromSum > min ? fromSum : min,
-        };
-      } else {
-        this.form = {
-          ...this.form,
-          fee: 0,
-        };
-      }
+      this.form = {
+        ...this.form,
+        sum: value,
+      };
     },
     changeSk(value) {
       this.form = {
@@ -174,7 +147,7 @@ export default defineComponent({
         currency: '',
         address: '',
         sum: '',
-        fee: 0,
+        fee: 10,
       };
     },
   },

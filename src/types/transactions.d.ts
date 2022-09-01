@@ -10,12 +10,12 @@ export interface TrnInput {
   sequence: string | number,
   pub_key?: Uint8Array;
   signature?: Uint8Array | string;
-  coins: [
+  coins: Array<
     {
       name: string,
       amount: string | number
     }
-  ],
+  >,
 }
 export interface TrnOutput {
   address: string | Uint8Array,

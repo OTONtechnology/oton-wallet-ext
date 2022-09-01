@@ -23,7 +23,7 @@
         <Tr> Fee </Tr>
       </div>
       <div class="form__value fee">
-        {{ fee ? fee : "" }}
+        {{ fee ? `${fee} OTON` : "" }}
         <Tr v-if="!fee">No fee</Tr>
       </div>
     </div>
@@ -33,7 +33,7 @@
         <Tr> Back </Tr>
       </button>
       <button class="button primary" @click="submitTransfer">
-        <Tr :settings="{ transferSum, currency }">
+        <Tr :settings="{ transferSum, currency: `${currency}`.toUpperCase() }">
           Accept and Transfer {transferSum} {currency}
         </Tr>
       </button>
@@ -72,7 +72,7 @@ export default defineComponent({
       if (!+this.sum) {
         return '';
       }
-      return Decimal.sum(this.fee || 0, this.sum || 0).toString();
+      return Decimal.sum(this.sum || 0).toString();
     },
   },
 

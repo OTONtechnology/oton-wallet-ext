@@ -1,9 +1,9 @@
 import { Decimal } from 'decimal.js';
 import * as ed from 'noble-ed25519';
 import { pathOr } from 'rambda';
+import { TrnInput, Transaction, TransactionMainData } from '../types/transactions.d';
 import { blcInstance } from './api';
 import { SendCoins, Raw, BuyInAmc } from './protobufTypes';
-import { Transaction, TransactionMainData } from '../types/transactions.d';
 import {
   bytesToHex, hexToBytes, stringToASCIIArray,
 } from './crypto';
@@ -62,6 +62,7 @@ export const getTrnFromData = async (
   address: string,
   decimal: number,
 ): Promise<Transaction> => {
+  const feeCurrency = 'oton';
   const getRealSum = (sum: number | string) => Decimal.div(sum, generateDecimalNumber(decimal));
   let sequence = await getLastSequence(address);
   sequence = (sequence || 0) + 1;
@@ -70,20 +71,35 @@ export const getTrnFromData = async (
 
   const realSum = getRealSum(out.sum);
 
-  return {
-    fee: {
+  let coins: TrnInput['coins'] = [
+    {
       name: out.currency,
+      amount: realSum.add(fee).toNumber(),
+    },
+  ];
+
+  if (feeCurrency !== out.currency) {
+    coins = [
+      {
+        name: out.currency,
+        amount: realSum.toNumber(),
+      },
+      {
+        name: feeCurrency,
+        amount: fee,
+      },
+    ];
+  }
+
+  const result: Transaction = {
+    fee: {
+      name: feeCurrency,
       amount: fee,
     },
     inputs: [
       {
         address: hexToBytes(address),
-        coins: [
-          {
-            name: out.currency,
-            amount: realSum.add(fee).toNumber(),
-          },
-        ],
+        coins,
         sequence,
       },
     ],
@@ -99,6 +115,8 @@ export const getTrnFromData = async (
       },
     ],
   };
+
+  return result;
 };
 
 export const normalizeTrn = (trn: Transaction, pk: Uint8Array): Transaction => ({

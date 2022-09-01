@@ -59,12 +59,12 @@
         </Tr>
       </div>
     </div>
-    <div class="transfer__fee"><Tr>Fee</Tr>: {{ fee }}</div>
+    <div class="transfer__fee"><Tr>Fee</Tr>: {{ fee }} OTON</div>
     <button class="transfer__button button primary" @click="transfer">
       <Tr
         :settings="{
           transferSum,
-          currency,
+          currency: `${currency}`.toUpperCase(),
         }"
       >
         Transfer {transferSum} {currency}
@@ -174,7 +174,7 @@ export default defineComponent({
       if (!+this.sum) {
         return '';
       }
-      return Decimal.sum(this.fee || 0, this.sum || 0).toString();
+      return Decimal.sum(this.sum || 0).toString();
     },
   },
 
@@ -197,15 +197,15 @@ export default defineComponent({
         this.errors.currency.push('Select currency');
         hasErrors = true;
       }
+
       if (!this.address || this.address.length !== 40 || this.address === this.walletAddress) {
         this.errors.address.push('Wrong address');
         hasErrors = true;
       }
+
       if (!Number(this.sum)) {
         this.errors.sum.push('Wrong sum');
-        // if (this.sum.search(',') !== -1) {
-        //   this.errors.sum.push('Use . for');
-        // }
+
         hasErrors = true;
       } else {
         const coin = find(propEq('name', this.currency))(this.coinsList);
