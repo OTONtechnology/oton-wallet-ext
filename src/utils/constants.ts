@@ -56,7 +56,7 @@ export const configByEnv = {
     ],
   },
   mobileFC: {
-    backPicUrl: '/img/FC_wallet_background.png',
+    backPicUrl: '/img/fc_wallet_background.png',
     svgBigLogo: '#fc-logo--sprite',
     svgSmLogo: '#ic_fc-logo--sprite',
     appName: 'Flight Clup',
