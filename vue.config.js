@@ -6,11 +6,10 @@ const { version } = require('./package.json');
 
 const isCordova = process.env.APP_ENV === 'cordova';
 const mobileEnv = process.env.MOBILE_ENV || 'browser';
-// const isCordova = true;
 
 const configByEnv = {
   browser: {
-    outputDir: 'dist',
+    outputDir: `${version}_${process.env.OUTPUT_BUILD_DIR}`,
     addStyles: [],
   },
   mobileOton: {
@@ -43,7 +42,7 @@ module.exports = {
 
   publicPath: isCordova ? '' : '/',
 
-  outputDir: configByEnv[mobileEnv].outputDir,
+  outputDir: isCordova ? configByEnv[mobileEnv].outputDir : configByEnv.browser.outputDir,
 
   configureWebpack: {
     devtool: 'cheap-module-source-map',

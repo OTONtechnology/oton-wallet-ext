@@ -25,3 +25,5 @@ pnpm-debug.log*
 *.sw?
 
 *.zip
+
+1.1.*
