@@ -20,7 +20,7 @@ export const TRANSACTION_TYPES = {
 
 export const configByEnv = {
   browser: {
-    backPicUrl: '/img/oton_wallet_background.png',
+    backPicUrl: 'https://cdn.jsdelivr.net/gh/OTONtechnology/oton-wallet-ext@master/public/img/oton_wallet_background.png',
     svgBigLogo: '#logo--sprite',
     svgSmLogo: '#ic_logo--sprite',
     appName: 'OTON Wallet',
@@ -38,7 +38,7 @@ export const configByEnv = {
     ],
   },
   mobileOton: {
-    backPicUrl: '/img/oton_wallet_background.png',
+    backPicUrl: 'https://cdn.jsdelivr.net/gh/OTONtechnology/oton-wallet-ext@master/public/img/oton_wallet_background.png',
     svgBigLogo: '#logo--sprite',
     svgSmLogo: '#ic_logo--sprite',
     appName: 'OTON Wallet',
@@ -56,7 +56,7 @@ export const configByEnv = {
     ],
   },
   mobileFC: {
-    backPicUrl: '/img/fc_wallet_background.png',
+    backPicUrl: 'https://cdn.jsdelivr.net/gh/OTONtechnology/oton-wallet-ext@master/public/img/fc_wallet_background.png',
     svgBigLogo: '#fc-logo--sprite',
     svgSmLogo: '#ic_fc-logo--sprite',
     appName: 'Flight Clup',
