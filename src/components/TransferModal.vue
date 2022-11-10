@@ -108,36 +108,45 @@ export default defineComponent({
     async submitTransfer() {
       this.loading = true;
       const toast = useToast();
+      try {
+        const coin = find(propEq('name', this.form.currency))(this.coinsList);
+        const localSk = await vault.getDataFromStorage();
 
-      const coin = find(propEq('name', this.form.currency))(this.coinsList);
-      const localSk = await vault.getDataFromStorage();
+        if (!localSk) {
+          toast.error('Error! When fetching sk');
+          this.loading = false;
+          return;
+        }
 
-      if (!localSk) {
-        toast.error('Error! When fetching sk');
+        const preparedTrn = await getTrnFromData(
+          { ...this.form },
+          this.walletAddress,
+          coin.decimal,
+        );
+
+        const signedTrn = await signTrn(preparedTrn, localSk);
+
+        const resp = await this.$store.dispatch('sendTransaction', signedTrn);
+
+        if (!resp) {
+          toast.error('Error! When sending transaction');
+          this.loading = false;
+          return;
+        }
+
+        if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
+          $vfm.hide('TransferModal');
+          $vfm.show('TransferDoneModal');
+          this.loading = false;
+        } else {
+          const errorText = nodeErrorHandler(resp.result);
+          toast.error(errorText || 'Error! Something went wrong');
+          this.loading = false;
+        }
+      } catch (e) {
+        console.info(e);
         this.loading = false;
-        return;
-      }
-
-      const preparedTrn = await getTrnFromData({ ...this.form }, this.walletAddress, coin.decimal);
-
-      const signedTrn = await signTrn(preparedTrn, localSk);
-
-      const resp = await this.$store.dispatch('sendTransaction', signedTrn);
-
-      if (!resp) {
-        toast.error('Error! When sending transaction');
-        this.loading = false;
-        return;
-      }
-
-      if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
-        $vfm.hide('TransferModal');
-        $vfm.show('TransferDoneModal');
-        this.loading = false;
-      } else {
-        const errorText = nodeErrorHandler(resp.result);
-        toast.error(errorText || 'Error! Something went wrong');
-        this.loading = false;
+        toast.error(e.message);
       }
     },
     handleClose() {

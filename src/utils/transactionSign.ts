@@ -123,21 +123,24 @@ export const normalizeTrn = (trn: Transaction, pk: Uint8Array): Transaction => (
   ...trn,
   ...(trn.address ? { address: stringOrBytes(trn.address) } : {}),
   ...(trn.referal ? { referal: stringOrBytes(trn.referal) } : {}),
-  inputs: trn.inputs.map((input) => {
-    const newInput = {
-      ...input,
-      ...(input.pub_key ? { pub_key: stringOrBytes(input.pub_key) } : {}),
-      ...(input.signature ? { signature: stringOrBytes(input.signature) } : {}),
-      address: stringOrBytes(input.address),
-    };
+  inputs: trn.inputs
+    .map((input) => {
+      const newInput = {
+        ...input,
+        coins: input.coins.sort((a, b) => a.name.localeCompare(b.name)),
+        ...(input.pub_key ? { pub_key: stringOrBytes(input.pub_key) } : {}),
+        ...(input.signature ? { signature: stringOrBytes(input.signature) } : {}),
+        address: stringOrBytes(input.address),
+      };
 
-    // TODO: remove from here
-    if (+input.sequence === 1) {
-      newInput.pub_key = pk;
-    }
+      // TODO: remove from here
+      if (+input.sequence === 1) {
+        newInput.pub_key = pk;
+      }
 
-    return newInput;
-  }),
+      return newInput;
+    })
+  ,
 });
 
 export const stripeTrn = (trn: Transaction): Transaction => ({

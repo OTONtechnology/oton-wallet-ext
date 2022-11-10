@@ -1,6 +1,6 @@
 {
   "name": "oton-wallet-ext",
-  "version": "1.1.6",
+  "version": "1.1.8",
   "private": true,
   "scripts": {
     "generate:messages": "node translationsGenerator/index.js",
@@ -17,6 +17,7 @@
     "build:cordova": "cross-env APP_ENV=cordova MOBILE_ENV=mobileOton vue-cli-service build --mode production --no-clean && cd ../oton-wallet-mobile && cordova build ios",
     "build:cordova:fc:watch": "cross-env APP_ENV=cordova MOBILE_ENV=mobileFC vue-cli-service build --mode production --no-clean --watch",
     "build:cordova:fc": "cross-env APP_ENV=cordova MOBILE_ENV=mobileFC vue-cli-service build --mode production --no-clean && cd ../FC-wallet-mobile && cordova build ios",
+    "build:cordova:fc:dev": "cross-env APP_ENV=cordova MOBILE_ENV=mobileFC vue-cli-service build --mode development --no-clean && cd ../FC-wallet-mobile",
     "build-content": "vue-cli-service build --target lib --name content --filename content.js ",
     "postbuild": "npm-run-all copy:* copy:*:*",
     "prebuild": "npm-run-all copy:* copy:*:*",
