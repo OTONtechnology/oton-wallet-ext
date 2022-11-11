@@ -62,12 +62,15 @@ export const getTrnFromData = async (
   address: string,
   decimal: number,
 ): Promise<Transaction> => {
+  // TODO: transfer this vars to func args
   const feeCurrency = 'oton';
+  const feeDecimal = 4;
+
   const getRealSum = (sum: number | string) => Decimal.div(sum, generateDecimalNumber(decimal));
   let sequence = await getLastSequence(address);
   sequence = (sequence || 0) + 1;
 
-  const fee = getRealSum(out.fee || generateDecimalNumber(decimal)).toNumber();
+  const fee = getRealSum(out.fee || generateDecimalNumber(feeDecimal)).toNumber();
 
   const realSum = getRealSum(out.sum);
 
