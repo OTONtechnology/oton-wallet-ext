@@ -108,6 +108,11 @@ export default defineComponent({
     async submitTransfer() {
       this.loading = true;
       const toast = useToast();
+
+      if (this.loading) {
+        return;
+      }
+
       try {
         const coin = find(propEq('name', this.form.currency))(this.coinsList);
         const localSk = await vault.getDataFromStorage();

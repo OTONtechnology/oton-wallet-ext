@@ -12,12 +12,12 @@ import bus from './modules/bus';
 
 interface InitState {
   fetchState: string;
-  lang: 'en',
+  lang: 'en';
   walletAddress: string;
   nextAfterAuth: {
     tab: string | number | null;
     resource: string | null;
-  },
+  };
 }
 const initState: InitState = {
   fetchState: INIT,
@@ -58,7 +58,7 @@ export default createStore({
       commit('SET_STATE', PENDING);
 
       try {
-        const response = await blcInstance.get(`/broadcast_tx_commit?tx=0x${transaction}`);
+        const response = await blcInstance.get(`/broadcast_tx_sync?tx=0x${transaction}`);
 
         commit('SET_STATE', FULFILLED);
         return response.data;
@@ -68,7 +68,6 @@ export default createStore({
         return false;
       }
     },
-
   },
   modules: {
     transactions,
