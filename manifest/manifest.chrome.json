@@ -3,7 +3,7 @@
   "short_name": "OTN",
   "description": "OTON Wallet",
   "default_locale": "en",
-  "version": "1.1.8",
+  "version": "1.2.1",
   "manifest_version": 2,
   "permissions": [
     "storage",
