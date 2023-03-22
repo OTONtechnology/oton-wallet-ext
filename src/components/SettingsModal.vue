@@ -45,7 +45,6 @@ export default defineComponent({
 
     const currentLocale = computed(() => locale.value);
 
-    console.info(currentLocale.value);
     return {
       langs,
       locale: currentLocale,

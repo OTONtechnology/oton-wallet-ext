@@ -42,7 +42,6 @@ import TransferForm from '@/components/TransferForm.vue';
 import TransferSubmit from '@/components/TransferSubmit.vue';
 import Loader from '@/components/Loader.vue';
 import { getTrnFromData, signTrn } from '@/utils/transactionSign';
-import nodeErrorHandler from '@/utils/nodeErrorHandler';
 
 import vault from '@/utils/vault';
 
@@ -106,12 +105,13 @@ export default defineComponent({
       this.submitForm = false;
     },
     async submitTransfer() {
-      this.loading = true;
       const toast = useToast();
 
       if (this.loading) {
         return;
       }
+
+      this.loading = true;
 
       try {
         const coin = find(propEq('name', this.form.currency))(this.coinsList);
@@ -139,13 +139,12 @@ export default defineComponent({
           return;
         }
 
-        if (resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0) {
+        if (resp.result.log === 'Ok') {
           $vfm.hide('TransferModal');
           $vfm.show('TransferDoneModal');
           this.loading = false;
         } else {
-          const errorText = nodeErrorHandler(resp.result);
-          toast.error(errorText || 'Error! Something went wrong');
+          toast.error('Error! Something went wrong');
           this.loading = false;
         }
       } catch (e) {

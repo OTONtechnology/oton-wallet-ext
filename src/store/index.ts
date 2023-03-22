@@ -14,6 +14,7 @@ interface InitState {
   fetchState: string;
   lang: 'en';
   walletAddress: string;
+  isTransparentContent: false,
   nextAfterAuth: {
     tab: string | number | null;
     resource: string | null;
@@ -23,6 +24,7 @@ const initState: InitState = {
   fetchState: INIT,
   lang: 'en',
   walletAddress: '',
+  isTransparentContent: false,
   nextAfterAuth: {
     tab: null,
     resource: null,
@@ -47,6 +49,23 @@ export default createStore({
     },
     SET_NEXT_AFTER_AUTH(state, data) {
       state.nextAfterAuth = data;
+    },
+    SET_TRANSPARENT(state, value) {
+      const el = document.documentElement;
+
+      if (!el) {
+        return;
+      }
+
+      const setTransparentCssClass = 'html-bg-transparent';
+
+      if (value) {
+        el.classList.add(setTransparentCssClass);
+      } else {
+        el.classList.remove(setTransparentCssClass);
+      }
+
+      state.isTransparentContent = value;
     },
   },
   actions: {

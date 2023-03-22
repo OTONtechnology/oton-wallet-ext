@@ -1,8 +1,11 @@
 <template>
-  <div class="main-container">
+  <svg class="qrCode__close" @click="destroyQrCode" v-if="isTransparentContent">
+      <use xlink:href="#ic_close--sprite" />
+    </svg>
+  <div class="main-container" :class="{ hideContent: isTransparentContent }">
     <router-view />
   </div>
-  <div>
+  <div :class="{ hideContent: isTransparentContent }">
     <ImportWalletModal :name="'ImportWalletModal'" />
     <TransferModal :name="'TransferModal'" />
     <TransferDoneModal :name="'TransferDoneModal'" />
@@ -14,6 +17,7 @@
     <ExternalTxModal :name="'ExternalTxModal'" />
   </div>
 </template>
+
 <script>
 import {
   defineComponent, onBeforeMount, computed, watch,
@@ -59,6 +63,7 @@ export default defineComponent({
     const toast = useToast();
     const i18n = useI18n();
     const walletAddress = computed(() => store.state.walletAddress);
+    const isTransparentContent = computed(() => store.state.isTransparentContent);
     const route = useRoute();
 
     onBeforeMount(async () => {
@@ -70,7 +75,6 @@ export default defineComponent({
       }
 
       const address = await vault.getAddress();
-      console.log(address);
 
       const loaderWithAddress = () => {
         const hasReason = route.query.reason;
@@ -114,13 +118,48 @@ export default defineComponent({
       }
     });
 
+    const destroyQrCode = () => {
+      store.commit('SET_TRANSPARENT', false);
+      window.QRScanner.pausePreview();
+      window.QRScanner.destroy();
+    };
+
     return {
       walletAddress,
+      isTransparentContent,
+      destroyQrCode,
     };
   },
 });
 
 </script>
+
+<style lang="stylus" scoped>
+.hideContent {
+  opacity: 0;
+  pointer-events: none;
+}
+  .qrCode__close {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    top: 30px;
+    right: 30px;
+    background: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:active {
+      opacity: 0.6;
+    }
+  }
+</style>
 <style lang="stylus">
 body {
   color: $dark-color-2;
@@ -145,6 +184,14 @@ body {
 html {
   overflow-x: auto;
   overflow-y: auto;
+}
+
+.html-bg-transparent {
+  background-color: transparent;
+
+  *, *::before, &::after {
+    background-color: transparent;
+  }
 }
 
 svg {

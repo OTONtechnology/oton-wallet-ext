@@ -38,6 +38,7 @@
         <Tr> Address </Tr>
       </label>
       <input type="text" class="field__input" v-model="addressModel" />
+      <QrScanner @scanned="scanned" class="transfer__scanIcon"/>
     </div>
     <div class="field__errors">
       <div class="field__error" v-for="error in errors.address" :key="error">
@@ -80,11 +81,13 @@ import { mapState, mapGetters } from 'vuex';
 import { find, propEq } from 'rambda';
 import { getAddressFromHexSecret } from '@/utils/cryptoKeys';
 import EmptyState from '@/components/EmptyState.vue';
+import QrScanner from '@/components/QrScanner.vue';
 import generateDecimalNumber from '@/utils/generateDecimalNumber';
 
 export default defineComponent({
   components: {
     EmptyState,
+    QrScanner,
   },
   props: {
     currency: {
@@ -179,6 +182,21 @@ export default defineComponent({
   },
 
   methods: {
+    scanned(value) {
+      if (!value || typeof value !== 'string') {
+        this.errors.address.push('Wrong address');
+        return;
+      }
+
+      const address = value.replace(/^0x/i, '');
+
+      if (address.length !== 40 || address === this.walletAddress) {
+        this.errors.address.push('Wrong address');
+        return;
+      }
+
+      this.addressModel = address;
+    },
     async transfer() {
       if (this.validate()) {
         this.$emit('transfer');
@@ -246,6 +264,19 @@ export default defineComponent({
 
   &__address, &__sum {
     margin-top: 12px;
+    position: relative;
+  }
+  &__address {
+    input {
+      padding-right: 32px;
+    }
+  }
+  &__scanIcon {
+    position absolute
+    bottom: 11px;
+    right: 10px;
+    width 20px
+    height 20px
   }
 
   &__fee {

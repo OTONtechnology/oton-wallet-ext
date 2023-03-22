@@ -71,7 +71,6 @@ import DefaultModalLayout from '@/components/DefaultModalLayout.vue';
 import { sumInputsByAddress } from '@/utils/sumInputs';
 import { signTrn } from '@/utils/transactionSign';
 import maskCoinsAmount from '@/utils/maskCoinsAmount';
-import nodeErrorHandler from '@/utils/nodeErrorHandler';
 import vault from '@/utils/vault';
 
 export default defineComponent({
@@ -134,7 +133,7 @@ export default defineComponent({
           return;
         }
 
-        const status = resp.result.check_tx.code === 0 && resp.result.deliver_tx.code === 0;
+        const status = resp.result.log === 'Ok';
 
         if (status) {
           $vfm.hide('ExternalTxModal');
@@ -150,8 +149,7 @@ export default defineComponent({
             });
           }, 2000);
         } else {
-          const errorText = nodeErrorHandler(resp.result);
-          toast.error(errorText || 'Error! Something went wrong');
+          toast.error('Error! Something went wrong');
         }
       }
     };

@@ -53,8 +53,6 @@ router.beforeEach(async (to, from, next) => {
 
   address = await vault.getAddress();
 
-  console.log(address);
-
   store.commit('SET_WALLET_ADDRESS', address);
 
   if (to.name === 'StartView' && address) {
