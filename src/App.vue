@@ -1,7 +1,7 @@
 <template>
   <svg class="qrCode__close" @click="destroyQrCode" v-if="isTransparentContent">
-      <use xlink:href="#ic_close--sprite" />
-    </svg>
+    <use xlink:href="#ic_close--sprite" />
+  </svg>
   <div class="main-container" :class="{ hideContent: isTransparentContent }">
     <router-view />
   </div>

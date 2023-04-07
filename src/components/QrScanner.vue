@@ -15,7 +15,6 @@ import '@/assets/svg/qr-code-scan-icon.svg?sprite';
 export default defineComponent({
   setup(props, ctx) {
     const store = useStore();
-    let onScan: any = () => undefined;
 
     function displayContents(err: any, text: any) {
       store.commit('SET_TRANSPARENT', false);
@@ -23,6 +22,7 @@ export default defineComponent({
       window.QRScanner.destroy();
       if (err) {
         // an error occurred, or the scan was canceled (error code `6`)
+        console.error(err);
         ctx.emit('scanned', '');
       } else {
         // The scan completed, display the contents of the QR code:
@@ -30,17 +30,15 @@ export default defineComponent({
       }
     }
 
-    if (isCordova) {
-      onScan = () => {
-        window.QRScanner.scan(displayContents);
+    const onScan = () => {
+      window.QRScanner.scan(displayContents);
 
-        // Make the webview transparent so the video preview is visible behind it.
-        store.commit('SET_TRANSPARENT', true);
-        window.QRScanner.show();
-        // Be sure to make any opaque HTML elements transparent here to avoid
-        // covering the video.
-      };
-    }
+      // Make the webview transparent so the video preview is visible behind it.
+      store.commit('SET_TRANSPARENT', true);
+      window.QRScanner.show();
+      // Be sure to make any opaque HTML elements transparent here to avoid
+      // covering the video.
+    };
 
     return { onScan, isCordova };
   },
